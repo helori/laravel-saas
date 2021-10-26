@@ -39,7 +39,7 @@ class SubscriptionRead extends ActionRequest
         $plan = null;
         $price = null;
 
-        if($subscription)
+        if(!is_null($subscription))
         {
             $products = config('saas.billables.team.products');
             $priceId = $subscription['stripe_price'];
@@ -60,18 +60,18 @@ class SubscriptionRead extends ActionRequest
             $price = Arr::first($plan['prices'], function($pri) use($priceId) {
                 return ($pri['price_id'] === $priceId);
             });
+
+            $subscription->product = Arr::except($product, ['plans']);
+            $subscription->plan = Arr::except($plan, ['prices']);
+            $subscription->price = $price;
+
+            $subscription->is_active = $subscription->active();
+            $subscription->is_recurring = $subscription->recurring();
+            $subscription->is_cancelled = $subscription->cancelled();
+            $subscription->is_ended = $subscription->ended();
+            $subscription->is_on_grace_period = $subscription->onGracePeriod();
+            $subscription->is_on_trial = $subscription->onTrial();
         }
-
-        $subscription->product = Arr::except($product, ['plans']);
-        $subscription->plan = Arr::except($plan, ['prices']);
-        $subscription->price = $price;
-
-        $subscription->is_active = $subscription->active();
-        $subscription->is_recurring = $subscription->recurring();
-        $subscription->is_cancelled = $subscription->cancelled();
-        $subscription->is_ended = $subscription->ended();
-        $subscription->is_on_grace_period = $subscription->onGracePeriod();
-        $subscription->is_on_trial = $subscription->onTrial();
 
         return $subscription;
     }
