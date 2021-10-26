@@ -1,0 +1,42 @@
+{
+    "name": "helori/laravel-saas",
+    "description": "Software as a Service scaffholding for Laravel based on Vue 3, Tailwindcss and Stripe. Inspired by Laravel Jetstream and Spark.",
+    "keywords": ["laravel", "saas", "team", "user", "subscription", "stripe"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Helori Lanos",
+            "email": "helori@algoart.fr",
+            "homepage": "https://algoart.fr"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/helori/laravel-saas.git"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Helori\\LaravelSaas\\": "src/"
+        }
+    },
+    "require": {
+        "php": "^7.3|^8.0",
+        "jenssegers/agent": "^2.6",
+        "laravel/cashier": "^13.5",
+        "laravel/fortify": "^1.7",
+        "laravel/framework": "^8.40",
+        "laravel/sanctum": "^2.11"
+    },
+    "require-dev": {
+        
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Helori\\LaravelSaas\\SaasServiceProvider"
+            ]
+        }
+    }
+}
