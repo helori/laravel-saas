@@ -1,4 +1,4 @@
-@extends('saas:auth.layout')
+@extends('saas::auth.layout')
 @section('content')
 
 <div class="">
@@ -28,7 +28,7 @@
                 class="input w-full mb-2"
                 placeholder="Votre mot de passe...">
 
-            @include('laravel-saas:errors')
+            @include('saas::errors')
 
             <button
                 type="submit"

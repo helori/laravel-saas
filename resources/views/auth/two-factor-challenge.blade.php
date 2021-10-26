@@ -1,4 +1,4 @@
-@extends('saas:auth.layout')
+@extends('saas::auth.layout')
 @section('content')
 
 <div class="text-center">

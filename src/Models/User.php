@@ -10,6 +10,8 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Sanctum\HasApiTokens;
 use Laravel\Cashier\Billable;
 use function Illuminate\Events\queueable;
+use Helori\LaravelSaas\Factories\UserFactory;
+
 
 class User extends Authenticatable
 {
@@ -47,6 +49,16 @@ class User extends Authenticatable
         'is_root' => 'boolean',
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * Create a new factory instance for the model.
+     *
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     */
+    protected static function newFactory()
+    {
+        return UserFactory::new();
+    }
 
     protected static function booted()
     {

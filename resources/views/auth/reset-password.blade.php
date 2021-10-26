@@ -1,4 +1,4 @@
-@extends('saas:auth.layout')
+@extends('saas::auth.layout')
 @section('content')
 
 <div class="text-center">
@@ -40,7 +40,7 @@
                 class="input w-full mb-2"
                 placeholder="Confirmation du mot de passe...">
 
-            @include('errors')
+            @include('saas::errors')
 
             <button
                 type="submit"

@@ -1,4 +1,4 @@
-@extends('saas:auth.layout')
+@extends('saas::auth.layout')
 @section('content')
 
 <div class="text-center">
@@ -20,7 +20,7 @@
                 placeholder="Votre email..."
                 value="{{ old('email') }}">
 
-            @include('errors')
+            @include('saas::errors')
 
             <button
                 type="submit"

@@ -10,12 +10,12 @@ class AppController extends BaseController
 {
     public function home(Request $request)
     {
-        return view('home');
+        return view('saas::home');
     }
     
     public function app(Request $request)
     {
-        $user = Auth::guard('user')->user();
+        $user = Auth::user();
 
         $user->current_team = $user->currentTeam();
 
@@ -24,7 +24,7 @@ class AppController extends BaseController
             $user->two_factor_enabled = !is_null($user->two_factor_secret);
         }
 
-        return view('app', [
+        return view('saas::app', [
         	'user' => $user,
             'laravelVersion' => app()->version(),
             'phpVersion' => PHP_VERSION,
