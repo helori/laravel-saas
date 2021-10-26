@@ -15,7 +15,7 @@ class AppController extends BaseController
     
     public function app(Request $request)
     {
-        $user = Auth::user();
+        $user = Auth::guard('user')->user();
 
         $user->current_team = $user->currentTeam();
 

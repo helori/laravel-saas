@@ -2,13 +2,13 @@
 
 namespace Helori\LaravelSaas\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 
-class UpdateUser extends FormRequest
+class UserUpdate extends ActionRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -34,7 +34,7 @@ class UpdateUser extends FormRequest
                 'required',
                 'email',
                 'max:191',
-                Rule::unique('mandants')->ignore($this->id, 'id'),
+                Rule::unique('users')->ignore($this->user()->id, 'id'),
                 function ($attribute, $value, $fail) {
                     if(!filter_var($value, FILTER_VALIDATE_EMAIL))
                     {
@@ -81,12 +81,43 @@ class UpdateUser extends FormRequest
     }
 
     /**
-     * Apply the action the request is supposed to do
+     * Run the action the request is supposed to execute
      *
      * @return void
      */
-    protected function apply()
+    public function action()
     {
-        
+        $user = $this->user();
+        $data = $this->validated();
+
+        if ($data['email'] !== $user->email &&
+            $user instanceof MustVerifyEmail) {
+            $this->updateVerifiedUser($user, $data);
+        } else {
+            $user->forceFill([
+                'firstname' => $data['firstname'],
+                'lastname' => $data['lastname'],
+                'email' => $data['email'],
+            ])->save();
+        }
+    }
+
+    /**
+     * Update the given verified user's profile information.
+     *
+     * @param  mixed  $user
+     * @param  array  $input
+     * @return void
+     */
+    protected function updateVerifiedUser($user, array $data)
+    {
+        $user->forceFill([
+            'firstname' => $data['firstname'],
+            'lastname' => $data['lastname'],
+            'email' => $data['email'],
+            'email_verified_at' => null,
+        ])->save();
+
+        $user->sendEmailVerificationNotification();
     }
 }

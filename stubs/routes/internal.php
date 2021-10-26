@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use Helori\LaravelSaas\Controllers\AppController;
 use Helori\LaravelSaas\Controllers\SaasController;
 
+Route::get('/', [AppController::class, 'home']);
+
 Route::group(['middleware' => 'auth:sanctum'], function ()
 {
     Route::get('/app', [AppController::class, 'app']);

@@ -2,13 +2,12 @@
 
 namespace Helori\LaravelSaas\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Fortify\Rules\Password;
 
 
-class UpdatePassword extends FormRequest
+class UserPassword extends ActionRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -82,5 +81,20 @@ class UpdatePassword extends FormRequest
                 $validator->errors()->add('current_password', __('The provided password does not match your current password.'));
             }
         });
+    }
+
+    /**
+     * Run the action the request is supposed to execute
+     *
+     * @return void
+     */
+    public function action()
+    {
+        $user = $this->user();
+        $data = $this->validated();
+        
+        $user->forceFill([
+            'password' => Hash::make($data['password']),
+        ])->save();
     }
 }

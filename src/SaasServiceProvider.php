@@ -16,10 +16,10 @@ use Laravel\Fortify\Fortify;
 use Laravel\Fortify\Features;
 use Laravel\Cashier\Cashier;
 
-/*use App\Actions\Fortify\CreateNewUser;
+use App\Actions\Fortify\CreateNewUser;
 use App\Actions\Fortify\ResetUserPassword;
 use App\Actions\Fortify\UpdateUserPassword;
-use App\Actions\Fortify\UpdateUserProfileInformation;*/
+use App\Actions\Fortify\UpdateUserProfileInformation;
 
 use Helori\LaravelSaas\Models\User;
 use Helori\LaravelSaas\Models\Team;
@@ -34,46 +34,55 @@ class SaasServiceProvider extends ServiceProvider
     
     public function boot()
 	{
-        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'saas');
-        $this->loadRoutesFrom(__DIR__.'/../routes/internal.php');
+        $this->bootPublishedFiles();
+        $this->bootFortify();
+        $this->bootCashier();
+    }
+
+    protected function bootPublishedFiles()
+    {
+        $this->loadMigrationsFrom(__DIR__.'/../stubs/database/migrations');
+        $this->loadViewsFrom(__DIR__.'/../stubs/resources/views', 'saas');
+        //$this->loadRoutesFrom(__DIR__.'/../routes/internal.php');
 
         $this->publishes([
-            __DIR__.'/../database/migrations' => database_path('migrations'),
+            __DIR__.'/../stubs/database/migrations' => database_path('migrations'),
         ], 'laravel-saas-migrations');
 
         $this->publishes([
-            __DIR__.'/../config/saas.php' => config_path('saas.php'),
-            __DIR__.'/../config/auth.php' => config_path('auth.php'),
+            __DIR__.'/../stubs/config/saas.php' => config_path('saas.php'),
+            __DIR__.'/../stubs/config/auth.php' => config_path('auth.php'),
         ], 'laravel-saas-config');
 
         $this->publishes([
-            __DIR__.'/../resources/css' => resource_path('css'),
-            __DIR__.'/../resources/js' => resource_path('js'),
-            __DIR__.'/../webpack.mix.js' => base_path('webpack.mix.js'),
-            __DIR__.'/../tailwind.config.js' => base_path('tailwind.config.js'),
-        ], 'laravel-saas-assets');
+            __DIR__.'/../stubs/resources/views' => resource_path('views/helori/laravel-saas'),
+            __DIR__.'/../stubs/resources/css' => resource_path('css'),
+            __DIR__.'/../stubs/resources/js' => resource_path('js'),
+            __DIR__.'/../stubs/webpack.mix.js' => base_path('webpack.mix.js'),
+            __DIR__.'/../stubs/tailwind.config.js' => base_path('tailwind.config.js'),
+        ], 'laravel-saas-resources');
 
         $this->publishes([
-            __DIR__.'/../resources/views' => resource_path('views/helori/laravel-saas'),
-        ], 'laravel-saas-views');
-
-        $this->publishes([
-            __DIR__.'/../routes/web.php' => base_path('routes/web.php'),
+            __DIR__.'/../stubs/routes/web.php' => base_path('routes/web.php'),
         ], 'laravel-saas-routes');
 
-        $this->bootFortify();
+        $this->publishes([
+            __DIR__.'/../stubs/app' => app_path(),
+        ], 'laravel-saas-providers');
+	}
 
+    protected function bootCashier()
+    {
         Cashier::useCustomerModel(Team::class);
         //Cashier::calculateTaxes();
-	}
+    }
 
     protected function bootFortify()
     {
-        /*Fortify::createUsersUsing(CreateNewUser::class);
+        Fortify::createUsersUsing(CreateNewUser::class);
         Fortify::updateUserProfileInformationUsing(UpdateUserProfileInformation::class);
         Fortify::updateUserPasswordsUsing(UpdateUserPassword::class);
-        Fortify::resetUserPasswordsUsing(ResetUserPassword::class);*/
+        Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
 
         RateLimiter::for('login', function (Request $request) {
             return Limit::perMinute(5)->by($request->email.$request->ip());
