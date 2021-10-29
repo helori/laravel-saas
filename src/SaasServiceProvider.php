@@ -53,8 +53,8 @@ class SaasServiceProvider extends ServiceProvider
         ], 'laravel-saas-app');
 
         $this->publishes([
-            __DIR__.'/../stubs' => database_path(),
-        ], 'laravel-saas-migrations');
+            __DIR__.'/../stubs/database' => database_path(),
+        ], 'laravel-saas-database');
 
         $this->publishes([
             __DIR__.'/../stubs/config/saas.php' => config_path('saas.php'),
