@@ -43,23 +43,27 @@ class SaasServiceProvider extends ServiceProvider
     {
         $this->loadMigrationsFrom(__DIR__.'/../stubs/database/migrations');
         $this->loadViewsFrom(__DIR__.'/../stubs/resources/views', 'saas');
-        //$this->loadRoutesFrom(__DIR__.'/../routes/internal.php');
+        $this->loadRoutesFrom(__DIR__.'/../routes/routes.php');
 
+        // ---------------------------------------------------------------------
+        //  Tags to publish only on install
+        // ---------------------------------------------------------------------
         $this->publishes([
             __DIR__.'/../stubs/app' => app_path(),
-        ], 'laravel-saas-providers');
+        ], 'laravel-saas-app');
 
         $this->publishes([
-            __DIR__.'/../stubs/database' => database_path(),
+            __DIR__.'/../stubs' => database_path(),
         ], 'laravel-saas-migrations');
 
         $this->publishes([
-            __DIR__.'/../stubs/config' => config_path(),
+            __DIR__.'/../stubs/config/saas.php' => config_path('saas.php'),
+            __DIR__.'/../stubs/config/auth.php' => config_path('auth.php'),
         ], 'laravel-saas-config');
 
-        $this->publishes([
+        /*$this->publishes([
             __DIR__.'/../stubs/routes/web.php' => base_path('routes/web.php'),
-        ], 'laravel-saas-routes');
+        ], 'laravel-saas-routes');*/
 
         $this->publishes([
             __DIR__.'/../stubs/resources/views' => resource_path('views/helori/laravel-saas'),

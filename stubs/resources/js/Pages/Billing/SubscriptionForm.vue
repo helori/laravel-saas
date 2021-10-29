@@ -12,6 +12,24 @@
             <div class="col-span-6 sm:col-span-4">
 
                 <div v-if="updating">
+
+                    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+                    <!-- If multiple plans : show selector -->
+                    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+                    <div class="mb-2"
+                        v-if="product.plans.length > 1">
+                        <select
+                            class="input"
+                            v-model="plan">
+                            <option
+                                v-for="p in product.plans"
+                                :key="p.slug"
+                                :value="p">
+                                {{ p.name }}
+                            </option>
+                        </select>
+                    </div>
+
                     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
                     <!-- Show selected plan only -->
                     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
@@ -178,25 +196,16 @@
             product: {
                 required: true,
             },
-            planSlug: {
-                required: true,
-            },
         },
 
         setup(props) {
 
             // ---------------------------------------------------
-            //  Selected a default plan (sent as props in this app)
+            //  Selected a default plan and a default price
             // ---------------------------------------------------
-            const plan = computed(() => {
-                return find(props.product.plans, function(plan) { 
-                    return plan.slug === props.planSlug;
-                });
-            });
-
-            // Select the first price by default
-            const price = ref(plan.value.prices[0]);
-
+            const plan = ref(props.product.plans[0]);
+            const price = ref(props.product.plans[0].prices[0]);
+            
             // ---------------------------------------------------
             //  Current subscription
             // ---------------------------------------------------
@@ -235,7 +244,7 @@
             function createSubscription()
             {
                 createSubscriptionData.value.product = props.product.slug;
-                createSubscriptionData.value.plan = props.planSlug;
+                createSubscriptionData.value.plan = plan.value.slug;
                 createSubscriptionData.value.price = price.value.slug;
 
                 createSubscriptionSend('post', '/subscription').then(r => {

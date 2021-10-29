@@ -12,9 +12,6 @@ class ProductList extends ActionRequest
      */
     public function action()
     {
-        return [
-            'products' => config('saas.products'),
-            'plans' => config('saas.plans'),
-        ];
+        return config('saas.products');
     }
 }
