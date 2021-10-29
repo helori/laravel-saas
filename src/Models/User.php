@@ -3,19 +3,17 @@
 namespace Helori\LaravelSaas\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Sanctum\HasApiTokens;
 use Laravel\Cashier\Billable;
 use function Illuminate\Events\queueable;
-use Helori\LaravelSaas\Factories\UserFactory;
 
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, TwoFactorAuthenticatable, HasApiTokens, Billable;
+    use Notifiable, TwoFactorAuthenticatable, HasApiTokens, Billable;
 
     /**
      * The attributes that are mass assignable.
@@ -49,16 +47,6 @@ class User extends Authenticatable
         'is_root' => 'boolean',
         'email_verified_at' => 'datetime',
     ];
-
-    /**
-     * Create a new factory instance for the model.
-     *
-     * @return \Illuminate\Database\Eloquent\Factories\Factory
-     */
-    protected static function newFactory()
-    {
-        return UserFactory::new();
-    }
 
     protected static function booted()
     {

@@ -67,7 +67,7 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => Helori\LaravelSaas\Models\User::class,
+            'model' => App\Models\User::class,
         ],
     ],
 

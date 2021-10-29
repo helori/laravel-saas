@@ -41,7 +41,7 @@ class SubscriptionRead extends ActionRequest
 
         if(!is_null($subscription))
         {
-            $products = config('saas.billables.team.products');
+            $products = config('saas.products');
             $priceId = $subscription['stripe_price'];
 
             $product = Arr::first($products, function($product) use($productSlug) {

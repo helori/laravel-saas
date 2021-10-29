@@ -1,9 +1,9 @@
 <?php
 
-namespace Helori\LaravelSaas\Seeders;
+namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Helori\LaravelSaas\Models\User;
+use App\Models\User;
 
 
 class UserSeeder extends Seeder

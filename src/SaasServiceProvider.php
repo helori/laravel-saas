@@ -46,13 +46,20 @@ class SaasServiceProvider extends ServiceProvider
         //$this->loadRoutesFrom(__DIR__.'/../routes/internal.php');
 
         $this->publishes([
-            __DIR__.'/../stubs/database/migrations' => database_path('migrations'),
+            __DIR__.'/../stubs/app' => app_path(),
+        ], 'laravel-saas-providers');
+
+        $this->publishes([
+            __DIR__.'/../stubs/database' => database_path(),
         ], 'laravel-saas-migrations');
 
         $this->publishes([
-            __DIR__.'/../stubs/config/saas.php' => config_path('saas.php'),
-            __DIR__.'/../stubs/config/auth.php' => config_path('auth.php'),
+            __DIR__.'/../stubs/config' => config_path(),
         ], 'laravel-saas-config');
+
+        $this->publishes([
+            __DIR__.'/../stubs/routes/web.php' => base_path('routes/web.php'),
+        ], 'laravel-saas-routes');
 
         $this->publishes([
             __DIR__.'/../stubs/resources/views' => resource_path('views/helori/laravel-saas'),
@@ -61,14 +68,6 @@ class SaasServiceProvider extends ServiceProvider
             __DIR__.'/../stubs/webpack.mix.js' => base_path('webpack.mix.js'),
             __DIR__.'/../stubs/tailwind.config.js' => base_path('tailwind.config.js'),
         ], 'laravel-saas-resources');
-
-        $this->publishes([
-            __DIR__.'/../stubs/routes/web.php' => base_path('routes/web.php'),
-        ], 'laravel-saas-routes');
-
-        $this->publishes([
-            __DIR__.'/../stubs/app' => app_path(),
-        ], 'laravel-saas-providers');
 	}
 
     protected function bootCashier()

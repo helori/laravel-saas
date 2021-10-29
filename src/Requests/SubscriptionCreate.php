@@ -44,7 +44,7 @@ class SubscriptionCreate extends ActionRequest
         $planSlug = $this->plan;
         $priceSlug = $this->price;
 
-        $products = config('saas.billables.team.products');
+        $products = config('saas.products');
 
         $product = Arr::first($products, function($product) use($productSlug) {
             return ($product['slug'] === $productSlug);

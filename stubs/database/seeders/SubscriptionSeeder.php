@@ -1,9 +1,9 @@
 <?php
 
-namespace Helori\LaravelSaas\Seeders;
+namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Helori\LaravelSaas\Models\User;
+use App\Models\User;
 
 
 class SubscriptionSeeder extends Seeder
@@ -24,7 +24,7 @@ class SubscriptionSeeder extends Seeder
 
         $billable->updateDefaultPaymentMethod('tok_visa');
 
-        $products = config('saas.billables.team.products');
+        $products = config('saas.products');
 
         foreach($products as $product)
         {

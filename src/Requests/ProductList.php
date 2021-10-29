@@ -13,8 +13,8 @@ class ProductList extends ActionRequest
     public function action()
     {
         return [
-            'products' => config('saas.billables.team.products'),
-            'plans' => config('saas.billables.team.plans'),
+            'products' => config('saas.products'),
+            'plans' => config('saas.plans'),
         ];
     }
 }

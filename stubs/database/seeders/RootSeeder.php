@@ -1,10 +1,10 @@
 <?php
 
-namespace Helori\LaravelSaas\Seeders;
+namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
-use Helori\LaravelSaas\Models\User;
+use App\Models\User;
 
 
 class RootSeeder extends Seeder
