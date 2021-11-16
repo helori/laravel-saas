@@ -9,101 +9,133 @@
         </template>
 
         <template #form>
-            <div class="col-span-6 sm:col-span-4">
+            <div class="col-span-6">
 
                 <div v-if="updating">
 
-                    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-                    <!-- If multiple plans : show selector -->
-                    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-                    <div class="mb-2"
-                        v-if="product.plans.length > 1">
-                        <select
-                            class="input"
-                            v-model="plan">
-                            <option
-                                v-for="p in product.plans"
-                                :key="p.slug"
-                                :value="p">
-                                {{ p.name }}
-                            </option>
-                        </select>
-                    </div>
-
-                    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-                    <!-- Show selected plan only -->
-                    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-                    <div v-if="plan">
-
+                    <div class="grid lg:grid-cols-2 gap-4">
                         <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-                        <!-- If multiple prices : show selector -->
+                        <!-- If multiple plans : show selector -->
                         <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
                         <div class="mb-2"
-                            v-if="plan.prices.length > 1">
-                            <select
-                                class="input"
-                                v-model="price">
-                                <option
-                                    v-for="p in plan.prices"
-                                    :key="p.slug"
-                                    :value="p">
-                                    {{ p.name }}
-                                </option>
-                            </select>
+                            v-if="product.plans.length > 1">
+
+                            <!--div class="mb-1  font-bold">
+                                Choisissez une formule :
+                            </div-->
+
+                            <div>
+                                <select
+                                    class="input"
+                                    v-model="plan">
+                                    <option
+                                        v-for="p in product.plans"
+                                        :key="p.slug"
+                                        :value="p">
+                                        {{ p.name }}
+                                    </option>
+                                </select>
+
+                                <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+                                <!-- If multiple prices : show selector -->
+                                <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+                                <select
+                                    v-if="plan && plan.prices.length > 1"
+                                    class="input ml-2"
+                                    v-model="price">
+                                    <option
+                                        v-for="p in plan.prices"
+                                        :key="p.slug"
+                                        :value="p">
+                                        {{ p.name }}
+                                    </option>
+                                </select>
+                            </div>
                         </div>
 
                         <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-                        <!-- Show selected price only -->
+                        <!-- Show selected plan & price -->
                         <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-                        <div v-if="price">
+                        <div v-if="plan && price"
+                            class="text-right">
 
                             <div class="font-bold text-lg">
-                                {{ plan.name }} - {{ price.name }}
+                                {{ plan.name }}
+                            </div>
+                            <div class="font-semibold text-gray-500">
+                                {{ price.name }}
                             </div>
 
                             <div v-for="p in plan.prices"
                                 :key="p.slug">
                                 <div v-if="p.slug == price.slug"
-                                    class="text-lg mb-2">
-                                    {{ p.price }} {{ p.unit }}  
+                                    class="text-lg my-2">
+                                    {{ $filters.number(p.price, 0) }} {{ p.unit }}  
                                 </div>
                             </div>
-
-                        </div>
-
-                        <div v-for="feature in product.features"
-                            class="flex">
-                            <CheckCircleIcon class="h-5 w-5 text-green-500"/>
-                            <div class="ml-2 text-gray-500">{{ feature }}</div>
                         </div>
 
                     </div>
+
+                    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+                    <!-- Show selected plan features -->
+                    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+                    <div v-if="plan">
+                        <div v-for="feature in plan.features">
+                            <div v-if="feature === 'separator'" class="border-t border-gray-100 my-2 w-full"></div>
+                            <div v-else class="flex">
+                                <CheckCircleIcon class="h-5 w-5 text-green-500"/>
+                                <div class="ml-2 text-gray-500">{{ feature }}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+                    <!-- Show product features -->
+                    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+                    <div class="border-t border-gray-100 my-2 w-full"
+                        v-if="product.features.length > 0"></div>
+
+                    <div v-for="feature in product.features">
+                        <div v-if="feature === 'separator'" class="border-t border-gray-100 my-2 w-full"></div>
+                        <div v-else class="flex">
+                            <CheckCircleIcon class="h-5 w-5 text-green-500"/>
+                            <div class="ml-2 text-gray-500">{{ feature }}</div>
+                        </div>
+                    </div>
+                    
                 </div>
 
 
                 <div v-if="!updating && subscription">
+
                     <div class="font-bold text-lg">
-                        {{ subscription.plan.name }} - {{ subscription.price.name }}
+                        {{ subscription.plan.name }}
                     </div>
+                    <div class="font-semibold text-gray-500">
+                        {{ subscription.price.name }}
+                    </div>
+
                     <div class="text-lg mb-2">
-                        {{ subscription.price.price }} {{ subscription.price.unit }}  
+                        {{ $filters.number(subscription.price.price, 0) }} 
+                        {{ subscription.price.unit }}  
                     </div>
                     
                     <div v-if="subscription.is_on_trial"
                         class="text-warning-500 font-bold">
-                        Votre période d'essai se terminera le {{ subscription.trial_ends_at }}
+                        Votre période d'essai se terminera le {{ $filters.date(subscription.trial_ends_at, 'DD/MM/YYYY') }}
                     </div>
                     <div v-if="subscription.is_recurring"
                         class="text-green-500 font-bold">
-                        Votre abonnement est actif depuis le {{ subscription.created_at }}
+                        Votre abonnement est actif depuis le {{ $filters.date(subscription.created_at, 'DD/MM/YYYY') }}
                     </div>
                     <div v-if="subscription.is_on_grace_period"
                         class="text-red-500 font-bold">
-                        Votre abonnement se terminera le {{ subscription.ends_at }}
+                        Votre abonnement se terminera le {{ $filters.date(subscription.ends_at, 'DD/MM/YYYY') }}
                     </div>
                     <div v-if="subscription.is_ended"
                         class="text-red-500 font-bold">
-                        Votre abonnement est terminé depuis le {{ subscription.ends_at }}
+                        Votre abonnement est terminé depuis le {{ $filters.date(subscription.ends_at, 'DD/MM/YYYY') }}
                     </div>
                 </div>
 

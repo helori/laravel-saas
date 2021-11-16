@@ -19,19 +19,17 @@
 <script>
 
 import { defineComponent, ref, onMounted } from "vue";
-import { useForm } from '../Functions/useForm'
-import PaymentMethodForm from './Billing/PaymentMethodForm.vue'
-import SubscriptionForm from './Billing/SubscriptionForm.vue'
-import FormSection from '../Components/FormSection.vue'
-import Separator from '../Components/Separator.vue'
+import { useForm } from '../../Functions/useForm'
+import Separator from '../../Components/Separator.vue'
+import PaymentMethodForm from './PaymentMethodForm.vue'
+import SubscriptionForm from './SubscriptionForm.vue'
 
 export default defineComponent({
 
     components: {
+        Separator,
         PaymentMethodForm,
         SubscriptionForm,
-        FormSection,
-        Separator,
     },
 
     props: {

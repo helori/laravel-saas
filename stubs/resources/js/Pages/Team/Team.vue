@@ -18,17 +18,16 @@
 <script>
 
 import { defineComponent } from "vue";
-
-import TeamUpdateForm from './Team/TeamUpdateForm.vue'
-import TeamMembersForm from './Team/TeamMembersForm.vue'
-import Separator from '../Components/Separator.vue'
+import Separator from '../../Components/Separator.vue'
+import TeamUpdateForm from './TeamUpdateForm.vue'
+import TeamMembersForm from './TeamMembersForm.vue'
 
 export default defineComponent({
 
     components: {
+        Separator,
         TeamUpdateForm,
         TeamMembersForm,
-        Separator,
     },
 
     props: {

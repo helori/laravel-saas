@@ -1,17 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Helori\LaravelSaas\Controllers\AppController;
 use Helori\LaravelSaas\Controllers\SaasController;
 
 Route::group(['middleware' => ['web']], function ()
 {
-    Route::get('/', [AppController::class, 'home']);
-
     Route::group(['middleware' => 'auth:sanctum'], function ()
     {
-        Route::get('/app', [AppController::class, 'app']);
-
         Route::get('/browser-session', [SaasController::class, 'readBrowserSession']);
         Route::delete('/browser-session', [SaasController::class, 'deleteBrowserSession']);//->middleware('password.confirm');
 

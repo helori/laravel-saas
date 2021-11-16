@@ -9,6 +9,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Sanctum\HasApiTokens;
 use Laravel\Cashier\Billable;
 use function Illuminate\Events\queueable;
+use Helori\LaravelSaas\Saas;
 
 
 class User extends Authenticatable
@@ -51,7 +52,8 @@ class User extends Authenticatable
     protected static function booted()
     {
         static::created(function($user){
-            $team = new Team();
+            $teamModel = Saas::$teamModel;
+            $team = new $teamModel();
             $team->name = 'Équipe de '.$user->firstname.' '.$user->lastname;
             $team->user_id = $user->id;
             $user->teams()->save($team, [
@@ -70,7 +72,7 @@ class User extends Authenticatable
      */
     public function teams()
     {
-        return $this->belongsToMany(Team::class)
+        return $this->belongsToMany(Saas::$teamModel)
             ->using(Membership::class)
             ->withPivot('role')
             ->withTimestamps();
@@ -83,7 +85,7 @@ class User extends Authenticatable
      */
     public function ownedTeams()
     {
-        return $this->hasMany(Team::class);
+        return $this->hasMany(Saas::$teamModel);
     }
 
     /**
@@ -97,7 +99,7 @@ class User extends Authenticatable
         //return $this->belongsTo(Team::class, 'current_team_id');
 
         $currentTeamId = $this->current_team_id;
-        return $this->teams->first(function (team $team) use($currentTeamId) {
+        return $this->teams->first(function ($team) use($currentTeamId) {
             return ($team->id === $currentTeamId);
         });
     }

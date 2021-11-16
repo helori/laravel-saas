@@ -27,13 +27,12 @@
 <script>
 
 import { defineComponent, ref } from "vue";
-
-import UpdateProfileInformationForm from './Profile/UpdateProfileInformationForm.vue'
-import UpdatePasswordForm from './Profile/UpdatePasswordForm.vue'
-import TwoFactorAuthenticationForm from './Profile/TwoFactorAuthenticationForm.vue'
-import LogoutOtherBrowserSessionForm from './Profile/LogoutOtherBrowserSessionForm.vue'
-import ManageApiTokenForm from './Profile/ManageApiTokenForm.vue'
-import Separator from '../Components/Separator.vue'
+import Separator from '../../Components/Separator.vue'
+import UpdateProfileInformationForm from './UpdateProfileInformationForm.vue'
+import UpdatePasswordForm from './UpdatePasswordForm.vue'
+import TwoFactorAuthenticationForm from './TwoFactorAuthenticationForm.vue'
+import LogoutOtherBrowserSessionForm from './LogoutOtherBrowserSessionForm.vue'
+import ManageApiTokenForm from './ManageApiTokenForm.vue'
 
 export default defineComponent({
 

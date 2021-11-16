@@ -1,9 +1,8 @@
 <?php
 
-namespace Helori\LaravelSaas\Controllers;
+namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Helori\LaravelSaas\Controllers\AppController as BaseController;
 
 
 class AppController extends BaseController
@@ -25,7 +24,7 @@ class AppController extends BaseController
         }
 
         return view('saas::app', [
-        	'user' => $user,
+            'user' => $user,
             'laravelVersion' => app()->version(),
             'phpVersion' => PHP_VERSION,
         ]);

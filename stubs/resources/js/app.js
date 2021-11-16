@@ -20,30 +20,13 @@ import Billing from './Pages/Billing.vue'
 import mitt from 'mitt';
 const emitter = mitt();
 
+import routesSaas from './routes-saas.js'
+import filters from './filters.js'
+
 if(document.getElementById("vue-app"))
 {
-    const routes = [
-        { 
-            path: '/', 
-            name: 'dashboard',
-            component: Dashboard,
-        },
-        { 
-            path: '/profile', 
-            name: 'profile',
-            component: Profile,
-        },
-        { 
-            path: '/team', 
-            name: 'team',
-            component: Team,
-        },
-        { 
-            path: '/billing', 
-            name: 'billing',
-            component: Billing,
-        },
-    ]
+
+    const routes = ([]).concat(routesSaas, routesApp);
 
     const router = createRouter({
         history: createWebHashHistory(),

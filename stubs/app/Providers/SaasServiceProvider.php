@@ -11,6 +11,10 @@ use App\Actions\Fortify\ResetUserPassword;
 use App\Actions\Fortify\UpdateUserPassword;
 use App\Actions\Fortify\UpdateUserProfileInformation;
 
+use Helori\LaravelSaas\Saas;
+use App\Models\User;
+use App\Models\Team;
+
 
 class SaasServiceProvider extends ServiceProvider
 {
@@ -21,6 +25,9 @@ class SaasServiceProvider extends ServiceProvider
     
     public function boot()
 	{
+        Saas::useUserModel(User::class);
+        Saas::useTeamModel(Team::class);
+
         Fortify::createUsersUsing(CreateNewUser::class);
         Fortify::updateUserProfileInformationUsing(UpdateUserProfileInformation::class);
         Fortify::updateUserPasswordsUsing(UpdateUserPassword::class);
