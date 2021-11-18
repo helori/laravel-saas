@@ -1,0 +1,48 @@
+<?php
+
+namespace Helori\LaravelSaas\Requests;
+
+use Helori\LaravelSaas\Resources\User as UserResource;
+
+
+class MemberList extends ActionRequest
+{
+    public function rules()
+    {
+        return [
+            'search' => 'sometimes|string|nullable',
+            'order_by' => 'sometimes|string|nullable',
+            'order_dir' => 'sometimes|string|in:asc,desc',
+            'limit' => 'sometimes|integer',
+        ];
+    }
+
+    /**
+     * Run the action the request is supposed to execute
+     *
+     * @return void
+     */
+    public function action()
+    {
+        $user = $this->user();
+        $teamId = $this->route('teamId');
+
+        $team = $user->teams()->with('users')->findOrFail($teamId);
+
+        if(!$user->ownTeam($team))
+        {
+            abort(403, "Vous ne pouvez pas voir les membres de l'équipe");
+        }
+
+        $query = $team->users();
+
+        $orderBy = $this->has('order_by') ? $this->order_by : 'id';
+        $orderDir = $this->has('order_dir') ? $this->order_dir : 'asc';
+        $query->orderBy($orderBy, $orderDir);
+
+        $limit = intVal($this->input('limit', 10));
+        $items = $query->paginate($limit);
+
+        return UserResource::collection($items);
+    }
+}

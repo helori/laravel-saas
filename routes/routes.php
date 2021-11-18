@@ -18,7 +18,10 @@ Route::group(['middleware' => ['web']], function ()
         Route::put('/team', [SaasController::class, 'updateTeam']);
         Route::get('/teams', [SaasController::class, 'listTeam']);
         Route::post('/team/switch/{teamId}', [SaasController::class, 'switchTeam']);
-        Route::get('/team/{teamId}/user', [SaasController::class, 'teamUserList']);
+
+        Route::get('/team/{teamId}/member', [SaasController::class, 'memberList']);
+        Route::put('/team/{teamId}/member/{memberId}', [SaasController::class, 'memberUpdate']);
+        Route::delete('/team/{teamId}/member/{memberId}', [SaasController::class, 'memberDelete']);
 
         Route::get('/card-intent', [SaasController::class, 'cardIntent']);
         Route::get('/card', [SaasController::class, 'readCard']);

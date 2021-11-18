@@ -2,12 +2,12 @@
     <div>
         <div class="max-w-7xl mx-auto sm:py-10 sm:px-6 lg:px-8">
 
-            <team-update-form :user="user" />
+            <team-section :user="user" />
 
             <separator />
 
             <template v-if="user.current_team.pivot.role === 'owner'">
-                <team-members-form :user="user" />
+                <members-section :user="user" />
                 <separator />
             </template>
 
@@ -19,15 +19,15 @@
 
 import { defineComponent } from "vue";
 import Separator from '../../Components/Separator.vue'
-import TeamUpdateForm from './TeamUpdateForm.vue'
-import TeamMembersForm from './TeamMembersForm.vue'
+import TeamSection from './TeamSection.vue'
+import MembersSection from './MembersSection.vue'
 
 export default defineComponent({
 
     components: {
         Separator,
-        TeamUpdateForm,
-        TeamMembersForm,
+        TeamSection,
+        MembersSection,
     },
 
     props: {

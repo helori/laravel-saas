@@ -13,7 +13,10 @@ use Helori\LaravelSaas\Requests\TeamRead;
 use Helori\LaravelSaas\Requests\TeamList;
 use Helori\LaravelSaas\Requests\TeamUpdate;
 use Helori\LaravelSaas\Requests\TeamSwitch;
-use Helori\LaravelSaas\Requests\TeamUserList;
+
+use Helori\LaravelSaas\Requests\MemberList;
+use Helori\LaravelSaas\Requests\MemberUpdate;
+use Helori\LaravelSaas\Requests\MemberDelete;
 
 use Helori\LaravelSaas\Requests\CardIntent;
 use Helori\LaravelSaas\Requests\CardRead;
@@ -40,7 +43,10 @@ class SaasController extends BaseController
     public function listTeam(TeamList $request) { return $request->action(); }
     public function updateTeam(TeamUpdate $request) { return $request->action(); }
     public function switchTeam(TeamSwitch $request, $teamId) { return $request->action(); }
-    public function teamUserList(TeamUserList $request, $teamId) { return $request->action(); }
+
+    public function memberList(MemberList $request, $teamId) { return $request->action(); }
+    public function memberUpdate(MemberUpdate $request, $teamId, $userId) { return $request->action(); }
+    public function memberDelete(MemberDelete $request, $teamId, $userId) { return $request->action(); }
 
     public function cardIntent(CardIntent $request) { return $request->action(); }
     public function readCard(CardRead $request) { return $request->action(); }
