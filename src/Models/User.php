@@ -98,7 +98,7 @@ class User extends Authenticatable
     public function currentTeam()
     {
         $this->ensureHasCurrentTeam();
-        //return $this->belongsTo(Team::class, 'current_team_id');
+        //return $this->belongsTo(Saas::$teamModel, 'current_team_id');
 
         $currentTeamId = $this->current_team_id;
         return $this->teams->first(function ($team) use($currentTeamId) {

@@ -5,6 +5,7 @@ namespace Helori\LaravelSaas\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Laravel\Cashier\Billable;
+use Helori\LaravelSaas\Saas;
 
 
 class Team extends Model
@@ -36,7 +37,7 @@ class Team extends Model
      */
     public function owner()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Saas::$userModel);
     }
 
     /**
@@ -46,7 +47,7 @@ class Team extends Model
      */
     public function users()
     {
-        return $this->belongsToMany(User::class)
+        return $this->belongsToMany(Saas::$userModel)
             ->using(Membership::class)
             ->withPivot('role')
             ->withTimestamps();
