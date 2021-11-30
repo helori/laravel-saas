@@ -68,7 +68,7 @@ class SaasServiceProvider extends ServiceProvider
         ], 'laravel-saas-routes');
 
         $this->publishes([
-            __DIR__.'/../stubs/resources/views' => resource_path('views/helori/laravel-saas'),
+            __DIR__.'/../stubs/resources/views' => resource_path('views/vendor/saas'),
             __DIR__.'/../stubs/resources/css' => resource_path('css'),
             __DIR__.'/../stubs/resources/js' => resource_path('js'),
             __DIR__.'/../stubs/webpack.mix.js' => base_path('webpack.mix.js'),
