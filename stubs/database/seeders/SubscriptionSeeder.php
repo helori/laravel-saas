@@ -22,7 +22,8 @@ class SubscriptionSeeder extends Seeder
             $billable->createAsStripeCustomer();
         }
 
-        $billable->updateDefaultPaymentMethod('tok_visa');
+        // https://stripe.com/docs/testing#regulatory-cards
+        $billable->updateDefaultPaymentMethod('pm_card_bypassPending');
 
         $products = config('saas.products');
 
@@ -31,10 +32,12 @@ class SubscriptionSeeder extends Seeder
             $plan = $product['plans'][0];
             $price = $plan['prices'][0];
 
-            $billable
-                ->newSubscription($product['slug'], $price['price_id'])
-                ->trialDays(isset($product['trial_days']) ? intVal($product['trial_days']) : 0)
-                ->add();
+            $subscriptionBuilder = $billable->newSubscription($product['slug'], $price['price_id']);
+            if(intVal($product['trial_days']) > 0)
+            {
+                $subscriptionBuilder->trialDays(intVal($product['trial_days']));
+            }
+            $subscriptionBuilder->add();
         }
     }
 }

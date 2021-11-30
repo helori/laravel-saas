@@ -12,20 +12,13 @@ import { createApp, h, ref } from 'vue';
 import { createRouter, createWebHistory, createWebHashHistory } from 'vue-router';
 
 import AppLayout from './Pages/AppLayout.vue'
-import Dashboard from './Pages/Dashboard.vue'
-import Profile from './Pages/Profile.vue'
-import Team from './Pages/Team.vue'
-import Billing from './Pages/Billing.vue'
-
-import mitt from 'mitt';
-const emitter = mitt();
 
 import routesSaas from './routes-saas.js'
+import routesApp from './routes-app.js'
 import filters from './filters.js'
 
 if(document.getElementById("vue-app"))
 {
-
     const routes = ([]).concat(routesSaas, routesApp);
 
     const router = createRouter({
@@ -41,7 +34,7 @@ if(document.getElementById("vue-app"))
 
     });
 
-    app.config.globalProperties.emitter = emitter;
+    app.config.globalProperties.$filters = filters;
     app.use(router).mount('#vue-app');
 }
 

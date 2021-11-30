@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Helori\LaravelSaas\Controllers\AppController as BaseController;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Http\Request;
 
 
-class AppController extends BaseController
+class AppController extends Controller
 {
     public function home(Request $request)
     {
@@ -17,11 +19,8 @@ class AppController extends BaseController
         $user = Auth::guard('user')->user();
 
         $user->current_team = $user->currentTeam();
-
-        if (!is_null($user))
-        {
-            $user->two_factor_enabled = !is_null($user->two_factor_secret);
-        }
+        $user->two_factor_enabled = !is_null($user->two_factor_secret);
+        //$user->can_do_something = Gate::allows('use-something');
 
         return view('saas::app', [
             'user' => $user,

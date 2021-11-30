@@ -59,11 +59,13 @@ class SaasServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../stubs/config/saas.php' => config_path('saas.php'),
             __DIR__.'/../stubs/config/auth.php' => config_path('auth.php'),
+            __DIR__.'/../stubs/config/sanctum.php' => config_path('sanctum.php'), // to set the "user" guard
+            __DIR__.'/../stubs/config/fortify.php' => config_path('fortify.php'), // to set the "user" guard
         ], 'laravel-saas-config');
 
-        /*$this->publishes([
+        $this->publishes([
             __DIR__.'/../stubs/routes/web.php' => base_path('routes/web.php'),
-        ], 'laravel-saas-routes');*/
+        ], 'laravel-saas-routes');
 
         $this->publishes([
             __DIR__.'/../stubs/resources/views' => resource_path('views/helori/laravel-saas'),

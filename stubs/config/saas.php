@@ -13,11 +13,11 @@ return [
             'name' => 'Product name',
             'slug' => 'Product slug',
             'product_id' => 'prod_XXXXXXXXX', // stripe product identifier
-            'short_description' => 'Product description',
+            'short_description' => "Product description",
             'trial_days' => 10,
             'features' => [
-                'Feature 1',
-                'Feature 2',
+                "Feature 1",
+                "Feature 2",
             ],
             'plans' => [
                 [

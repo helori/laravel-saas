@@ -47,9 +47,13 @@ Make sure your config/cors.php has the following configuration :
 
     'supports_credentials' => true,
 
+Update your app\Providers\RouteServiceProvider.php as follows :
+
+    public const HOME = '/app';
+
 Install front-end dependencies :
 
-    npm i @tailwindcss/forms @tailwindcss/typography axios tailwindcss vue@next vue-router@4 @heroicons/vue mitt --save-dev
+    npm i @tailwindcss/forms @tailwindcss/typography axios tailwindcss vue@next vue-router@4 @heroicons/vue numeral moment --save-dev
 
 Compile your assets :
 
