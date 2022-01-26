@@ -12,6 +12,7 @@ use Laravel\Fortify\Actions\AttemptToAuthenticate;
 use Laravel\Fortify\Actions\EnsureLoginIsNotThrottled;
 use Laravel\Fortify\Actions\PrepareAuthenticatedSession;
 use Laravel\Fortify\Actions\RedirectIfTwoFactorAuthenticatable;
+use Laravel\Fortify\Contracts\LogoutResponse;
 use Laravel\Fortify\Fortify;
 use Laravel\Fortify\Features;
 use Laravel\Cashier\Cashier;
@@ -101,6 +102,10 @@ class SaasServiceProvider extends ServiceProvider
             return view('saas::auth.login', [
                 'email' => request()->input('email', ''),
             ]);
+        });
+
+        Fortify::registerView(function (Request $request) {
+            return view('saas::auth.register');
         });
 
         Fortify::authenticateUsing(function (Request $request){
