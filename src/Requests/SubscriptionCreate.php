@@ -63,17 +63,23 @@ class SubscriptionCreate extends ActionRequest
 
         if(!$subscription)
         {
-            return $billable
-                ->newSubscription($product['slug'], $price['price_id'])
-                ->trialDays(isset($product['trial_days']) ? intVal($product['trial_days']) : 0)
-                // ->withCoupon('code')
-                // ->withPromotionCode('promo_code')
-                ->add(); // If the user already has a default payment method
-                /*->create($this->paymentMethodId, [
-                    // Customer options : https://stripe.com/docs/api/customers/create
-                ], [
-                    // Subscription options : https://stripe.com/docs/api/subscriptions/create
-                ]);*/
+            $subscription = $billable->newSubscription($product['slug'], $price['price_id']);
+
+            if(isset($product['trial_days']) && intVal($product['trial_days']) > 0)
+            {
+                $subscription->trialDays(intVal($product['trial_days']));
+            }
+
+            // ->withCoupon('code')
+            // ->withPromotionCode('promo_code')
+            
+            $subscription->add(); // If the user already has a default payment method
+            
+            /*$subscription->create($this->paymentMethodId, [
+                // Customer options : https://stripe.com/docs/api/customers/create
+            ], [
+                // Subscription options : https://stripe.com/docs/api/subscriptions/create
+            ]);*/
         }
         else
         {
