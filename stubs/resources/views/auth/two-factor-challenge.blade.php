@@ -75,7 +75,7 @@
 
             <div class="text-center mt-4">
                 <a @click="showRecoveryCodeForm = !showRecoveryCodeForm"
-                    class="text-sm text-blue-900 no-underline cursor-pointer">
+                    class="text-sm text-blue-900 dark:text-blue-400 no-underline cursor-pointer">
                     Utiliser un code de sécurité
                 </a>
             </div>

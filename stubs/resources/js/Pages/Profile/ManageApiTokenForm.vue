@@ -16,7 +16,7 @@
                     <h3 class="text-lg font-medium text-green-500 mb-2">
                         Votre clé API est active.
                     </h3>
-                    <div class="text-gray-500 text-sm">
+                    <div class="text-gray-500 dark:text-gray-400 text-sm">
                         <div>Créée le : {{ apiKeyInfo.created_at }}</div>
                         <div>Dernière utilisation : {{ apiKeyInfo.last_used_at }}</div>
                     </div>
@@ -34,7 +34,7 @@
                 </div>
 
                 <div v-if="apiKey"
-                    class="mt-3 px-4 py-4 font-mono text-sm bg-gray-100 rounded-lg">
+                    class="mt-3 px-4 py-4 font-mono text-sm bg-gray-100 dark:bg-gray-800 rounded-lg">
                     {{ apiKey }}
                 </div>
 
@@ -43,8 +43,8 @@
 
         <template #actions>
 
-            <error :errors="createError" class="inline-block mr-3" />
-            <error :errors="deleteError" class="inline-block mr-3" />
+            <error :errors="createError" class="inline-block" />
+            <error :errors="deleteError" class="inline-block" />
 
             <button 
                 v-if="!apiKeyInfo"

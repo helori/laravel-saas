@@ -1,6 +1,7 @@
 <template>
     <dialog-modal
-        ref="dialog">
+        ref="dialog"
+        :max-width="maxWidth">
         
         <template #title>
             {{ title }}
@@ -51,6 +52,9 @@
         },
 
         props: {
+            maxWidth: {
+                default: 'md'
+            },
             type: {
                 type: String,
                 required: false,
@@ -87,6 +91,7 @@
 
             function open() {
                 dialog.value.open();
+                //this.$refs.input.focus();
                 emit('open');
             }
 

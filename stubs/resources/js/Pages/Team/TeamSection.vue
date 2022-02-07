@@ -37,7 +37,7 @@
                 </div>
 
                 <div class="text-sm">
-                    <span class="text-gray-500">Votre rôle : </span>
+                    <span class="text-gray-500 dark:text-gray-400">Votre rôle : </span>
                     <span class="font-semibold" 
                         :class="(team.pivot.role === 'owner' ? 'text-green-500' : '')">
                         {{ nameForRole(team.pivot.role) }}
@@ -45,7 +45,7 @@
                 </div>
 
                 <div class="text-sm">
-                    <span class="text-gray-500">Nombre de membres : </span>
+                    <span class="text-gray-500 dark:text-gray-400">Nombre de membres : </span>
                     <span class="font-semibold">{{ team.users.length }}</span>
                 </div>
 
@@ -54,11 +54,11 @@
 
         <template #actions>
 
-            <error :errors="readTeamError" class="inline-block mr-3" />
-            <error :errors="updateError" class="inline-block mr-3" />
-            <error :errors="readTeamsError" class="inline-block mr-3" />
+            <error :errors="readTeamError" class="inline-block" />
+            <error :errors="updateError" class="inline-block" />
+            <error :errors="readTeamsError" class="inline-block" />
 
-            <div class="alert alert-green mr-3" 
+            <div class="alert alert-green" 
                 v-if="updateStatus === 'success'">
                 Enregistré !
             </div>
@@ -66,7 +66,7 @@
             <button 
                 v-if="team && team.pivot.role === 'owner'"
                 type="button"
-                class="btn btn-blue mr-3"
+                class="btn btn-blue"
                 :class="{ 'opacity-25': (updateStatus === 'pending') }"
                 :disabled="updateStatus === 'pending'"
                 @click="updateTeam">
@@ -83,14 +83,14 @@
         </template>
     </form-section>
 
-    <dialog-modal :show="switching" @close="switchClose">
+    <dialog-modal :show="switching" @close="switchClose" max-width="sm">
         <template #title>
             Changer d'équipe
         </template>
 
         <template #content>
 
-            <div class="text-gray-500 font-sm mb-3">
+            <div class="text-gray-500 dark:text-gray-400 font-sm mb-3">
                 Choisissez une équipe à laquelle vous appartenez :
             </div>
 

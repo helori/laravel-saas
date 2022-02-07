@@ -10,7 +10,7 @@
 
         <template #content>
 
-            <div class="max-w-xl text-sm text-gray-600">
+            <div class="max-w-xl text-sm text-gray-600 dark:text-gray-200">
                 Si nécessaire, vous pouvez déconnecter toutes vos sessions actives sur d'autres appareils.
                 Vos sessions récentes sont listées ci-dessous, mais cette liste peut ne pas être exhaustive.
                 Si vous pensez que la sécurité de votre compte est compromise, vous devriez aussi changer de mot de passe.
@@ -30,12 +30,12 @@
                     </div>
 
                     <div class="ml-3">
-                        <div class="text-sm text-gray-600">
+                        <div class="text-sm text-gray-600 dark:text-gray-200">
                             {{ session.agent.platform }} - {{ session.agent.browser }}
                         </div>
 
                         <div>
-                            <div class="text-xs text-gray-500">
+                            <div class="text-xs text-gray-500 dark:text-gray-400">
                                 {{ session.ip_address }},
 
                                 <span class="text-green-500 font-semibold" v-if="session.is_current_device">Cet appareil</span>
@@ -62,9 +62,9 @@
                 Déconnecter les autres sessions
             </button>
 
-            <error :errors="logoutError" class="mr-3" />
+            <error :errors="logoutError" />
 
-            <dialog-modal :show="confirmingLogout" @close="closeLogout">
+            <dialog-modal :show="confirmingLogout" @close="closeLogout" max-width="sm">
                 <template #title>
                     Déconnexion des autres sessions
                 </template>
@@ -93,7 +93,7 @@
                         type="button"
                         class="btn btn-white mr-3"
                         @click="closeLogout">
-                        Cancel
+                        Annuler
                     </button>
 
                     <button 

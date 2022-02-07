@@ -19,7 +19,7 @@
 
                 <div v-show="showForm">
 
-                    <div class="max-w-xl text-sm text-gray-600 mb-2">
+                    <div class="max-w-xl text-sm text-gray-600 dark:text-gray-200 mb-2">
                         Veuillez saisir le numéro de carte bancaire qui sera votre moyen de paiement par défaut :
                     </div>
 
@@ -33,14 +33,14 @@
 
         <template #actions>
 
-            <error :errors="readError" class="inline-block mr-3" />
-            <error :errors="updateError" class="inline-block mr-3" />
-            <error :errors="deleteError" class="inline-block mr-3" />
+            <error :errors="readError" class="inline-block" />
+            <error :errors="updateError" class="inline-block" />
+            <error :errors="deleteError" class="inline-block" />
 
             <button 
                 v-show="card && !showForm"
                 id="card-button" 
-                class="btn btn-blue mr-3"
+                class="btn btn-blue"
                 @click="toggleForm(true)">
                 Modifier
             </button>
@@ -185,11 +185,14 @@
                     hideIcon: false,
                     iconStyle: 'solid',
                     classes: {
-                        base: 'input appearance-none bg-white border-gray-300 py-2 px-3 text-base border',
+                        base: 'input appearance-none bg-white text-base border-gray-300 dark:border-gray-500 dark:bg-gray-700 dark:text-gray-200 dark:placeholder:text-gray-400 py-2 px-3 border',
                     },
                     style: {
                         base: {
                             fontFamily: 'Nunito',
+                            '::placeholder': {
+                                color: '#94A3B8',
+                            },
                         }
                     }
                 });

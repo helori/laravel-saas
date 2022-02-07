@@ -8,19 +8,23 @@ export function useForm()
     const status = ref(null);
     const error = ref(null);
 
-    function send(method, url)
+    function send(method, url, config)
     {
         status.value = 'pending';
         error.value = null;
-        
-        return promise.value = axios.request({
 
+        let requestConfig = {
             method: method,
             url: url,
             data: data.value,
             params: params.value,
+        };
 
-        }).then(r => {
+        if(config){
+            requestConfig = {...requestConfig, ...config};
+        }
+        
+        return promise.value = axios.request(requestConfig).then(r => {
 
             status.value = 'success';
             error.value = null;

@@ -13,21 +13,24 @@
 
                 <div v-if="updating">
 
-                    <div class="grid lg:grid-cols-2 gap-4">
+                    <div :class="{
+                            'grid gap-4 lg:grid-cols-2': product.plans.length > 1
+                        }">
                         <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
                         <!-- If multiple plans : show selector -->
                         <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
                         <div class="mb-2"
                             v-if="product.plans.length > 1">
 
-                            <!--div class="mb-1  font-bold">
+                            <div class="mb-1  font-bold">
                                 Choisissez une formule :
-                            </div-->
+                            </div>
 
                             <div>
                                 <select
                                     class="input"
-                                    v-model="plan">
+                                    v-model="plan"
+                                    @change="updatePrice">
                                     <option
                                         v-for="p in product.plans"
                                         :key="p.slug"
@@ -57,13 +60,18 @@
                         <!-- Show selected plan & price -->
                         <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
                         <div v-if="plan && price"
-                            class="text-right">
+                            :class="{
+                                'text-right': product.plans.length > 1,
+                                'flex justify-between mb-4': product.plans.length === 1,
+                            }">
 
-                            <div class="font-bold text-lg">
-                                {{ plan.name }}
-                            </div>
-                            <div class="font-semibold text-gray-500">
-                                {{ price.name }}
+                            <div>
+                                <div class="font-bold text-lg">
+                                    {{ plan.name }}
+                                </div>
+                                <div class="text-gray-500 dark:text-gray-400">
+                                    {{ price.name }}
+                                </div>
                             </div>
 
                             <div v-for="p in plan.prices"
@@ -83,9 +91,9 @@
                     <div v-if="plan">
                         <div v-for="feature in plan.features">
                             <div v-if="feature === 'separator'" class="border-t border-gray-100 my-2 w-full"></div>
-                            <div v-else class="flex">
+                            <div v-else class="flex items-center">
                                 <CheckCircleIcon class="h-5 w-5 text-green-500"/>
-                                <div class="ml-2 text-gray-500">{{ feature }}</div>
+                                <div class="ml-2 text-gray-500 dark:text-gray-200">{{ feature }}</div>
                             </div>
                         </div>
                     </div>
@@ -98,9 +106,9 @@
 
                     <div v-for="feature in product.features">
                         <div v-if="feature === 'separator'" class="border-t border-gray-100 my-2 w-full"></div>
-                        <div v-else class="flex">
+                        <div v-else class="flex items-center">
                             <CheckCircleIcon class="h-5 w-5 text-green-500"/>
-                            <div class="ml-2 text-gray-500">{{ feature }}</div>
+                            <div class="ml-2 text-gray-500 dark:text-gray-200">{{ feature }}</div>
                         </div>
                     </div>
                     
@@ -137,6 +145,7 @@
                         class="text-red-500 font-bold">
                         Votre abonnement est terminé depuis le {{ $filters.date(subscription.ends_at, 'DD/MM/YYYY') }}
                     </div>
+
                 </div>
 
            </div>
@@ -144,9 +153,9 @@
 
         <template #actions>
 
-            <error :errors="readSubscriptionError" class="inline-block mr-3" />
-            <error :errors="createSubscriptionError" class="inline-block mr-3" />
-            <error :errors="deleteSubscriptionError" class="inline-block mr-3" />
+            <error :errors="readSubscriptionError" class="inline-block" />
+            <error :errors="createSubscriptionError" class="inline-block" />
+            <error :errors="deleteSubscriptionError" class="inline-block" />
 
             <!--div class="alert alert-green mr-3" 
                 v-if="createSubscriptionStatus === 'success'">
@@ -158,7 +167,13 @@
                 Enregistré !
             </div-->
 
-            <div v-if="subscription && !updating">
+            <template v-if="subscription && !updating">
+
+                <a href="/app"
+                    class="btn btn-blue"
+                    v-if="subscription.is_active">
+                    Accéder à l'application
+                </a>
 
                 <button 
                     type="button"
@@ -170,21 +185,21 @@
                 <button 
                     v-if="!subscription.is_cancelled"
                     type="button"
-                    class="btn btn-red ml-3"
+                    class="btn btn-red"
                     :class="{ 'opacity-25': (deleteSubscriptionStatus === 'pending') }"
                     :disabled="deleteSubscriptionStatus === 'pending'"
                     @click="deleteSubscription">
                     Résilier
                 </button>
 
-            </div>
+            </template>
 
-            <div v-if="updating">
+            <template v-if="updating">
 
                 <button 
                     v-if="subscription"
                     type="button"
-                    class="btn btn-white mr-3"
+                    class="btn btn-white"
                     @click="setUpdating(false)">
                     Annuler
                 </button>
@@ -198,7 +213,7 @@
                     </button>
                 </check-payment-method>
                 
-            </div>
+            </template>
 
         </template>
     </form-section>
@@ -237,6 +252,11 @@
             // ---------------------------------------------------
             const plan = ref(props.product.plans[0]);
             const price = ref(props.product.plans[0].prices[0]);
+
+            function updatePrice()
+            {
+                price.value = plan.value.prices[0];
+            }
             
             // ---------------------------------------------------
             //  Current subscription
@@ -321,6 +341,7 @@
             return {
                 plan,
                 price,
+                updatePrice,
                 
                 subscription,
 

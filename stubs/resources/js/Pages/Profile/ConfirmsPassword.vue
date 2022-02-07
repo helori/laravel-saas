@@ -4,7 +4,7 @@
             <slot />
         </span>
 
-        <dialog-modal :show="confirming" @close="closeModal">
+        <dialog-modal :show="confirming" @close="closeModal" max-width="sm">>
             <template #title>
                 {{ title }}
             </template>
@@ -35,7 +35,7 @@
                     type="button"
                     class="btn btn-white"
                     @click="closeModal">
-                    Cancel
+                    Annuler
                 </button>
 
                 <button 
@@ -69,13 +69,13 @@
 
         props: {
             title: {
-                default: 'Confirm Password',
+                default: 'Confirmer le mot de passe',
             },
             content: {
-                default: 'For your security, please confirm your password to continue.',
+                default: 'Par sécurité, merci de confirmer votre mot de passe pour continuer.',
             },
             button: {
-                default: 'Confirm',
+                default: 'Confirmer',
             }
         },
 

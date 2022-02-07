@@ -10,7 +10,7 @@
 
         <select
             class="input ml-2"
-            v-model="limitValue"
+            v-model.number="limitValue"
             @update:modelValue="$emit('update:limit', limitValue)">
             <option :value="5">5 par page</option>
             <option :value="10">10 par page</option>
@@ -22,7 +22,7 @@
         <list-pagination 
             v-if="pagination !== null"
             :pagination="pagination.meta" 
-            v-model:page="pageValue"
+            v-model:page.number="pageValue"
             @update:page="$emit('update:page', pageValue)"
             class="ml-2">
         </list-pagination>

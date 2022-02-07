@@ -18,7 +18,7 @@
                 Vous n'avez pas activé la double authentification.
             </h3>
 
-            <div class="mt-3 max-w-xl text-sm text-gray-600">
+            <div class="mt-3 max-w-xl text-sm text-gray-600 dark:text-gray-200">
                 <p>
                     Quand la double authentification est activée, un code de sécurité vous sera demandé lors de vos connexions.
                     Les codes de sécurité ont une durée de vie limitée et sont générés par une application de type Google Authenticator.
@@ -28,7 +28,7 @@
             <div v-if="twoFactorEnabled">
                 
                 <div v-if="qrCode">
-                    <div class="mt-4 max-w-xl text-sm text-gray-600">
+                    <div class="mt-4 max-w-xl text-sm text-gray-600 dark:text-gray-200">
                         <p class="font-semibold">
                             La double authentification est à présent activée.
                             Scannez le QR Code avec l'application générateur de code de votre téléphone (par exemple Google Authenticator)
@@ -40,14 +40,14 @@
                 </div>
 
                 <div v-if="recoveryCodes.length > 0">
-                    <div class="mt-4 max-w-xl text-sm text-gray-600">
+                    <div class="mt-4 max-w-xl text-sm text-gray-600 dark:text-gray-200">
                         <p class="font-semibold">
                             Enregistez ces codes de secours en lieu sûr, de préférence dans un gestionnaire de mots de passe.
                             Ils servent à restaurer l'accès à votre compte si vous perdez l'accès à votre générateur de codes de sécurité (votre téléphone).
                         </p>
                     </div>
 
-                    <div class="grid gap-1 max-w-xl mt-4 px-4 py-4 font-mono text-sm bg-gray-100 rounded-lg">
+                    <div class="grid gap-1 max-w-xl mt-4 px-4 py-4 font-mono text-sm bg-gray-100 dark:bg-gray-800 rounded-lg">
                         <div v-for="code in recoveryCodes" :key="code">
                             {{ code }}
                         </div>
@@ -59,7 +59,7 @@
 
         <template #actions>
 
-            <div v-if="!twoFactorEnabled">
+            <template v-if="!twoFactorEnabled">
                 <confirms-password @confirmed="enable">
                     <button
                         type="button" 
@@ -71,13 +71,13 @@
                         Activer la double authentification
                     </button>
                 </confirms-password>
-            </div>
+            </template>
 
-            <div v-else>
+            <template v-else>
 
-                <confirms-password @confirmed="regenerateRecoveryCodes">
+                <confirms-password @confirmed="regenerateRecoveryCodes"
+                    v-if="recoveryCodes.length > 0">
                     <button
-                        v-if="recoveryCodes.length > 0"
                         type="button" 
                         class="btn btn-white"
                         :class="{ 
@@ -88,11 +88,11 @@
                     </button>
                 </confirms-password>
 
-                <confirms-password @confirmed="showRecoveryCodes">
+                <confirms-password @confirmed="showRecoveryCodes"
+                    v-if="recoveryCodes.length === 0">
                     <button
-                        v-if="recoveryCodes.length === 0"
                         type="button" 
-                        class="btn btn-white ml-3"
+                        class="btn btn-white"
                         :class="{ 
                             'opacity-25': recovering
                         }" 
@@ -104,7 +104,7 @@
                 <confirms-password @confirmed="disable">
                     <button
                         type="button" 
-                        class="btn btn-red ml-3"
+                        class="btn btn-red"
                         :class="{ 
                             'opacity-25': disabling
                         }" 
@@ -113,7 +113,7 @@
                     </button>
                 </confirms-password>
 
-            </div>
+            </template>
 
         </template>
 

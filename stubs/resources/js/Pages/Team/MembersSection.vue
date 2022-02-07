@@ -69,7 +69,7 @@
                                         <span v-if="item.role === 'owner'">Propriétaire</span>
                                         <span v-if="item.role === 'member'">Membre</span>
                                     </div>
-                                    <div class="text-gray-500 text-sm">{{ item.email }}</div>
+                                    <div class="text-gray-500 dark:text-gray-400 text-sm">{{ item.email }}</div>
                                 </td>
                                 <td class="text-right">
                                     <span class="btn btn-gray ml-2" 
@@ -232,6 +232,13 @@ export default defineComponent({
                 email: item.email,
                 phone: item.phone,
                 role: item.role,
+
+                level: item.level,
+                region_insee: item.region_insee,
+                departement_insee: item.departement_insee,
+                circonscription_insee: item.circonscription_insee,
+                canton_insee: item.canton_insee,
+                commune_insee: item.commune_insee,
             };
             updateDialog.value.open();
         }

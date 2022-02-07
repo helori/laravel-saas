@@ -17,6 +17,10 @@ import routesSaas from './routes-saas.js'
 import routesApp from './routes-app.js'
 import filters from './filters.js'
 
+import resolveConfig from 'tailwindcss/resolveConfig'
+import tailwindConfig from '../../tailwind.config.js'
+window.tailwindcss = resolveConfig(tailwindConfig)
+
 if(document.getElementById("vue-app"))
 {
     const routes = ([]).concat(routesSaas, routesApp);

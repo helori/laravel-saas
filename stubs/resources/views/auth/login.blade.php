@@ -46,9 +46,13 @@
     </div>
     <div class="text-center mt-4">
         <a href="{{ url('/forgot-password') }}"
-            class="text-sm text-blue-900 no-underline">
+            class="text-sm text-blue-900 dark:text-blue-400 no-underline mx-2">
             Mot de passe perdu ?
         </a>
+        <!--a href="{{ url('/register') }}"
+            class="text-sm text-blue-900 dark:text-blue-400 no-underline mx-2">
+            Pas encore de compte ?
+        </a-->
     </div>
 </div>
 

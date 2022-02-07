@@ -62,4 +62,28 @@ export default {
         }
         return numeral(value).format(format);
     },
+
+    ucfirst(string) {
+        if(string){
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }else{
+            return '';
+        }
+    },
+
+    strtoupper(string) {
+        if(string){
+            return string.toUpperCase();
+        }else{
+            return '';
+        }
+    },
+
+    strtolower(string) {
+        if(string){
+            return string.toLowerCase();
+        }else{
+            return '';
+        }
+    },
 }

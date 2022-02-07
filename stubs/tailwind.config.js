@@ -7,7 +7,8 @@ module.exports = {
             sm: '640px',
             md: '768px',
             lg: '1024px',
-            //xl: '1280px',
+            xl: '1280px',
+            '2xl': '1280px',
         },*/
         colors: {
             // Build your palette here
@@ -20,10 +21,22 @@ module.exports = {
             blue: colors.sky,
             green: colors.teal,
             yellow: colors.amber,
+            orange: colors.orange,
+        },
+        minHeight: {
+            '0': '0',
+            '1/4': '25%',
+            '1/2': '50%',
+            '3/4': '75%',
+            'full': '100%',
+            '1/4-screen': '25vh',
+            '1/2-screen': '50vh',
+            '3/4-screen': '75vh',
+            'screen': '100vh',
         },
         extend: {
             fontFamily: {
-                sans: ['Inter', 'Nunito', ...defaultTheme.fontFamily.sans],
+                sans: ['Nunito', ...defaultTheme.fontFamily.sans],
             },
         }
     },
@@ -31,9 +44,12 @@ module.exports = {
         './resources/views/**/*.blade.php',
         './resources/js/**/*.vue',
     ],
-    darkMode: false, // or 'media' or 'class'
+    darkMode: 'media', // or 'media' or 'class'
     variants: {
-        backgroundColor: ['hover', 'focus'],
+        //backgroundColor: ['hover', 'focus'],
+        extend: {
+            display: ['dark']
+        },
     },
     plugins: [
         require('@tailwindcss/forms'), 

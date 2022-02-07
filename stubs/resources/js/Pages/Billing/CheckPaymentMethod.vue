@@ -6,14 +6,15 @@
 
         <dialog-modal 
             :show="updatingPaymentMethod" 
-            @close="closeModal">
+            @close="closeModal"
+            max-width="sm">
             <template #title>
                 Moyen de paiement
             </template>
 
             <template #content>
 
-                <div class="max-w-xl text-sm text-gray-600 mb-2">
+                <div class="max-w-xl text-sm text-gray-600 dark:text-gray-200 mb-2">
                     Veuillez saisir le numéro de carte bancaire qui sera votre moyen de paiement par défaut :
                 </div>
 
@@ -31,7 +32,7 @@
                     type="button"
                     class="btn btn-white"
                     @click="closeModal">
-                    Cancel
+                    Annuler
                 </button>
 
                 <button 
@@ -78,11 +79,14 @@
                     hideIcon: false,
                     iconStyle: 'solid',
                     classes: {
-                        base: 'input appearance-none bg-white border-gray-300 py-2 px-3 text-base border',
+                        base: 'input appearance-none bg-white border-gray-300 dark:border-gray-500 dark:bg-gray-700 dark:text-gray-200 py-2 px-3 text-base border',
                     },
                     style: {
                         base: {
                             fontFamily: 'Nunito',
+                            '::placeholder': {
+                                color: '#94A3B8',
+                            },
                         }
                     }
                 });
