@@ -18,6 +18,9 @@ class SubscriptionCreate extends ActionRequest
             'product' => 'required|string',
             'plan' => 'required|string',
             'price' => 'required|string',
+            'quantity' => 'sometimes|integer|min:1',
+            'coupon' => 'sometimes|string',
+            'promo_code' => 'sometimes|string',
             //'payment_method' => 'required|string',
         ];
     }
@@ -58,9 +61,9 @@ class SubscriptionCreate extends ActionRequest
             return ($price['slug'] === $priceSlug);
         }, null);
 
-
+        
         $subscription = $billable->subscription($product['slug']);
-
+        
         if(!$subscription)
         {
             $subscription = $billable->newSubscription($product['slug'], $price['price_id']);
@@ -70,8 +73,20 @@ class SubscriptionCreate extends ActionRequest
                 $subscription->trialDays(intVal($product['trial_days']));
             }
 
-            // ->withCoupon('code')
-            // ->withPromotionCode('promo_code')
+            if($this->has('quantity'))
+            {
+                $subscription->quantity($this->quantity);
+            }
+
+            if($this->has('coupon'))
+            {
+                $subscription->withCoupon($this->coupon);
+            }
+
+            if($this->has('promo_code'))
+            {
+                $subscription->withPromotionCode($this->promo_code);
+            }
             
             $subscription->add(); // If the user already has a default payment method
             
