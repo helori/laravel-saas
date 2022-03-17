@@ -13,9 +13,13 @@ class CreateSubscriptionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('subscriptions', function (Blueprint $table) {
+        Schema::create('subscriptions', function (Blueprint $table)
+        {
             $table->bigIncrements('id');
+            
             $table->unsignedBigInteger('team_id');
+            $table->foreign('team_id')->references('id')->on('teams')->onDelete('cascade');
+            
             $table->string('name');
             $table->string('stripe_id')->unique();
             $table->string('stripe_status');
