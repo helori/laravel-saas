@@ -25,6 +25,13 @@ class SubscriptionCreate extends ActionRequest
         ];
     }
 
+    public function messages()
+    {
+        return [
+            'quantity.min' => "Votre souscription est vide",
+        ];
+    }
+
     /**
      * Run the action the request is supposed to execute
      *
@@ -34,7 +41,9 @@ class SubscriptionCreate extends ActionRequest
     {
         $billable = $this->user()->billable();
         if(!$billable->hasStripeId()){
-            $billable->createAsStripeCustomer();
+            $billable->createAsStripeCustomer([
+                'email' => $this->user()->email,
+            ]);
         }
 
         $paymentMethod = $billable->defaultPaymentMethod();
@@ -64,7 +73,7 @@ class SubscriptionCreate extends ActionRequest
         
         $subscription = $billable->subscription($product['slug']);
         
-        if(!$subscription)
+        if(!$subscription || $subscription->ended())
         {
             $subscription = $billable->newSubscription($product['slug'], $price['price_id']);
 

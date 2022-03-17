@@ -16,6 +16,7 @@ class SubscriptionDelete extends ActionRequest
     {
         return [
             'product' => 'required|string|max:191',
+            'cancel_now' => 'sometimes|boolean',
         ];
     }
 
@@ -26,9 +27,16 @@ class SubscriptionDelete extends ActionRequest
      */
     public function action()
     {
+        $cancelNow = $this->input('cancel_now', false);
         $billable = $this->user()->billable();
         $productSlug = $this->product;
         $subscription = $billable->subscription($productSlug);
-        $subscription->cancel();
+
+        if($cancelNow){
+            $subscription->cancelNow();
+        }else{
+            $subscription->cancel();
+        }
+        
     }
 }
