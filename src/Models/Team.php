@@ -37,7 +37,7 @@ class Team extends Model
      */
     public function owner()
     {
-        return $this->belongsTo(Saas::$userModel);
+        return $this->belongsTo(Saas::$userModel, 'user_id', 'id');
     }
 
     /**
