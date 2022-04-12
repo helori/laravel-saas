@@ -12,6 +12,7 @@ class TeamList extends ActionRequest
      */
     public function action()
     {
+        $this->user()->load('teams');
         return $this->user()->teams;
     }
 }

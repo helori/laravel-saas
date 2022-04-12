@@ -35,7 +35,5 @@ class BrowserSessionDelete extends ActionRequest
                 ->where('id', '!=', $this->session()->getId())
                 ->delete();
         }
-
-            
     }
 }

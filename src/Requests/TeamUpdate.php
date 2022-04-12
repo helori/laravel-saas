@@ -22,5 +22,7 @@ class TeamUpdate extends ActionRequest
         $team->update($this->only([
             'name'
         ]));
+
+        return $team;
     }
 }

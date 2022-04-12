@@ -17,5 +17,6 @@ class CardUpdate extends ActionRequest
             $billable->createAsStripeCustomer();
         }
         $billable->updateDefaultPaymentMethod($this->payment_method);
+        return $billable->defaultPaymentMethod()->toArray();
     }
 }

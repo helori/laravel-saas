@@ -20,7 +20,7 @@ class BrowserSessionRead extends ActionRequest
             return collect();
         }
 
-        return collect(
+        $sessions = collect(
             DB::connection(config('session.connection'))->table(config('session.table', 'sessions'))
                     ->where('user_id', $this->user()->getAuthIdentifier())
                     ->orderBy('last_activity', 'desc')
@@ -39,6 +39,8 @@ class BrowserSessionRead extends ActionRequest
                 'last_active' => Carbon::createFromTimestamp($session->last_activity)->diffForHumans(),
             ];
         });
+        
+        return $sessions;
     }
 
     /**

@@ -21,6 +21,6 @@ class ApiTokenCreate extends ActionRequest
         $token = $user->createToken('api-key');
 
         // Return the plain text version (visible only once !)
-        return $token->plainTextToken;
+        return response($token->plainTextToken, 201);
     }
 }

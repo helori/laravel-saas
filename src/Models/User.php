@@ -100,6 +100,10 @@ class User extends Authenticatable
         $this->ensureHasCurrentTeam();
         //return $this->belongsTo(Saas::$teamModel, 'current_team_id');
 
+        // Important when calling currentTeam() after modifying the user's team,
+        // (For example after creating the stripe_id of the billable team)
+        $this->load('teams');
+
         $currentTeamId = $this->current_team_id;
         return $this->teams->first(function ($team) use($currentTeamId) {
             return ($team->id === $currentTeamId);

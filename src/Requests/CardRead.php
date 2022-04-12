@@ -16,6 +16,6 @@ class CardRead extends ActionRequest
         if(!$billable->hasStripeId()){
             $billable->createAsStripeCustomer();
         }
-        return $billable->defaultPaymentMethod();
+        return $billable->defaultPaymentMethod()->toArray();
     }
 }

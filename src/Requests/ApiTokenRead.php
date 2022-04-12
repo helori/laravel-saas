@@ -13,6 +13,7 @@ class ApiTokenRead extends ActionRequest
     public function action()
     {
         $user = $this->user();
-        return $user->tokens()->count() ? $user->tokens()->first() : null;
+        $tokens = $user->tokens()->get();
+        return $tokens->count() ? $tokens->first() : response(null, 204);
     }
 }

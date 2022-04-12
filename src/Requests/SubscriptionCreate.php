@@ -5,7 +5,7 @@ namespace Helori\LaravelSaas\Requests;
 use Illuminate\Support\Arr;
 
 
-class SubscriptionCreate extends ActionRequest
+class SubscriptionCreate extends SubscriptionBase
 {
     /**
      * Get the validation rules that apply to the request.
@@ -15,8 +15,8 @@ class SubscriptionCreate extends ActionRequest
     public function rules()
     {
         return [
+            'name' => 'required|string',
             'product' => 'required|string',
-            'plan' => 'required|string',
             'price' => 'required|string',
             'quantity' => 'sometimes|integer|min:1',
             'coupon' => 'sometimes|string',
@@ -52,30 +52,24 @@ class SubscriptionCreate extends ActionRequest
             abort(422, "Default payment method is missing");
         }
 
-        $productSlug = $this->product;
-        $planSlug = $this->plan;
-        $priceSlug = $this->price;
+        $productId = $this->product;
+        $priceId = $this->price;
 
         $products = config('saas.products');
 
-        $product = Arr::first($products, function($product) use($productSlug) {
-            return ($product['slug'] === $productSlug);
+        $product = Arr::first($products, function($product) use($productId) {
+            return ($product['product_id'] === $productId);
         }, null);
 
-        $plan = Arr::first($product['plans'], function($plan) use($planSlug) {
-            return ($plan['slug'] === $planSlug);
+        $price = Arr::first($product['prices'], function($price) use($priceId) {
+            return ($price['price_id'] === $priceId);
         }, null);
-
-        $price = Arr::first($plan['prices'], function($price) use($priceSlug) {
-            return ($price['slug'] === $priceSlug);
-        }, null);
-
         
-        $subscription = $billable->subscription($product['slug']);
+        $subscription = $billable->subscription($this->name);
         
         if(!$subscription || $subscription->ended())
         {
-            $subscription = $billable->newSubscription($product['slug'], $price['price_id']);
+            $subscription = $billable->newSubscription($this->name, $price['price_id']);
 
             if(isset($product['trial_days']) && intVal($product['trial_days']) > 0)
             {
@@ -116,6 +110,8 @@ class SubscriptionCreate extends ActionRequest
                     abort(422, "Already subscribed !");
                 }
             }
-        }    
+        }
+
+        return $this->subscriptionWithInfos($this->name);
     }
 }

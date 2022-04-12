@@ -5,7 +5,7 @@ namespace Helori\LaravelSaas\Requests;
 use Illuminate\Support\Arr;
 
 
-class SubscriptionDelete extends ActionRequest
+class SubscriptionDelete extends SubscriptionBase
 {
     /**
      * Get the validation rules that apply to the request.
@@ -15,7 +15,7 @@ class SubscriptionDelete extends ActionRequest
     public function rules()
     {
         return [
-            'product' => 'required|string|max:191',
+            'name' => 'required|string|max:191',
             'cancel_now' => 'sometimes|boolean',
         ];
     }
@@ -29,14 +29,13 @@ class SubscriptionDelete extends ActionRequest
     {
         $cancelNow = $this->input('cancel_now', false);
         $billable = $this->user()->billable();
-        $productSlug = $this->product;
-        $subscription = $billable->subscription($productSlug);
+        $subscription = $billable->subscription($this->name);
 
         if($cancelNow){
             $subscription->cancelNow();
         }else{
             $subscription->cancel();
         }
-        
+        return $this->subscriptionWithInfos($this->name);
     }
 }
