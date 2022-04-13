@@ -22,6 +22,7 @@ module.exports = {
             green: colors.teal,
             yellow: colors.amber,
             orange: colors.orange,
+            primary: colors.blue,
         },
         minHeight: {
             '0': '0',

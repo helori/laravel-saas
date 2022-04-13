@@ -28,7 +28,7 @@
 
                 <button
                     type="submit"
-                    class="btn btn-blue w-full mb-2">
+                    class="btn btn-primary w-full mb-2">
                     Envoyer
                 </button>
 
@@ -37,7 +37,7 @@
 
         <div class="text-center mt-4">
             <a @click="showRecoveryCodeForm = !showRecoveryCodeForm"
-                class="text-sm text-blue-900 no-underline cursor-pointer">
+                class="text-sm text-primary-900 dark:text-blue-400 no-underline mx-2 pb-1 border-b border-primary-900 cursor-pointer">
                 Utiliser un code de secours
             </a>
         </div>
@@ -67,7 +67,7 @@
 
                 <button
                     type="submit"
-                    class="btn btn-blue w-full mb-2">
+                    class="btn btn-primary w-full mb-2">
                     Envoyer
                 </button>
 
@@ -75,7 +75,7 @@
 
             <div class="text-center mt-4">
                 <a @click="showRecoveryCodeForm = !showRecoveryCodeForm"
-                    class="text-sm text-blue-900 dark:text-blue-400 no-underline cursor-pointer">
+                    class="text-sm text-primary-900 dark:text-blue-400 no-underline mx-2 pb-1 border-b border-primary-900">
                     Utiliser un code de sécurité
                 </a>
             </div>

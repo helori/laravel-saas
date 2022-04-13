@@ -21,7 +21,7 @@
 
             <button
                 type="submit"
-                class="btn btn-blue w-full mb-2">
+                class="btn btn-primary w-full mb-2">
                 Confirmer
             </button>
             

@@ -1,7 +1,14 @@
 @import "./common.css";
 
-@layer components{
-    
-    
+.btn-primary{
+    @apply bg-blue-900 dark:bg-blue-600 text-white;
 }
-    
+.btn-primary:hover{
+    @apply bg-blue-600 dark:bg-blue-500;
+}
+.btn-primary:active{
+    @apply bg-blue-900;
+}
+.btn-primary:focus{
+    @apply border-blue-900 ring-blue-300;
+}

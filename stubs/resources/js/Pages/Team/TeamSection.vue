@@ -66,7 +66,7 @@
             <button 
                 v-if="team && team.pivot.role === 'owner'"
                 type="button"
-                class="btn btn-blue"
+                class="btn btn-primary"
                 :class="{ 'opacity-25': (updateStatus === 'pending') }"
                 :disabled="updateStatus === 'pending'"
                 @click="updateTeam">
@@ -127,7 +127,7 @@
 
             <button 
                 type="button"
-                class="btn btn-blue ml-2"
+                class="btn btn-primary ml-2"
                 :class="{ 'opacity-25': (switchStatus === 'pending') }"
                 :disabled="switchStatus === 'pending'"
                 @click="switchTeam">

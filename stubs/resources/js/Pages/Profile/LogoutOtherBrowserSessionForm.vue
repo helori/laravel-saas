@@ -57,7 +57,7 @@
 
             <button 
                 type="button"
-                class="btn btn-blue"
+                class="btn btn-primary"
                 @click="openLogout">
                 Déconnecter les autres sessions
             </button>
@@ -98,7 +98,7 @@
 
                     <button 
                         type="button"
-                        class="btn btn-blue"
+                        class="btn btn-primary"
                         :disabled="logoutStatus === 'pending'"
                         @click="logout">
                         Déconnecter les appareils

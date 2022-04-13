@@ -32,7 +32,7 @@
 
             <button
                 type="submit"
-                class="btn btn-blue w-full mb-2">
+                class="btn btn-primary w-full mb-2">
                 Connexion
             </button>
 
@@ -46,13 +46,13 @@
     </div>
     <div class="text-center mt-4">
         <a href="{{ url('/forgot-password') }}"
-            class="text-sm text-blue-900 dark:text-blue-400 no-underline mx-2">
-            Mot de passe perdu ?
+            class="text-sm text-primary-900 dark:text-blue-400 no-underline mx-2 pb-1 border-b border-primary-900">
+            Mot de passe perdu
         </a>
-        <!--a href="{{ url('/register') }}"
-            class="text-sm text-blue-900 dark:text-blue-400 no-underline mx-2">
-            Pas encore de compte ?
-        </a-->
+        <a href="{{ url('/register') }}"
+            class="text-sm text-primary-900 dark:text-blue-400 no-underline mx-2 pb-1 border-b border-primary-900">
+            Créer mon compte
+        </a>
     </div>
 </div>
 

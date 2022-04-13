@@ -4,16 +4,7 @@
         <div class="mx-auto px-4">
             <div class="flex items-center justify-between h-16 gap-3">
 
-                <div class="flex">
-
-                    <a class="flex items-center"
-                        href="/app">
-                        <div class="ml-3 text-xl lg:text-2xl leading-5 lg:leading-6 font-semibold font-title uppercase text-gray-800 dark:text-white">
-                            Logo
-                        </div>
-                    </a>
-                    
-                </div>
+                <slot name="logo">Logo</slot>
                 
                 <div class="hidden sm:flex sm:items-center sm:ml-6">
 

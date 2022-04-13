@@ -68,7 +68,7 @@
 
             <button
                 type="submit"
-                class="btn btn-blue"
+                class="btn btn-primary"
                 :class="{ 'opacity-25': updateStatus === 'pending' }"
                 :disabled="updateStatus === 'pending'">
                 Enregistrer

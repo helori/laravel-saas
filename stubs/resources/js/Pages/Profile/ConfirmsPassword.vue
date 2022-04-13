@@ -40,7 +40,7 @@
 
                 <button 
                     type="button"
-                    class="btn btn-blue ml-3"
+                    class="btn btn-primary ml-3"
                     :class="{ 'opacity-25': (confirmStatus === 'pending') }"
                     :disabled="confirmStatus === 'pending'"
                     @click="confirm">

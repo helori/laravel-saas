@@ -49,7 +49,7 @@
             <button 
                 v-if="!apiKeyInfo"
                 type="button"
-                class="btn btn-blue"
+                class="btn btn-primary"
                 :disabled="createStatus === 'pending'"
                 @click="createApiToken">
                 Générer une clé API

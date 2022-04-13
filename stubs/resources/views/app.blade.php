@@ -19,6 +19,9 @@
 
         <app-layout
             :user="{{ json_encode($user) }}">
+            <template #logo>
+                @include('saas::logo', ['align' => 'left'])
+            </template>
         </app-layout>
         
     </div>

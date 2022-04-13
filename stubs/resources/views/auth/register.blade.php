@@ -58,7 +58,7 @@
                 <div class="ml-3">
                     J'ai lu et accepte
                     <a href="{{ route('cgvu') }}"
-                        class="content-link">
+                        class="text-primary-900 underline">
                         conditions générales de ventes et d'utilisation
                     </a>
                 </div>
@@ -68,7 +68,7 @@
             
             <button
                 type="submit"
-                class="btn btn-blue w-full mb-2">
+                class="btn btn-primary w-full mb-2">
                 Créer mon compte
             </button>
 
@@ -82,7 +82,7 @@
     </div>
     <div class="text-center mt-4">
         <a href="{{ url('/login') }}"
-            class="text-sm text-blue-900 dark:text-blue-400 no-underline">
+            class="text-sm text-primary-900 dark:text-blue-400 no-underline mx-2 pb-1 border-b border-primary-900">
             Vous avez déjà un compte ?
         </a>
     </div>

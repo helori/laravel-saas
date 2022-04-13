@@ -63,7 +63,7 @@
                 <confirms-password @confirmed="enable">
                     <button
                         type="button" 
-                        class="btn btn-blue"
+                        class="btn btn-primary"
                         :class="{ 
                             'opacity-25': enabling
                         }" 
