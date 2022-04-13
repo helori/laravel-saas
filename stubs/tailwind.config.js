@@ -16,7 +16,7 @@ module.exports = {
             current: 'currentColor',
             black: colors.black,
             white: colors.white,
-            gray: colors.coolGray,
+            gray: colors.gray,
             red: colors.rose,
             blue: colors.sky,
             green: colors.teal,
@@ -41,7 +41,7 @@ module.exports = {
             },
         }
     },
-    purge: [
+    content: [
         './resources/views/**/*.blade.php',
         './resources/js/**/*.vue',
     ],

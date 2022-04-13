@@ -9,12 +9,12 @@
         </template>
 
         <template #form>
-            <div class="col-span-6 sm:col-span-4">
+            <div class="col-span-6">
 
                 <div v-if="card && !showForm" class="mb-2">
                     Votre moyen de paiement est une carte {{ card.card.brand }}
                     terminant par {{ card.card.last4 }}
-                    et qui expire fin {{ card.card.exp_month }} / {{ card.card.exp_year }}
+                    et qui expire fin {{ $filters.date(card.card.exp_year + '-' + card.card.exp_month + '-01', 'MMMM', 'YYYY-M-DD') }} {{ card.card.exp_year }}
                 </div>
 
                 <div v-show="showForm">
@@ -40,7 +40,7 @@
             <button 
                 v-show="card && !showForm"
                 id="card-button" 
-                class="btn btn-blue"
+                class="btn btn-primary"
                 @click="toggleForm(true)">
                 Modifier
             </button>
@@ -57,7 +57,7 @@
             <button 
                 v-show="showForm"
                 id="card-button" 
-                class="btn btn-blue"
+                class="btn btn-primary"
                 :disabled="updateStatus === 'pending'"
                 @click="updateCard">
                 Enregistrer la carte
