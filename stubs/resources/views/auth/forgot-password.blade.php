@@ -38,7 +38,7 @@
     </div>
     <div class="text-center mt-4">
         <a href="{{ url('/login') }}"
-            class="text-sm text-primary-900 dark:text-blue-400 no-underline mx-2 pb-1 border-b border-primary-900">
+            class="text-sm text-primary-900 dark:text-primary-400 no-underline mx-2 pb-1 border-b border-primary-900">
             Retour à la page de connexion
         </a>
     </div>

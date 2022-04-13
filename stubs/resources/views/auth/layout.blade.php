@@ -16,7 +16,7 @@
 <body>
 
     <div id="auth-app" 
-        class="min-h-screen bg-gray-100 dark:bg-gray-800 py-10 flex flex-col justify-center antialiased">
+        class="min-h-screen bg-indigo-50 dark:bg-gray-800 py-10 flex flex-col justify-center antialiased">
         <div class="mx-auto">
             @include('saas::logo', ['align' => 'center'])
         </div>
