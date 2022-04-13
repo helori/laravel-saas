@@ -15,6 +15,7 @@
                     class="mb-2"
                     title="Membres"
                     v-model:search="readCommonParams.search">
+                    <!-- Button create member -->
                 </list-header>
 
                 <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
@@ -106,6 +107,7 @@
         ref="updateDialog"
         title="Modifier l'utilisateur"
         button="Enregistrer"
+        max-width="sm"
         :callback="update">
         <template #content>
             <form-member
@@ -232,13 +234,6 @@ export default defineComponent({
                 email: item.email,
                 phone: item.phone,
                 role: item.role,
-
-                level: item.level,
-                region_insee: item.region_insee,
-                departement_insee: item.departement_insee,
-                circonscription_insee: item.circonscription_insee,
-                canton_insee: item.canton_insee,
-                commune_insee: item.commune_insee,
             };
             updateDialog.value.open();
         }

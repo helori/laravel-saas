@@ -24,7 +24,7 @@
                 id="card-button" 
                 class="btn ml-3"
                 :class="{
-                    'btn-blue': (type === 'primary'),
+                    'btn-primary': (type === 'primary'),
                     'btn-red': (type === 'danger'),
                 }"
                 :disabled="status === 'pending'"

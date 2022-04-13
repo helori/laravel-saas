@@ -1,6 +1,6 @@
 <template>
 
-    <div class="min-h-screen -mt-16 pt-16 px-4 bg-gradient-to-b from-gray-200 to-gray-300 dark:from-gray-800 dark:to-gray-700 dark:text-gray-200 flex flex-col justify-center items-center antialiased">
+    <div class="min-h-screen -mt-16 pt-16 px-4 flex flex-col justify-center items-center antialiased">
             
         <div class="text-center text-2xl font-bold mb-1 dark:text-white">
             Bonjour {{ user.firstname }} !
@@ -11,7 +11,7 @@
             <div class="mt-4">Vous n'avez pas de souscription en cours.</div>
             <router-link
                 :to="{name: 'billing'}"
-                class="btn btn-blue mx-auto mt-10 text-xl py-4 px-10 font-semibold">
+                class="btn btn-primary mx-auto mt-10 text-xl py-4 px-10 font-semibold">
                 Choisir une souscription...
             </router-link>
         </div>

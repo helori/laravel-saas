@@ -1,7 +1,7 @@
 <template>        
     <!-- Primary Navigation Menu -->
     <nav class="bg-white dark:bg-gray-900 border-b border-white dark:border-gray-900 antialiased relative z-10">
-        <div class="mx-auto px-4">
+        <div class="mx-auto px-6 py-3">
             <div class="flex items-center justify-between h-16 gap-3">
 
                 <slot name="logo">Logo</slot>
@@ -84,7 +84,7 @@
     </nav>
 
     <!-- Page Content -->
-    <main class="bg-gray-100 dark:bg-gray-700 antialiased">
+    <main class="antialiased">
         <router-view :user="user"></router-view>
     </main>
 

@@ -17,8 +17,9 @@
                         Votre clé API est active.
                     </h3>
                     <div class="text-gray-500 dark:text-gray-400 text-sm">
-                        <div>Créée le : {{ apiKeyInfo.created_at }}</div>
-                        <div>Dernière utilisation : {{ apiKeyInfo.last_used_at }}</div>
+                        <div>Créée le : {{ $filters.date(apiKeyInfo.created_at, 'DD/MM/YYYY à HH:mm') }}</div>
+                        <div v-if="apiKeyInfo.last_used_at">Dernière utilisation : {{ apiKeyInfo.last_used_at }}</div>
+                        <div v-else>Jamais utilisée</div>
                     </div>
                 </div>
 

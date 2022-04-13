@@ -37,7 +37,7 @@
 
                 <button 
                     id="card-button" 
-                    class="btn btn-blue ml-3"
+                    class="btn btn-primary ml-3"
                     :disabled="updateStatus === 'pending'"
                     @click="update">
                     Enregistrer la carte
