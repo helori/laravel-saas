@@ -53,18 +53,27 @@ class User extends Authenticatable
 
     protected static function booted()
     {
-        static::created(function($user){
+        static::created(function($user)
+        {
             $teamModel = Saas::$teamModel;
             $team = new $teamModel();
-            $team->name = 'Équipe de '.$user->firstname.' '.$user->lastname;
+
             $team->user_id = $user->id;
+            $team->name = 'Équipe de '.$user->firstname.' '.$user->lastname;
+            
+            $team->billing_name = $team->name;
+            $team->billing_email = $user->email;
+            $team->billing_phone = $user->phone;
+            $team->billing_line1 = null;
+            $team->billing_line2 = null;
+            $team->billing_postal_code = null;
+            $team->billing_city = null;
+            $team->billing_country = 'FR';
+
             $user->teams()->save($team, [
                 'role' => 'owner'
             ]);
         });
-        /*static::updated(queueable(function ($customer) {
-            $customer->syncStripeCustomerDetails();
-        }));*/
     }
 
     /**

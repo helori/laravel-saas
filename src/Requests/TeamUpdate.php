@@ -20,7 +20,16 @@ class TeamUpdate extends ActionRequest
         }
         
         $team->update($this->only([
-            'name'
+            'name',
+            'billing_name',
+            'billing_email',
+            'billing_phone',
+            'billing_line1',
+            'billing_line2',
+            'billing_postal_code',
+            'billing_city',
+            'billing_state',
+            'billing_country',
         ]));
 
         return $team;

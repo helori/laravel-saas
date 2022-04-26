@@ -19,6 +19,15 @@ class Team extends Model
      */
     protected $fillable = [
         'name',
+        'billing_name',
+        'billing_email',
+        'billing_phone',
+        'billing_line1',
+        'billing_line2',
+        'billing_postal_code',
+        'billing_city',
+        'billing_state',
+        'billing_country',
     ];
 
     /**
@@ -29,6 +38,74 @@ class Team extends Model
     protected $dispatchesEvents = [
 
     ];
+
+    /**
+     * Stripe customer details (country used to calculate tax rate)
+     */
+    protected static function booted()
+    {
+        static::updated(function ($billable)
+        {
+            if ($billable->hasStripeId())
+            {
+                //$billable->syncStripeCustomerDetails();
+                $billable->updateStripeCustomer([
+                    'name' => $billable->stripeName(),
+                    'email' => $billable->stripeEmail(),
+                    'phone' => $billable->stripePhone(),
+                    'address' => $billable->stripeAddress(),
+                    'preferred_locales' => ['fr', 'en'],
+                ]);
+            }
+        });
+    }
+
+    /**
+     * Get the customer name that should be synced to Stripe.
+     *
+     * @return string|null
+     */
+    public function stripeName()
+    {
+        return $this->billing_name;
+    }
+
+    /**
+     * Get the customer name that should be synced to Stripe.
+     *
+     * @return string|null
+     */
+    public function stripeEmail()
+    {
+        return $this->billing_email;
+    }
+
+    /**
+     * Get the customer name that should be synced to Stripe.
+     *
+     * @return string|null
+     */
+    public function stripePhone()
+    {
+        return $this->billing_phone;
+    }
+
+    /**
+     * Get the customer name that should be synced to Stripe.
+     *
+     * @return string|null
+     */
+    public function stripeAddress()
+    {
+        return [
+            'line1' => $this->billing_line1,
+            'line2' => $this->billing_line2,
+            'postal_code' => $this->billing_postal_code,
+            'city' => $this->billing_city,
+            'state' => $this->billing_state,
+            'country' => $this->billing_country,
+        ];
+    }
 
     /**
      * Get the owner of the team.

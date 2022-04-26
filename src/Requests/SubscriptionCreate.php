@@ -19,7 +19,7 @@ class SubscriptionCreate extends SubscriptionBase
             'product' => 'required|string',
             'price' => 'required|string',
             'quantity' => 'sometimes|integer|min:1',
-            'coupon' => 'sometimes|string',
+            'coupon' => 'sometimes|string|nullable',
             'promo_code' => 'sometimes|string',
             //'payment_method' => 'required|string',
         ];
@@ -81,7 +81,7 @@ class SubscriptionCreate extends SubscriptionBase
                 $subscription->quantity($this->quantity);
             }
 
-            if($this->has('coupon'))
+            if($this->has('coupon') && $this->coupon)
             {
                 $subscription->withCoupon($this->coupon);
             }

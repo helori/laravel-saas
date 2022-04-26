@@ -13,54 +13,47 @@
 
                 <div v-if="updating">
 
-                    <div :class="{
-                        'grid gap-4 lg:grid-cols-2': product.prices.length > 1
-                    }">
+                    <div class="grid grid-cols-10 items-center gap-2">
+                       
                         <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-                        <!-- If multiple prices : show selector -->
+                        <!-- Price selection -->
                         <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-                        <div class="mb-2"
-                            v-if="product.prices.length > 1">
-
-                            <div class="mb-1  font-bold">
-                                Choisissez une formule :
-                            </div>
-
-                            <div>
-                                <select
-                                    class="input"
-                                    v-model="price">
-                                    <template v-for="p in product.prices">
-                                        <option
-                                            v-if="p.published"
-                                            :value="p">
-                                            {{ p.name }}
-                                        </option>
-                                    </template>
-                                </select>
-                            </div>
-                        </div>
+                        <label 
+                            for="price_id"
+                            class="col-span-3 text-right">
+                            Formule :
+                        </label>
+                        <select
+                            id="price_id"
+                            class="input col-span-7 w-full"
+                            v-model="price">
+                            <template v-for="p in product.prices">
+                                <option
+                                    v-if="p.published"
+                                    :value="p">
+                                    {{ p.name }} |
+                                    {{ $filters.number(p.amount, 2) }}
+                                    <span v-if="p.interval === 'month'">€ HT / mois</span>
+                                    <span v-if="p.interval === 'year'">€ HT / an</span>
+                                    + {{ $filters.number(priceSignatures.amount, 2) }} € HT / signature
+                                </option>
+                            </template>
+                        </select>
 
                         <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-                        <!-- Show selected price -->
+                        <!-- Coupon -->
                         <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-                        <div v-if="price"
-                            :class="{
-                                'text-right': product.prices.length > 1,
-                                'flex justify-between mb-4': product.prices.length === 1,
-                            }">
-
-                            <div class="font-bold text-lg">
-                                {{ price.name }}
-                            </div>
-
-                            <div class="my-2 text-lg">
-                                {{ $filters.number(price.amount, 0) }}
-                                <span v-if="price.interval === 'month'">€ HT / mois</span>
-                                <span v-if="price.interval === 'year'">€ HT / an</span>
-                            </div>
-                        </div>
-
+                        <label 
+                            for="coupon"
+                            class="col-span-3 text-right">
+                            Code promotionnel :
+                        </label>
+                        <input
+                            id="coupon"
+                            type="text"
+                            v-model="createSubscriptionData.coupon"
+                            class="input col-span-7 w-full"
+                            placeholder="Entrez votre code...">
                     </div>
 
                     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
@@ -262,6 +255,8 @@
                 send: createSubscriptionSend,
                 data: createSubscriptionData,
             } = useForm();
+
+            createSubscriptionData.value.coupon = null;
 
             function createSubscription()
             {

@@ -31,6 +31,7 @@ class SaasServiceProvider extends ServiceProvider
     public function register()
     {
         Cashier::ignoreMigrations();
+        Cashier::calculateTaxes();
     }
     
     public function boot()
