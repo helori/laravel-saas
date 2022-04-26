@@ -6,6 +6,16 @@ namespace Helori\LaravelSaas\Requests;
 class CardRead extends ActionRequest
 {
     /**
+     * Determine if the user is authorized to make this request.
+     *
+     * @return bool
+     */
+    public function authorize()
+    {
+        return $this->user()->ownCurrentTeam();
+    }
+
+    /**
      * Run the action the request is supposed to execute
      *
      * @return void
@@ -16,6 +26,8 @@ class CardRead extends ActionRequest
         if(!$billable->hasStripeId()){
             $billable->createAsStripeCustomer();
         }
-        return $billable->defaultPaymentMethod()->toArray();
+
+        $paymentMethod = $billable->defaultPaymentMethod();
+        return $paymentMethod ? $paymentMethod->toArray() : null;
     }
 }

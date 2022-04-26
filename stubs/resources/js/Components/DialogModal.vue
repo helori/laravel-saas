@@ -1,5 +1,5 @@
 <template>
-    <modal :show="show" :max-width="maxWidth" :closeable="closeable" @close="close">
+    <modal :show="show" :max-width-class="maxWidthClass" :closeable="closeable" @close="close">
         <div class="px-6 py-4 bg-gray-100 dark:bg-gray-800 dark:text-white text-lg font-semibold">
             <slot name="title"></slot>
         </div>
@@ -25,8 +25,8 @@
         },
 
         props: {
-            maxWidth: {
-                default: '2xl'
+            maxWidthClass: {
+                default: 'max-w-screen-lg'
             },
             closeable: {
                 default: true

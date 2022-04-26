@@ -7,7 +7,7 @@
         <dialog-modal 
             :show="updatingPaymentMethod" 
             @close="closeModal"
-            max-width="sm">
+            max-width-class="max-w-screen-sm">
             <template #title>
                 Moyen de paiement
             </template>

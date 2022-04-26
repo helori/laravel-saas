@@ -4,7 +4,10 @@
             <slot />
         </span>
 
-        <dialog-modal :show="confirming" @close="closeModal" max-width="sm">>
+        <dialog-modal 
+            :show="confirming"
+            @close="closeModal"
+            max-width-class="max-w-screen-sm">
             <template #title>
                 {{ title }}
             </template>

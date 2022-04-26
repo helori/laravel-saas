@@ -1,7 +1,7 @@
 <template>
     <dialog-modal
         ref="dialog"
-        :max-width="maxWidth">
+        :max-width-class="maxWidthClass">
         
         <template #title>
             {{ title }}
@@ -52,8 +52,8 @@
         },
 
         props: {
-            maxWidth: {
-                default: 'md'
+            maxWidthClass: {
+                default: 'max-w-screen-lg'
             },
             type: {
                 type: String,

@@ -117,7 +117,7 @@
         ref="updateDialog"
         title="Modifier l'utilisateur"
         button="Enregistrer"
-        max-width="sm"
+        max-width-class="max-w-screen-sm"
         :callback="update">
         <template #content>
             <form-member

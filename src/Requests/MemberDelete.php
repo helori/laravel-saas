@@ -6,6 +6,18 @@ namespace Helori\LaravelSaas\Requests;
 class MemberDelete extends ActionRequest
 {
     /**
+     * Determine if the user is authorized to make this request.
+     *
+     * @return bool
+     */
+    public function authorize()
+    {
+        $user = $this->user();
+        $team = $user->teams()->findOrFail($this->route('teamId'));
+        return $user->ownTeam($team);
+    }
+    
+    /**
      * Run the action the request is supposed to execute
      *
      * @return void

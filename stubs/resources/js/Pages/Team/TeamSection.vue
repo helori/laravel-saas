@@ -83,7 +83,10 @@
         </template>
     </form-section>
 
-    <dialog-modal :show="switching" @close="switchClose" max-width="sm">
+    <dialog-modal 
+        :show="switching" 
+        @close="switchClose"
+        max-width-class="max-w-screen-sm">
         <template #title>
             Changer d'équipe
         </template>

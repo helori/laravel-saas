@@ -8,6 +8,18 @@ use Illuminate\Support\Facades\Auth;
 class MemberLogin extends ActionRequest
 {
     /**
+     * Determine if the user is authorized to make this request.
+     *
+     * @return bool
+     */
+    public function authorize()
+    {
+        $user = $this->user();
+        $team = $user->teams()->findOrFail($this->route('teamId'));
+        return $user->ownTeam($team);
+    }
+
+    /**
      * Run the action the request is supposed to execute
      *
      * @return void
@@ -17,11 +29,6 @@ class MemberLogin extends ActionRequest
         $user = $this->user();
         $teamId = $this->route('teamId');
         $team = $user->teams()->with('users')->findOrFail($teamId);
-
-        if(!$user->ownTeam($team))
-        {
-            abort(403, "Vous ne pouvez accéder aux membres de l'équipe");
-        }
 
         $auth = Auth::guard('user');
         $memberId = $this->route('memberId');

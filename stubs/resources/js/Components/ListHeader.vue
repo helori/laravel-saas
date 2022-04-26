@@ -1,12 +1,12 @@
 <template>
     <div>
-        <div class="flex items-center">
+        <div class="flex items-center gap-2">
             <div class="flex-grow mr-5">
                 <div class="text-lg font-bold">
                     {{ title }}
                 </div>
             </div>
-            <div class="ml-2">
+            <div>
                 <input
                     type="search"
                     class="input"
@@ -14,10 +14,6 @@
                     v-model="item"
                     @change="$emit('update:search', item)"
                     autocomplete="off">
-                <!--list-search
-                    v-model:search="item"
-                    @update:search="$emit('update:search', item)">
-                </list-search-->
             </div>
             <div>
                 <slot></slot>

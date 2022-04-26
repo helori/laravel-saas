@@ -7,6 +7,18 @@ use Helori\LaravelSaas\Resources\User as UserResource;
 
 class MemberList extends ActionRequest
 {
+    /**
+     * Determine if the user is authorized to make this request.
+     *
+     * @return bool
+     */
+    public function authorize()
+    {
+        $user = $this->user();
+        $team = $user->teams()->findOrFail($this->route('teamId'));
+        return $user->ownTeam($team);
+    }
+
     public function rules()
     {
         return [
