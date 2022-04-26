@@ -174,6 +174,17 @@ class User extends Authenticatable
     }
 
     /**
+     * Determine if the user owns the current team.
+     *
+     * @param  mixed  $team
+     * @return bool
+     */
+    public function ownCurrentTeam()
+    {
+        return $this->ownTeam($this->currentTeam());
+    }
+
+    /**
      * Get the billable model the user depends of.
      * It can be the user itself or the user's team depending on the app configuration
      *
