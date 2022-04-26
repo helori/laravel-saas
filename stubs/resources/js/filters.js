@@ -22,10 +22,18 @@ numeral.register('locale', 'fr', {
 
 numeral.locale('fr');
 
+
+moment.locale('fr', {
+    months : 'janvier_février_mars_avril_mai_juin_juillet_août_septembre_octobre_novembre_décembre'.split('_'),
+});
+
 export default {
-    date(value, format) {
+    date(value, format, inputFormat) {
+        if(!inputFormat){
+            inputFormat = "YYYY-MM-DD HH:mm:ss";
+        }
         if(value){
-            return moment(value, "YYYY-MM-DD HH:mm:ss").format(format);
+            return moment(value, inputFormat).format(format);
         }else{
             return '';
         }

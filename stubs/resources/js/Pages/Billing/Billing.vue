@@ -12,6 +12,10 @@
 
             <payment-method-form :user="user" />
 
+            <separator />
+
+            <invoices-form :user="user" />
+
         </div>
     </div>
 </template>
@@ -23,6 +27,7 @@ import { useForm } from '../../Functions/useForm'
 import Separator from '../../Components/Separator.vue'
 import PaymentMethodForm from './PaymentMethodForm.vue'
 import SubscriptionForm from './SubscriptionForm.vue'
+import InvoicesForm from './InvoicesForm.vue'
 
 export default defineComponent({
 
@@ -30,6 +35,7 @@ export default defineComponent({
         Separator,
         PaymentMethodForm,
         SubscriptionForm,
+        InvoicesForm,
     },
 
     props: {
