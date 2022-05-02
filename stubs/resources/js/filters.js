@@ -22,7 +22,6 @@ numeral.register('locale', 'fr', {
 
 numeral.locale('fr');
 
-
 moment.locale('fr', {
     months : 'janvier_février_mars_avril_mai_juin_juillet_août_septembre_octobre_novembre_décembre'.split('_'),
 });
@@ -67,6 +66,9 @@ export default {
         }
         if(value === null || value === '' || typeof value === 'undefined'){
             return '';
+        }
+        if(typeof value === 'string'){
+            value = parseFloat(value);
         }
         return numeral(value).format(format);
     },
