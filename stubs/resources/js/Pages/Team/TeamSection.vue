@@ -19,6 +19,7 @@
 
                 <div v-if="team.pivot.role === 'owner'"
                     class="mb-3">
+                    
                     <label for="name" class="label">
                         Nom de mon équipe
                     </label>
@@ -34,6 +35,7 @@
                         placeholder="Nom de mon équipe..."
                         autocomplete="team_name"
                         v-model="updateData.name">
+
                 </div>
 
                 <div class="text-sm">
@@ -85,7 +87,7 @@
 
     <dialog-modal 
         :show="switching" 
-        @close="switchClose"
+        @close="switchClose" 
         max-width-class="max-w-screen-sm">
         <template #title>
             Changer d'équipe

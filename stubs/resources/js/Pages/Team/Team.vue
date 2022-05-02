@@ -6,7 +6,7 @@
 
             <separator />
 
-            <template v-if="user.current_team.pivot.role === 'owner'">
+            <template v-if="user.is_owner">
                 <members-section :user="user" />
                 <separator />
             </template>

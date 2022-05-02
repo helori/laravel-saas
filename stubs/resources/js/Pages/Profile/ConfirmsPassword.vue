@@ -5,8 +5,8 @@
         </span>
 
         <dialog-modal 
-            :show="confirming"
-            @close="closeModal"
+            :show="confirming" 
+            @close="closeModal" 
             max-width-class="max-w-screen-sm">
             <template #title>
                 {{ title }}
@@ -93,7 +93,6 @@
 
             function checkConfirm(){
                 checkConfirmSend('get', '/user/confirmed-password-status').then(r => {
-                    console.log(r.data)
                     if (r.data.confirmed) {
                         this.$emit('confirmed', confirmData.value.password)
                     }else{

@@ -11,9 +11,9 @@
         <template #form>
             <div class="col-span-6">
 
-                <div class="border border-gray-300 rounded-md overflow-hidden">
+                <div class="border border-gray-300 dark:border-gray-700 rounded-md overflow-hidden">
                     <table class="w-full text-left">
-                        <tr class="bg-gray-100">
+                        <tr class="bg-gray-100 dark:bg-gray-800">
                             <th class="font-normal px-3 py-2">Période</th>
                             <th class="font-normal px-3 py-2">Montant</th>
                             <th class="font-normal px-3 py-2">Paiement</th>
@@ -21,7 +21,7 @@
                             <th class="font-normal px-3 py-2"></th>
                         </tr>
                         <tr v-for="invoice in invoices">
-                            <td class="px-3 py-2 text-sm text-gray-600">
+                            <td class="px-3 py-2 text-sm text-gray-600 dark:text-gray-400">
                                 <div>Du : {{ $filters.date(invoice.period_start, 'DD/MM/YYYY', 'X') }}</div>
                                 <div>Au : {{ $filters.date(invoice.period_end, 'DD/MM/YYYY', 'X') }}</div>
                             </td>
@@ -32,10 +32,18 @@
                                 </span>
                             </td>
                             <td class="px-3 py-2">
-                                <a :href="invoice.hosted_invoice_url" target="_blank" class="underline text-primary-500">Voir le détail</a>
+                                <a :href="invoice.hosted_invoice_url" 
+                                    target="_blank" 
+                                    class="underline text-primary-500 dark:text-primary-400">
+                                    Voir le détail
+                                </a>
                             </td>
                             <td class="px-3 py-2 text-right">
-                                <a :href="invoice.invoice_pdf" target="_blank" class="btn btn-primary">Facture PDF</a>
+                                <a :href="invoice.invoice_pdf" 
+                                    target="_blank"
+                                    class="btn btn-primary">
+                                    Facture PDF
+                                </a>
                             </td>
                         </tr>
                     </table>

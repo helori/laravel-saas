@@ -1,10 +1,20 @@
 <template>        
     <!-- Primary Navigation Menu -->
-    <nav class="bg-white dark:bg-gray-900 border-b border-white dark:border-gray-900 antialiased relative z-10">
+    <nav class="bg-white dark:bg-gray-900 dark:text-white border-b border-white dark:border-gray-900 antialiased relative z-10">
         <div class="mx-auto px-6 py-3">
             <div class="flex items-center justify-between h-16 gap-3">
 
                 <slot name="logo">Logo</slot>
+
+                <div class="flex-grow"></div>
+
+                <div v-if="user.is_root">
+                    <router-link
+                        :to="{name: 'admin'}"
+                        class="underline">
+                        Administration
+                    </router-link>
+                </div>
                 
                 <div class="hidden sm:flex sm:items-center sm:ml-6">
 
@@ -31,7 +41,7 @@
                                 <a
                                     href="/app"
                                     class="dropdown-link">
-                                    Menu principal
+                                    Accéder à l'application
                                 </a>
 
                                 <div class="h-px bg-gray-200 dark:bg-gray-700"></div>
@@ -49,6 +59,7 @@
                                 </router-link>
 
                                 <router-link
+                                    v-if="user.is_owner"
                                     :to="{name: 'billing'}"
                                     class="dropdown-link">
                                     Facturation

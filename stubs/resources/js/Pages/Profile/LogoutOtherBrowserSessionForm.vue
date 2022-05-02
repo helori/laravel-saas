@@ -65,8 +65,8 @@
             <error :errors="logoutError" />
 
             <dialog-modal 
-                :show="confirmingLogout"
-                @close="closeLogout"
+                :show="confirmingLogout" 
+                @close="closeLogout" 
                 max-width-class="max-w-screen-sm">
                 <template #title>
                     Déconnexion des autres sessions

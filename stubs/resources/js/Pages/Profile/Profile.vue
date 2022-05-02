@@ -18,7 +18,7 @@
 
             <separator />
 
-            <manage-api-token-form :user="user" />
+            <manage-api-token-form :user="user" v-if="user.has_api" />
 
         </div>
     </div>

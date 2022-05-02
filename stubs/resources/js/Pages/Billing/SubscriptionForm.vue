@@ -1,11 +1,11 @@
 <template>
     <form-section>
         <template #title>
-            {{ product.name }}
+            Abonnement
         </template>
 
         <template #description>
-            {{ product.short_description }}
+            Choisissez votre formule.
         </template>
 
         <template #form>
@@ -35,7 +35,6 @@
                                     {{ $filters.number(p.amount, 2) }}
                                     <span v-if="p.interval === 'month'">€ HT / mois</span>
                                     <span v-if="p.interval === 'year'">€ HT / an</span>
-                                    + {{ $filters.number(priceSignatures.amount, 2) }} € HT / signature
                                 </option>
                             </template>
                         </select>
@@ -59,7 +58,7 @@
                     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
                     <!-- Show product features -->
                     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-                    <div v-if="product.features.length > 0"
+                    <!--div v-if="product.features.length > 0"
                         v-for="feature in product.features">
                         <div v-if="feature === 'separator'" class="border-t border-gray-100 my-2 w-full"></div>
                         <div v-else class="flex items-center">
@@ -68,12 +67,12 @@
                             </svg>
                             <div class="ml-2 text-gray-600 dark:text-gray-200">{{ feature }}</div>
                         </div>
-                    </div>
+                    </div-->
 
                     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
                     <!-- Show selected price features -->
                     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-                    <div v-if="price && price.features.length > 0">
+                    <!--div v-if="price && price.features.length > 0">
                         <div v-for="feature in price.features">
                             <div v-if="feature === 'separator'" class="border-t border-gray-100 my-2 w-full"></div>
                             <div v-else class="flex items-center">
@@ -83,7 +82,7 @@
                                 <div class="ml-2 text-gray-600 dark:text-gray-200">{{ feature }}</div>
                             </div>
                         </div>
-                    </div>
+                    </div-->
                     
                 </div>
 
@@ -95,7 +94,7 @@
                     </div>
 
                     <div class="text-lg mb-2">
-                        {{ $filters.number(subscription.price.amount, 0) }}
+                        {{ $filters.number(subscription.price.amount, 2) }}
                         <span v-if="subscription.price.interval === 'month'">€ HT / mois</span>
                         <span v-if="subscription.price.interval === 'year'">€ HT / an</span>
                     </div>
@@ -235,7 +234,7 @@
 
             function readSubscription()
             {
-                readSubscriptionParams.value.name = 'main';
+                readSubscriptionParams.value.name = props.product.product_id;
                 readSubscriptionSend('get', '/subscription').then(r => {
                     subscription.value = r.data;
                     if(!r.data){
@@ -260,10 +259,10 @@
 
             function createSubscription()
             {
-                createSubscriptionData.value.name = 'main';
+                createSubscriptionData.value.name = props.product.product_id;
                 createSubscriptionData.value.product = props.product.product_id;
                 createSubscriptionData.value.price = price.value.price_id;
-
+                
                 createSubscriptionSend('post', '/subscription').then(r => {
                     readSubscription();
                     updating.value = false;
@@ -282,7 +281,7 @@
 
             function deleteSubscription()
             {
-                deleteSubscriptionData.value.name = 'main';
+                deleteSubscriptionData.value.name = props.product.product_id;
                 deleteSubscriptionSend('delete', '/subscription').then(r => {
                     readSubscription();
                 });
