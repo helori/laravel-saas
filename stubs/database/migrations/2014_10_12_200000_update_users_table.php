@@ -22,6 +22,9 @@ class UpdateUsersTable extends Migration
             $table->dropColumn([
                 'name',
             ]);
+            $table->boolean('activated')->nullable()->default(true);
+            $table->timestamp('invited_at')->nullable()->default(null);
+            $table->string('invited_to')->nullable()->default(null);
         });
     }
 

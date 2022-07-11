@@ -20,6 +20,7 @@ Route::group(['middleware' => ['web']], function ()
         Route::post('/team/switch/{teamId}', [SaasController::class, 'switchTeam']);
 
         Route::get('/team/{teamId}/member', [SaasController::class, 'memberList']);
+        Route::post('/team/{teamId}/member', [SaasController::class, 'memberCreate']);
         Route::put('/team/{teamId}/member/{memberId}', [SaasController::class, 'memberUpdate']);
         Route::delete('/team/{teamId}/member/{memberId}', [SaasController::class, 'memberDelete']);
         Route::get('/team/{teamId}/member/{memberId}/login', [SaasController::class, 'memberLogin']);

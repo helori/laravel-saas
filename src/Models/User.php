@@ -5,10 +5,12 @@ namespace Helori\LaravelSaas\Models;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Password;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Sanctum\HasApiTokens;
 use Laravel\Cashier\Billable;
 use function Illuminate\Events\queueable;
+use App\Notifications\ResetPassword as ResetPasswordNotification;
 use Helori\LaravelSaas\Saas;
 
 
@@ -27,6 +29,10 @@ class User extends Authenticatable
         'email',
         'phone',
         'password',
+        'activated',
+        'invited_at',
+        'invited_to',
+        'current_team_id',
     ];
 
     /**
@@ -48,7 +54,9 @@ class User extends Authenticatable
      */
     protected $casts = [
         'is_root' => 'boolean',
+        'activated' => 'boolean',
         'email_verified_at' => 'datetime',
+        'invited_at' => 'datetime',
     ];
 
     protected static function booted()
@@ -204,5 +212,25 @@ class User extends Authenticatable
         {
             return $this;
         }
+    }
+
+    /**
+     * Send an invitation to the team member
+     */
+    public function invite($email)
+    {
+        $broker = Password::broker('users');
+        $token = $broker->createToken($this);
+        $this->sendPasswordResetNotification($token);
+        $this->invited_at = now();
+        $this->invited_to = $email;
+        $this->save();
+    }
+
+    /**
+     * Send a reset password notification
+     */
+    public function sendPasswordResetNotification($token){
+        $this->notify(new ResetPasswordNotification($token));
     }
 }

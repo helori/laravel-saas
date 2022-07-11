@@ -41,6 +41,7 @@ class MemberUpdate extends ActionRequest
             'lastname',
             'email',
             'phone',
+            'activated',
         ]));
 
         if($this->has('role'))

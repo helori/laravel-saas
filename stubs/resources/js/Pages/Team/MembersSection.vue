@@ -15,7 +15,11 @@
                     class="mb-2"
                     title="Membres"
                     v-model:search="readCommonParams.search">
-                    <!-- Button create member -->
+                    <button 
+                        class="btn btn-primary" 
+                        @click="openCreate()">
+                        Créer un membre...
+                    </button>
                 </list-header>
 
                 <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
@@ -55,6 +59,13 @@
                                         </table-sort-label>
                                     </div>
                                 </th>
+                                <th>
+                                    <table-sort-label
+                                        label="Activé"
+                                        order-key="activated"
+                                        v-model:params="readCommonParams">
+                                    </table-sort-label>
+                                </th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -71,6 +82,18 @@
                                         <span v-if="item.role === 'member'">Membre</span>
                                     </div>
                                     <div class="text-gray-500 dark:text-gray-400 text-sm">{{ item.email }}</div>
+                                </td>
+                                <td>
+                                    <span v-if="item.activated" class="text-green-600">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                    </span>
+                                    <span v-if="!item.activated" class="text-red-600">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                    </span>
                                 </td>
                                 <td class="text-right">
                                     <span class="btn btn-gray ml-2" 
@@ -111,6 +134,22 @@
     </form-section>
 
     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- Create -->
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <dialog-form 
+        ref="createDialog"
+        title="Ajouter un utilisateur"
+        button="Enregistrer"
+        max-width-class="max-w-screen-sm"
+        :callback="create">
+        <template #content>
+            <form-member-create
+                v-model:member="createDialog.data">
+            </form-member-create>
+        </template>
+    </dialog-form>
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     <!-- Update -->
     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     <dialog-form 
@@ -120,11 +159,9 @@
         max-width-class="max-w-screen-sm"
         :callback="update">
         <template #content>
-            <form-member
-                :user="user"
-                v-model:member="updateDialog.data"
-                type="mandant">
-            </form-member>
+            <form-member-update
+                v-model:member="updateDialog.data">
+            </form-member-update>
         </template>
     </dialog-form>
 
@@ -164,7 +201,8 @@ import Alert from '../../Components/Alert'
 import Error from '../../Components/Error'
 import DialogForm from '../../Components/DialogForm'
 
-import FormMember from './FormMember'
+import FormMemberCreate from './FormMemberCreate'
+import FormMemberUpdate from './FormMemberUpdate'
 
 export default defineComponent({
 
@@ -178,7 +216,8 @@ export default defineComponent({
         FormSection,
         PencilAltIcon,
         TrashIcon,
-        FormMember,
+        FormMemberCreate,
+        FormMemberUpdate,
     },
 
     props: {
@@ -232,6 +271,33 @@ export default defineComponent({
         onMounted(read);
 
         // ----------------------------------------------------
+        //  Create
+        // ----------------------------------------------------
+        const createDialog = ref(null);
+
+        function openCreate(){
+            createDialog.value.data = {
+                firstname: null,
+                lastname: null,
+                email: null,
+                phone: null,
+                role: 'member',
+                password: null,
+                password_confirmation: null,
+                invitation_email: null,
+                activated: true,
+            };
+            createDialog.value.open();
+        }
+
+        function create(){
+            return createDialog.value.send('post', '/team/' + props.user.current_team.id + '/member').then(r => {
+                createDialog.value.close();
+                read();
+            })
+        }
+
+        // ----------------------------------------------------
         //  Update
         // ----------------------------------------------------
         const updateDialog = ref(null);
@@ -244,6 +310,7 @@ export default defineComponent({
                 email: item.email,
                 phone: item.phone,
                 role: item.role,
+                activated: item.activated,
             };
             updateDialog.value.open();
         }
@@ -279,14 +346,16 @@ export default defineComponent({
         return {
             pagination,
             readCommonParams,
-            filters,
-            storageKey,
 
             readStatus,
             readError,
             readSend,
             readParams,
             read,
+
+            createDialog,
+            openCreate,
+            create,
 
             updateDialog,
             openUpdate,
