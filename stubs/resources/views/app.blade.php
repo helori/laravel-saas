@@ -18,9 +18,10 @@
     <div id="vue-app">
 
         <app-layout
-            :user="{{ json_encode($user) }}">
+            :user="{{ json_encode($user) }}"
+            @dialog-message="openDialogMessage">
             <template #logo>
-                @include('saas::logo', ['align' => 'left'])
+                @include('saas::logo')
             </template>
         </app-layout>
 
@@ -51,6 +52,7 @@
 
     <script type="text/javascript">
         window.stripeKey = "{{ env('STRIPE_KEY') }}"
+        window.mapboxToken = "{{ env('MAPBOX_TOKEN') }}"
     </script>
     
     <script src="https://js.stripe.com/v3/"></script>

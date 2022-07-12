@@ -21,6 +21,7 @@ class User extends JsonResource
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'email_verified_at' => $this->email_verified_at,
+            'invited_at' => $this->invited_at,
 
             'firstname' => $this->firstname,
             'lastname' => $this->lastname,
@@ -30,9 +31,6 @@ class User extends JsonResource
             'is_root' => $this->is_root,
             'current_team_id' => $this->current_team_id,
             'activated' => $this->activated,
-
-            'invited_at' => $this->invited_at,
-            'invited_to' => $this->invited_to,
             
             'role' => $this->pivot->role,
         ];

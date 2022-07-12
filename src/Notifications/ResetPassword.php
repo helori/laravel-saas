@@ -45,7 +45,7 @@ class ResetPassword extends Notification
     public function toMail()
     {
         return (new MailMessage)
-            ->subject('Création de votre mot de passe')
+            ->subject('Votre mot de passe '.env('APP_NAME'))
             ->line([
                 'Vous recevez cet email afin de pouvoir vous connecter pour la première fois, ou suite à un oubli de mot de passe.
                 Vous pouvez créer votre mot de passe en cliquant sur ce bouton :',

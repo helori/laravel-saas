@@ -31,7 +31,6 @@ class User extends Authenticatable
         'password',
         'activated',
         'invited_at',
-        'invited_to',
         'current_team_id',
     ];
 
@@ -217,13 +216,12 @@ class User extends Authenticatable
     /**
      * Send an invitation to the team member
      */
-    public function invite($email)
+    public function invite()
     {
         $broker = Password::broker('users');
         $token = $broker->createToken($this);
         $this->sendPasswordResetNotification($token);
         $this->invited_at = now();
-        $this->invited_to = $email;
         $this->save();
     }
 
@@ -232,5 +230,19 @@ class User extends Authenticatable
      */
     public function sendPasswordResetNotification($token){
         $this->notify(new ResetPasswordNotification($token));
+    }
+
+    /**
+     * Route notifications for the mail channel.
+     *
+     * @param  \Illuminate\Notifications\Notification  $notification
+     * @return array|string
+     */
+    public function routeNotificationForMail($notification)
+    {
+        $name = $this->fistname.' '.$this->lastname;
+        $email = $this->email;
+        
+        return [$email => $name];
     }
 }

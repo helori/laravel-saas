@@ -108,10 +108,7 @@
                         </td>
                         <td>
                             <div v-if="item.invited_at">
-                                <div>{{ $filters.date(item.invited_at, 'DD/MM/YYYY à HH:mm') }}</div>
-                                <div class="text-sm text-gray-500">
-                                    {{ item.invited_to }}
-                                </div>
+                                {{ $filters.date(item.invited_at, 'DD/MM/YYYY à HH:mm') }}
                             </div>
                         </td>
                         <td class="flex items-center justify-end gap-2">
@@ -120,6 +117,14 @@
                                 @click="openUpdate(item)">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                </svg>
+                            </button>
+                            <button class="btn btn-gray" 
+                                :title="'Envoyer une invitation à ' + item.firstname + ' ' + item.lastname"
+                                v-if="item.id !== user.id"
+                                @click="openInvite(item)">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                 </svg>
                             </button>
                             <button class="btn btn-gray" 
@@ -184,6 +189,23 @@
     </dialog-form>
 
     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- Invite -->
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <dialog-form 
+        ref="inviteDialog"
+        title="Envoyer une invitation"
+        button="Envoyer"
+        cancel-text="Ne pas envoyer d'invitation"
+        max-width-class="max-w-screen-sm"
+        :callback="invite">
+        <template #content>
+            <form-member-invite
+                v-model:member="inviteDialog.data">
+            </form-member-invite>
+        </template>
+    </dialog-form>
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     <!-- Delete -->
     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
     <dialog-form 
@@ -221,6 +243,7 @@ import DialogForm from '../../Components/DialogForm'
 
 import FormMemberCreate from './FormMemberCreate'
 import FormMemberUpdate from './FormMemberUpdate'
+import FormMemberInvite from './FormMemberInvite'
 
 export default defineComponent({
 
@@ -236,6 +259,7 @@ export default defineComponent({
         TrashIcon,
         FormMemberCreate,
         FormMemberUpdate,
+        FormMemberInvite,
     },
 
     props: {
@@ -309,20 +333,22 @@ export default defineComponent({
                 role: 'member',
                 password: null,
                 password_confirmation: null,
-                invitation_email: null,
                 activated: true,
             };
             createDialog.value.open();
         }
 
         function create(){
+
+            if(!createDialog.value.data.password){
+                var dummyPasswordNobodyKnows = Math.random().toString(36).substr(2, 8);
+                createDialog.value.data.password = dummyPasswordNobodyKnows;
+                createDialog.value.data.password_confirmation = dummyPasswordNobodyKnows;
+            }
+
             return createDialog.value.send('post', '/team/' + props.user.current_team.id + '/member').then(r => {
                 createDialog.value.close();
-                openDialogMessage({
-                    type: 'success',
-                    title: "Membre créé",
-                    message: "Le nouveau membre a été créé avec succès",
-                });
+                openInvite(r.data); // important to get the user id
                 read();
             })
         }
@@ -378,6 +404,34 @@ export default defineComponent({
             })
         }
 
+        // ----------------------------------------------------
+        //  Invite
+        // ----------------------------------------------------
+        const inviteDialog = ref(null);
+
+        function openInvite(item){
+            inviteDialog.value.data = {
+                id: item.id,
+                firstname: item.firstname,
+                lastname: item.lastname,
+                email: item.email,
+            };
+            inviteDialog.value.open();
+        }
+
+        function invite(){
+            return inviteDialog.value.send('post', '/team/' + props.user.current_team.id + '/member/' + inviteDialog.value.data.id + '/invite').then(r => {
+                inviteDialog.value.close();
+                openDialogMessage({
+                    type: 'success',
+                    title: "Invitation envoyée",
+                    message: inviteDialog.value.data.firstname + " " + inviteDialog.value.data.lastname + 
+                        " a bien reçu une invitation par email à l'adresse : " + inviteDialog.value.data.email,
+                });
+                read();
+            })
+        }
+
         return {
             pagination,
             readCommonParams,
@@ -400,6 +454,10 @@ export default defineComponent({
             destroyDialog,
             openDestroy,
             destroy,
+
+            inviteDialog,
+            openInvite,
+            invite,
         }
     }
 })

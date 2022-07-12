@@ -17,7 +17,7 @@
                 type="button"
                 class="btn btn-white"
                 @click="close">
-                Annuler
+                {{ cancelText }}
             </button>
 
             <button 
@@ -68,6 +68,11 @@
                 type: String,
                 required: false,
                 default: 'Enregistrer',
+            },
+            cancelText: {
+                type: String,
+                required: false,
+                default: 'Annuler',
             },
             callback: {
                 required: true,

@@ -52,9 +52,9 @@ class MemberCreate extends ActionRequest
                 'string',
                 'in:member,owner'
             ],
-            'invitation_email' => [
-                'nullable', 
-                'email',
+            'invite' => [
+                'sometimes', 
+                'boolean',
             ],
         ];
     }
@@ -74,7 +74,6 @@ class MemberCreate extends ActionRequest
             'password.required' => "Le mot de passe est requis",
             'password.confirmed' => "La confirmation du mot de passe ne correspond pas",
             'role.required' => "Le rôle doit être membre ou propriétaire",
-            'invitation_email.email' => "L'email d'invitation n'est pas correct",
         ];
     }
     
@@ -98,7 +97,11 @@ class MemberCreate extends ActionRequest
             'phone',
             'activated',
         ]));
+
+        // Make sure the user will be connected to this team after it's first connexion !
+        // (By default, a user is connected to its personnal team)
         $member->current_team_id = $team->id;
+        
         $member->password = Hash::make($this->password);
         $member->save();
 
@@ -106,9 +109,9 @@ class MemberCreate extends ActionRequest
             'role' => $this->role,
         ]);
 
-        if($this->invitation_email)
+        if($this->has('invite') && $this->invite)
         {
-            $member->invite($this->invitation_email);
+            $member->invite();
         }
 
         return $member;

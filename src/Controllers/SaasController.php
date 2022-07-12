@@ -18,6 +18,7 @@ use Helori\LaravelSaas\Requests\MemberList;
 use Helori\LaravelSaas\Requests\MemberCreate;
 use Helori\LaravelSaas\Requests\MemberUpdate;
 use Helori\LaravelSaas\Requests\MemberDelete;
+use Helori\LaravelSaas\Requests\MemberInvite;
 use Helori\LaravelSaas\Requests\MemberLogin;
 
 use Helori\LaravelSaas\Requests\CardIntent;
@@ -52,6 +53,7 @@ class SaasController extends BaseController
     public function memberCreate(MemberCreate $request, $teamId) { return $request->action(); }
     public function memberUpdate(MemberUpdate $request, $teamId, $userId) { return $request->action(); }
     public function memberDelete(MemberDelete $request, $teamId, $userId) { return $request->action(); }
+    public function memberInvite(MemberInvite $request, $teamId, $userId) { return $request->action(); }
     public function memberLogin(MemberLogin $request, $teamId, $userId) { return $request->action(); }
 
     public function cardIntent(CardIntent $request) { return $request->action(); }

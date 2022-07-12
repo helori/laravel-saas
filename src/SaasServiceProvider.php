@@ -112,7 +112,7 @@ class SaasServiceProvider extends ServiceProvider
         Fortify::authenticateUsing(function (Request $request){
             $user = User::where([
                 'email' => trim($request->email),
-                //'activated' => true,
+                'activated' => true,
             ])->first();
 
             if ($user && Hash::check(trim($request->password), $user->password)) {

@@ -1,22 +1,14 @@
 <template>        
     <!-- Primary Navigation Menu -->
-    <nav class="bg-white dark:bg-gray-900 dark:text-white border-b border-white dark:border-gray-900 antialiased relative z-10">
+    <nav class="bg-white dark:bg-gray-900 dark:text-white border-b border-gray-400 dark:border-gray-900 antialiased relative z-50">
         <div class="mx-auto px-6 py-3">
             <div class="flex items-center justify-between h-16 gap-3">
 
                 <slot name="logo">Logo</slot>
 
                 <div class="flex-grow"></div>
-
-                <div v-if="user.is_root">
-                    <router-link
-                        :to="{name: 'admin'}"
-                        class="underline">
-                        Administration
-                    </router-link>
-                </div>
                 
-                <div class="hidden sm:flex sm:items-center sm:ml-6">
+                <div class="flex items-center ml-2 sm:ml-6">
 
                     <!-- Settings Dropdown -->
                     <div class="relative">
@@ -66,6 +58,29 @@
                                 </router-link>
 
                                 <div class="h-px bg-gray-200 dark:bg-gray-700"></div>
+                                
+                                <router-link
+                                    v-if="user.is_root"
+                                    :to="{name: 'admin'}"
+                                    class="dropdown-link">
+                                    Administrateur
+                                </router-link>
+
+                                <router-link
+                                    v-if="user.is_root"
+                                    :to="{name: 'monitoring'}"
+                                    class="dropdown-link">
+                                    Monitoring
+                                </router-link>
+
+                                <router-link
+                                    v-if="user.is_root"
+                                    :to="{name: 'tilers'}"
+                                    class="dropdown-link">
+                                    Gestion des tuiles
+                                </router-link>
+
+                                <div class="h-px bg-gray-200 dark:bg-gray-700"></div>
 
                                 <form @submit.prevent="logout">
                                     <button
@@ -96,7 +111,10 @@
 
     <!-- Page Content -->
     <main class="antialiased">
-        <router-view :user="user"></router-view>
+        <router-view 
+            :user="user"
+            @dialog-message="$emit('dialog-message', $event)">
+        </router-view>
     </main>
 
 </template>
@@ -117,6 +135,10 @@ export default defineComponent({
             required: true,
         },
     },
+
+    emits: [
+        'dialog-message'
+    ],
     
     setup() {
         let showingNavigationDropdown = ref(false)
