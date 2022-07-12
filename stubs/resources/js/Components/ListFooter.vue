@@ -1,15 +1,22 @@
 <template>
-    <div class="mt-2 flex items-center justify-end"
+    <div class="mt-2 flex flex-col sm:flex-row items-center justify-end gap-2"
         v-if="pagination !== null">
         
-        <div>
+        <div class="w-full sm:w-auto text-sm text-center sm:text-left sm:text-md">
             Résultats {{ (pagination.meta.current_page - 1) * pagination.meta.per_page + 1 }}
             à {{ Math.min(pagination.meta.current_page * pagination.meta.per_page, pagination.meta.total) }} 
             sur {{ pagination.meta.total }}
         </div>
 
+        <list-pagination 
+            v-if="pagination !== null"
+            :pagination="pagination.meta" 
+            v-model:page.number="pageValue"
+            @update:page="$emit('update:page', pageValue)">
+        </list-pagination>
+
         <select
-            class="input ml-2"
+            class="input w-full sm:w-auto"
             v-model.number="limitValue"
             @update:modelValue="$emit('update:limit', limitValue)">
             <option :value="5">5 par page</option>
@@ -18,14 +25,7 @@
             <option :value="50">50 par page</option>
             <option :value="100">100 par page</option>
         </select>
-        
-        <list-pagination 
-            v-if="pagination !== null"
-            :pagination="pagination.meta" 
-            v-model:page.number="pageValue"
-            @update:page="$emit('update:page', pageValue)"
-            class="ml-2">
-        </list-pagination>
+
     </div>
 </template>
 

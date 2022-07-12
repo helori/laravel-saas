@@ -1,7 +1,8 @@
 <template>
     <div class="relative">
         
-        <div @click="open = ! open">
+        <div @click="open = ! open"
+            :class="triggerClasses">
             <slot name="trigger"></slot>
         </div>
 
@@ -20,7 +21,7 @@
                 class="absolute z-50 mt-2 rounded-md shadow-lg"
                 :class="[widthClass, alignmentClasses]"
                 style="display: none;"
-                @click="open = false">
+                @click="itemClicked">
                 <div class="rounded-md ring-1 ring-black ring-opacity-5" :class="contentClasses">
                     <slot name="content"></slot>
                 </div>
@@ -42,19 +43,30 @@ export default defineComponent({
         },
         contentClasses: {
             default: () => ['py-1', 'bg-white']
-        }
+        },
+        triggerClasses: {
+            default: () => []
+        },
+        closeOnClick: {
+            type: Boolean,
+            default: true,
+        },
     },
-    setup() {
+    setup(props) {
         let open = ref(false)
         const closeOnEscape = (e) => {
             if (open.value && e.keyCode === 27) {
                 open.value = false
             }
         }
+        function itemClicked(){
+            open.value = props.closeOnClick ? false : true;
+        }
         onMounted(() => document.addEventListener('keydown', closeOnEscape))
         onUnmounted(() => document.removeEventListener('keydown', closeOnEscape))
         return {
             open,
+            itemClicked,
         }
     },
     computed: {

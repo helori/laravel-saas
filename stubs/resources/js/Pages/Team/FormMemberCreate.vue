@@ -1,7 +1,7 @@
 <template>
     <div>
 
-        <div class="grid grid-cols-2 gap-6">
+        <div class="grid md:grid-cols-2 gap-2 md:gap-6">
             <div>
                 <div class="text-xs mb-1 uppercase text-gray-500">
                     Prénom :
@@ -30,7 +30,7 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-6">
+        <div class="grid md:grid-cols-2 gap-2 md:gap-6">
             <div>
                 <div class="text-xs mb-1 uppercase text-gray-500">
                     Email :
@@ -59,7 +59,7 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-6">
+        <div class="grid md:grid-cols-2 gap-2 md:gap-6">
             <div>
                 <div class="text-xs mb-1 uppercase text-gray-500">
                     Mot de passe :
@@ -75,7 +75,7 @@
             </div>
             <div>
                 <div class="text-xs mb-1 uppercase text-gray-500">
-                    Confirmation :
+                    Confirmation du mot de passe :
                 </div>
                 <input 
                     type="password" 
@@ -128,10 +128,11 @@
             </label>
         </div>
 
-        <div v-if="invite">
+        <div v-if="invite"
+            class="mt-1">
             <input 
                 type="email" 
-                placeholder="Email d'invitation..." 
+                placeholder="Adresse email d'invitation..." 
                 required="" 
                 class="input w-full mb-2" 
                 name="invitation_email"

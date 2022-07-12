@@ -23,6 +23,29 @@
                 @include('saas::logo', ['align' => 'left'])
             </template>
         </app-layout>
+
+        <dialog-modal
+            ref="dialogMessage"
+            :max-width-class="dialogMessageData.maxWidthClass"
+            :header-class="dialogMessageData.headerClass">
+            
+            <template #title>
+                @{{ dialogMessageData.title }}
+            </template>
+
+            <template #content>
+                @{{ dialogMessageData.message }}
+            </template>
+            
+            <template #footer>
+                <button 
+                    type="button"
+                    class="btn btn-white"
+                    @click="closeDialogMessage">
+                    @{{ dialogMessageData.closeText }}
+                </button>
+            </template>
+        </dialog-modal>
         
     </div>
 

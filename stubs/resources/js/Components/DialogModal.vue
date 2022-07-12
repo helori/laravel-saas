@@ -1,12 +1,14 @@
 <template>
     <modal :show="show" :max-width-class="maxWidthClass" :closeable="closeable" @close="close">
-        <div class="px-6 py-4 bg-gray-100 dark:bg-gray-800 dark:text-white text-lg font-semibold">
+        <div class="px-6 py-4 text-lg font-semibold"
+            :class="headerClass">
             <slot name="title"></slot>
         </div>
-        <div class="px-6 py-4 dark:bg-gray-900 dark:text-gray-200">
+        <div class="px-2 py-2 sm:px-6 sm:py-4 dark:bg-gray-900 dark:text-gray-200">
             <slot name="content"></slot>
         </div>
-        <div class="px-6 py-4 bg-gray-100 dark:bg-gray-800 dark:text-gray-200 text-right">
+        <div class="px-6 py-4 text-right"
+            :class="headerClass">
             <slot name="footer"></slot>
         </div>
     </modal>
@@ -30,6 +32,9 @@
             },
             closeable: {
                 default: true
+            },
+            headerClass: {
+                default: 'bg-gray-100 dark:bg-gray-800 dark:text-white'
             },
         },
 
