@@ -9,7 +9,7 @@
 
         <template #content>
             <slot name="content"></slot>
-            <error :errors="error" class="mt-2" />
+            <request-error :error="error" class="mt-2" />
         </template>
         
         <template #footer>
@@ -39,18 +39,11 @@
 <script>
     import { defineComponent, ref } from 'vue'
     import { useForm } from '../Functions/useForm'
-    import DialogModal from './DialogModal'
-    import Error from './Error'
 
     export default defineComponent({
         
         emits: ['open', 'close'],
         
-        components: {
-            DialogModal,
-            Error,
-        },
-
         props: {
             maxWidthClass: {
                 default: 'max-w-screen-lg'

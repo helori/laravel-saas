@@ -1,27 +1,29 @@
 <template>
     <form-section>
         <template #title>
-            Abonnement
+            {{ product.name }}
         </template>
 
         <template #description>
-            Choisissez votre formule.
+            Choisissez votre formule d'abonnement.
         </template>
 
         <template #form>
             <div class="col-span-6">
 
-                <div v-if="updating">
+                <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+                <!-- Sélection de l'abonnement -->
+                <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+                <div v-if="updating && createSubscriptionStatus !== 'pending'">
 
+                    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+                    <!-- Price selection -->
+                    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
                     <div class="grid grid-cols-10 items-center gap-2">
-                       
-                        <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-                        <!-- Price selection -->
-                        <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
                         <label 
                             for="price_id"
                             class="col-span-3 text-right">
-                            Formule :
+                            Abonnement :
                         </label>
                         <select
                             id="price_id"
@@ -31,101 +33,92 @@
                                 <option
                                     v-if="p.published"
                                     :value="p">
-                                    {{ p.name }} |
-                                    {{ $filters.number(p.amount, 2) }}
-                                    <span v-if="p.interval === 'month'">€ HT / mois</span>
-                                    <span v-if="p.interval === 'year'">€ HT / an</span>
+                                    {{ p.name }}
                                 </option>
                             </template>
                         </select>
+                    </div>
 
-                        <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-                        <!-- Coupon -->
-                        <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+                    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+                    <!-- Features -->
+                    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+                    <div class="grid grid-cols-10 items-center gap-2 my-4">
+                        <div class="col-start-4 col-span-7 text-sm">
+                            <features :features="price.features" />
+                        </div>
+                    </div>
+
+                    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+                    <!-- Promo code -->
+                    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+                    <div class="grid grid-cols-10 items-center gap-2">
                         <label 
-                            for="coupon"
+                            for="promo_code"
                             class="col-span-3 text-right">
-                            Code promotionnel :
+                            Code de réduction :
                         </label>
                         <input
-                            id="coupon"
+                            id="promo_code"
                             type="text"
-                            v-model="createSubscriptionData.coupon"
+                            v-model="createSubscriptionData.promo_code"
                             class="input col-span-7 w-full"
                             placeholder="Entrez votre code...">
                     </div>
-
-                    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-                    <!-- Show product features -->
-                    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-                    <!--div v-if="product.features.length > 0"
-                        v-for="feature in product.features">
-                        <div v-if="feature === 'separator'" class="border-t border-gray-100 my-2 w-full"></div>
-                        <div v-else class="flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary-900 dark:text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <div class="ml-2 text-gray-600 dark:text-gray-200">{{ feature }}</div>
-                        </div>
-                    </div-->
-
-                    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-                    <!-- Show selected price features -->
-                    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-                    <!--div v-if="price && price.features.length > 0">
-                        <div v-for="feature in price.features">
-                            <div v-if="feature === 'separator'" class="border-t border-gray-100 my-2 w-full"></div>
-                            <div v-else class="flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary-900 dark:text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                                <div class="ml-2 text-gray-600 dark:text-gray-200">{{ feature }}</div>
-                            </div>
-                        </div>
-                    </div-->
                     
                 </div>
 
+                <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+                <!-- Affichage de la souscription en cours -->
+                <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+                <div v-if="subscription && !updating 
+                    && readSubscriptionStatus !== 'pending'">
 
-                <div v-if="!updating && subscription">
-
-                    <div class="font-bold text-lg">
-                        {{ subscription.price.name }}
+                    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+                    <!-- Abonnement actuel -->
+                    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+                    <div class="">
+                        <span>
+                            Abonnement actuel :
+                        </span>
+                        <span class="font-bold">
+                            {{ subscription.price.name }}
+                        </span>
                     </div>
 
-                    <div class="text-lg mb-2">
-                        {{ $filters.number(subscription.price.amount, 2) }}
-                        <span v-if="subscription.price.interval === 'month'">€ HT / mois</span>
-                        <span v-if="subscription.price.interval === 'year'">€ HT / an</span>
-                    </div>
-                    
-                    <div v-if="subscription.is_on_trial"
-                        class="text-warning-500 font-bold">
-                        Votre période d'essai se terminera le {{ $filters.date(subscription.trial_ends_at, 'DD/MM/YYYY') }}
-                    </div>
-                    <div v-if="subscription.is_recurring"
-                        class="text-green-500 font-bold">
-                        Votre abonnement est actif depuis le {{ $filters.date(subscription.created_at, 'DD/MM/YYYY') }}
-                    </div>
-                    <div v-if="subscription.is_on_grace_period"
-                        class="text-red-500 font-bold">
-                        Votre abonnement se terminera le {{ $filters.date(subscription.ends_at, 'DD/MM/YYYY') }}
-                    </div>
-                    <div v-if="subscription.is_ended"
-                        class="text-red-500 font-bold">
-                        Votre abonnement est terminé depuis le {{ $filters.date(subscription.ends_at, 'DD/MM/YYYY') }}
-                    </div>
+                    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+                    <!-- Features -->
+                    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+                    <features :features="subscription.price.features" class="my-4" />
+
+                    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+                    <!-- Etat de l'abonnement -->
+                    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+                    <subscription-state :subscription="subscription" />
 
                 </div>
+
+                <request-state 
+                    :error="readSubscriptionError" 
+                    :status="readSubscriptionStatus" 
+                    message="Chargement de votre abonnement..."
+                    class="mt-2" />
+
+                <request-state 
+                    :error="createSubscriptionError" 
+                    :status="createSubscriptionStatus" 
+                    message="Création de votre abonnement..."
+                    class="mt-2" />
+
+                <!--request-state 
+                    :error="deleteSubscriptionError" 
+                    :status="deleteSubscriptionStatus" 
+                    message="Résiliation de votre abonnement..."
+                    class="mt-2" /-->
 
            </div>
         </template>
 
         <template #actions>
-
-            <error :errors="readSubscriptionError" class="inline-block" />
-            <error :errors="createSubscriptionError" class="inline-block" />
-            <error :errors="deleteSubscriptionError" class="inline-block" />
 
             <!--div class="alert alert-green mr-3" 
                 v-if="createSubscriptionStatus === 'success'">
@@ -139,11 +132,11 @@
 
             <template v-if="subscription && !updating">
 
-                <a href="/app"
+                <!--a href="/app"
                     class="btn btn-primary"
                     v-if="subscription.is_active">
                     Accéder à l'application
-                </a>
+                </a-->
 
                 <button 
                     type="button"
@@ -156,10 +149,8 @@
                     v-if="!subscription.is_cancelled"
                     type="button"
                     class="btn btn-red"
-                    :class="{ 'opacity-25': (deleteSubscriptionStatus === 'pending') }"
-                    :disabled="deleteSubscriptionStatus === 'pending'"
-                    @click="deleteSubscription">
-                    Résilier
+                    @click="openDeleteSubscription">
+                    Résilier...
                 </button>
 
             </template>
@@ -187,21 +178,67 @@
 
         </template>
     </form-section>
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- Delete Dialog -->
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <dialog-form 
+        ref="deleteSubscriptionDialog"
+        type="danger"
+        title="Résilier votre abonnement"
+        button="Résilier"
+        cancel-text="Ne pas résilier"
+        max-width-class="max-w-screen-md"
+        :callback="deleteSubscription">
+        <template #content>
+            <div>
+                La résiliation de votre abonnement prendra effet à la date de prochaine facturation.
+                Votre équipe peut continuer à utiliser le service jusqu'à la fin de cette période.
+            </div>
+            <div class="h-px my-4 bg-gray-200"></div>
+            <div>
+                La résiliation de votre abonnement ne supprime pa votre compte : 
+                si vous choisissez de reprendre un abonnement plus tard, vous retrouverez les membres de votre équipe et les données associées à votre compte.
+            </div>
+            <div class="h-px my-4 bg-gray-200"></div>
+            <div>
+                Si vous souhaitez résilier et être facturé immédiatement, vous pouvez cocher la case  ci-dessous.
+                Votre équipe ne pourra plus utiliser le service jusqu'au bout de la période en cours.
+            </div>
+            <label class="mt-4 flex items-center gap-2"
+                for="cancel-now">
+                <input 
+                    id="cancel-now"
+                    type="checkbox" 
+                    class="form-checkbox" 
+                    name="cancel-now"
+                    v-model="deleteSubscriptionDialog.data.cancel_now">
+                <div>
+                    Résilier et facturer immédiatement
+                </div>
+            </label>
+        </template>
+    </dialog-form>
+
 </template>
 
 <script>
     import { defineComponent, ref, computed, onMounted } from 'vue'
     import { useForm } from '../../Functions/useForm'
     import CheckPaymentMethod from './CheckPaymentMethod'
+    import SubscriptionState from './SubscriptionState'
+    import Features from './Features'
     import FormSection from '../../Components/FormSection'
-    import Error from '../../Components/Error'
+    import DialogForm from '../../Components/DialogForm'
     import find from 'lodash/find'
     
     export default defineComponent({
         components: {
             CheckPaymentMethod,
+            SubscriptionState,
+            Features,
             FormSection,
-            Error,
+            DialogForm,
         },
 
         props: {
@@ -213,8 +250,8 @@
             },
         },
 
-        setup(props) {
-
+        setup(props)
+        {
             // ---------------------------------------------------
             //  Selected a default price
             // ---------------------------------------------------
@@ -234,7 +271,7 @@
 
             function readSubscription()
             {
-                readSubscriptionParams.value.name = props.product.product_id;
+                readSubscriptionParams.value.product_id = props.product.product_id;
                 readSubscriptionSend('get', '/subscription').then(r => {
                     subscription.value = r.data;
                     if(!r.data){
@@ -255,13 +292,12 @@
                 data: createSubscriptionData,
             } = useForm();
 
-            createSubscriptionData.value.coupon = null;
+            createSubscriptionData.value.promo_code = null;
 
             function createSubscription()
             {
-                createSubscriptionData.value.name = props.product.product_id;
-                createSubscriptionData.value.product = props.product.product_id;
-                createSubscriptionData.value.price = price.value.price_id;
+                createSubscriptionData.value.product_id = props.product.product_id;
+                createSubscriptionData.value.price_id = price.value.price_id;
                 
                 createSubscriptionSend('post', '/subscription').then(r => {
                     readSubscription();
@@ -272,17 +308,28 @@
             // ---------------------------------------------------
             //  Delete subscription
             // ---------------------------------------------------
-            const { 
+            const deleteSubscriptionDialog = ref(null);
+
+            /*const { 
                 status: deleteSubscriptionStatus,
                 error: deleteSubscriptionError,
                 send: deleteSubscriptionSend,
                 data: deleteSubscriptionData,
-            } = useForm();
+            } = useForm();*/
+
+            function openDeleteSubscription()
+            {
+                deleteSubscriptionDialog.value.data = {
+                    name: props.product.product_id,
+                    cancel_now: false,   
+                };
+                deleteSubscriptionDialog.value.open();
+            }
 
             function deleteSubscription()
             {
-                deleteSubscriptionData.value.name = props.product.product_id;
-                deleteSubscriptionSend('delete', '/subscription').then(r => {
+                deleteSubscriptionDialog.value.send('delete', '/subscription').then(r => {
+                    deleteSubscriptionDialog.value.close();
                     readSubscription();
                 });
             }
@@ -296,8 +343,6 @@
             {
                 createSubscriptionStatus.value = null;
                 createSubscriptionError.value = null;
-                deleteSubscriptionStatus.value = null;
-                deleteSubscriptionError.value = null;
                 updating.value = show;
             }
 
@@ -320,10 +365,12 @@
                 createSubscriptionData,
                 createSubscription,
 
-                deleteSubscriptionStatus,
+                deleteSubscriptionDialog,
+                /*deleteSubscriptionStatus,
                 deleteSubscriptionError,
                 deleteSubscriptionSend,
-                deleteSubscriptionData,
+                deleteSubscriptionData,*/
+                openDeleteSubscription,
                 deleteSubscription,
             };
         }

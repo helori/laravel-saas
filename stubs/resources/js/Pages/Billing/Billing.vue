@@ -2,8 +2,7 @@
     <div>
         <div class="max-w-7xl mx-auto sm:py-10 sm:px-6 lg:px-8">
 
-            <template v-for="product in products"
-                :key="product.product_id">
+            <template v-for="product in products">
                 <subscription-form 
                     :user="user"
                     :product="product" />

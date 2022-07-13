@@ -58,7 +58,7 @@
                 Enregistré !
             </div>
 
-            <error :errors="updateError" class="mr-3" />
+            <request-error :error="updateError" class="mr-3" />
 
             <button
                 type="submit"
@@ -76,12 +76,10 @@
     import { defineComponent } from 'vue'
     import { useForm } from '../../Functions/useForm'
     import FormSection from '../../Components/FormSection'
-    import Error from '../../Components/Error'
     
     export default defineComponent({
         components: {
             FormSection,
-            Error,
         },
 
         props: {

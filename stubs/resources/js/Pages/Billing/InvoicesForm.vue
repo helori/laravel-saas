@@ -60,12 +60,10 @@
 import { defineComponent, ref, computed, onMounted } from 'vue'
 import { useForm } from '../../Functions/useForm'
 import FormSection from '../../Components/FormSection'
-import Error from '../../Components/Error'
 
 export default defineComponent({
     components: {
         FormSection,
-        Error,
     },
 
     props: {

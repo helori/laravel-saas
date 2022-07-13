@@ -12,9 +12,14 @@ import { createApp, h, ref, provide } from 'vue';
 import { createRouter, createWebHistory, createWebHashHistory } from 'vue-router';
 
 import AppLayout from './Pages/AppLayout.vue'
+
 import Loader from './Components/Loader'
-import ErrorMessage from './Components/Error'
+import Alert from './Components/Alert'
 import DialogModal from './Components/DialogModal'
+
+import RequestError from './Components/RequestError'
+import RequestStatus from './Components/RequestStatus'
+import RequestState from './Components/RequestState'
 
 import routesSaas from './routes-saas.js'
 import routesApp from './routes-app.js'
@@ -64,12 +69,12 @@ if(document.getElementById("vue-app"))
 
             function headerClassFromType(type)
             {
-                if(type === 'success') { return 'bg-green-200'; }
-                if(type === 'error') { return 'bg-red-200'; }
-                if(type === 'danger') { return 'bg-red-200'; }
-                if(type === 'warning') { return 'bg-yellow-200'; }
-                if(type === 'info') { return 'bg-blue-200'; }
-                if(type === 'default') { return 'bg-primary-200'; }
+                if(type === 'success') { return 'bg-green-500'; }
+                if(type === 'error') { return 'bg-red-500'; }
+                if(type === 'danger') { return 'bg-red-500'; }
+                if(type === 'warning') { return 'bg-yellow-500'; }
+                if(type === 'info') { return 'bg-blue-500'; }
+                if(type === 'default') { return 'bg-primary'; }
                 return 'bg-gray-100';
             }
 
@@ -84,9 +89,16 @@ if(document.getElementById("vue-app"))
     });
 
     app.config.globalProperties.$filters = filters;
+    
     app.component('loader', Loader);
-    app.component('error', ErrorMessage);
+    app.component('alert', Alert);
     app.component('dialog-modal', DialogModal);
+
+    app.component('request-error', RequestError);
+    app.component('request-status', RequestStatus);
+    app.component('request-state', RequestState);
+    
+    //app.provide('openDialogMessage', openDialogMessage);
     app.use(router).mount('#vue-app');
 }
 

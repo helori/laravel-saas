@@ -56,9 +56,9 @@
 
         <template #actions>
 
-            <error :errors="readTeamError" class="inline-block" />
-            <error :errors="updateError" class="inline-block" />
-            <error :errors="readTeamsError" class="inline-block" />
+            <request-error :error="readTeamError" class="inline-block" />
+            <request-error :error="updateError" class="inline-block" />
+            <request-error :error="readTeamsError" class="inline-block" />
 
             <div class="alert alert-green" 
                 v-if="updateStatus === 'success'">
@@ -121,7 +121,7 @@
 
         <template #footer>
 
-            <error :errors="switchError" class="inline-block mr-3" />
+            <request-error :error="switchError" class="inline-block mr-3" />
 
             <button 
                 type="button"
@@ -147,14 +147,10 @@
     import { defineComponent, ref, onMounted } from 'vue'
     import { useForm } from '../../Functions/useForm'
     import FormSection from '../../Components/FormSection'
-    import Error from '../../Components/Error'
-    import DialogModal from '../../Components/DialogModal'
     
     export default defineComponent({
         components: {
             FormSection,
-            DialogModal,
-            Error,
         },
 
         props: {

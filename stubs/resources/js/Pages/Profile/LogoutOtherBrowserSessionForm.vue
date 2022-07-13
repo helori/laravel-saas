@@ -62,7 +62,7 @@
                 Déconnecter les autres sessions
             </button>
 
-            <error :errors="logoutError" />
+            <request-error :error="logoutError" />
 
             <dialog-modal 
                 :show="confirmingLogout" 
@@ -90,7 +90,7 @@
 
                 <template #footer>
 
-                    <error :errors="logoutError" class="inline-block mr-3" />
+                    <request-error :error="logoutError" class="inline-block mr-3" />
 
                     <button 
                         type="button"
@@ -119,15 +119,11 @@
     import { defineComponent, ref, onMounted } from 'vue'
     import { useForm } from '../../Functions/useForm'
     import FormSection from '../../Components/FormSection'
-    import Error from '../../Components/Error'
-    import DialogModal from '../../Components/DialogModal'
     
     export default defineComponent({
 
         components: {
             FormSection,
-            Error,
-            DialogModal,
         },
 
         props: {

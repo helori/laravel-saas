@@ -44,8 +44,8 @@
 
         <template #actions>
 
-            <error :errors="createError" class="inline-block" />
-            <error :errors="deleteError" class="inline-block" />
+            <request-error :error="createError" class="inline-block" />
+            <request-error :error="deleteError" class="inline-block" />
 
             <button 
                 v-if="!apiKeyInfo"
@@ -73,12 +73,10 @@
     import { defineComponent, ref, onMounted } from 'vue'
     import { useForm } from '../../Functions/useForm'
     import FormSection from '../../Components/FormSection'
-    import Error from '../../Components/Error'
     
     export default defineComponent({
         components: {
             FormSection,
-            Error,
         },
 
         props: {

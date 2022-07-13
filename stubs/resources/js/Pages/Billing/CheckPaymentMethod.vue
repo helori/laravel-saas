@@ -25,8 +25,8 @@
 
             <template #footer>
 
-                <error :errors="readError" class="inline-block mr-3" />
-                <error :errors="updateError" class="inline-block mr-3" />
+                <request-error :error="readError" class="inline-block mr-3" />
+                <request-error :error="updateError" class="inline-block mr-3" />
 
                 <button 
                     type="button"
@@ -51,17 +51,10 @@
 <script>
     import { defineComponent, ref, nextTick } from 'vue'
     import { useForm } from '../../Functions/useForm'
-    import DialogModal from '../../Components/DialogModal.vue'
-    import Error from '../../Components/Error.vue'
     
     export default defineComponent({
         
         emits: ['checked'],
-
-        components: {
-            DialogModal,
-            Error,
-        },
 
         setup(){
 

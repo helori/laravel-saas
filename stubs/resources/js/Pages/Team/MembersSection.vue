@@ -213,13 +213,15 @@
         type="danger"
         title="Supprimer l'utilisateur"
         button="Supprimer"
+        max-width-class="max-w-screen-md"
         :callback="destroy">
         <template #content>
-            <alert type="danger">
+            <div class="font-semibold text-red-600">
                 Vous êtes sur le point de supprimer définitivement l'utilisateur : 
                 <strong>{{ destroyDialog.data.firstname }} {{ destroyDialog.data.lastname }}</strong>.
+                Toutes les données associées à son compte seront définitivement supprimées.
                 Voulez-vous vraiment continuer ?
-            </alert>
+            </div>
         </template>
     </dialog-form>
 </template>
@@ -237,8 +239,6 @@ import ListFooter from '../../Components/ListFooter'
 import TableSortLabel from '../../Components/TableSortLabel'
 
 import FormSection from '../../Components/FormSection'
-import Alert from '../../Components/Alert'
-import Error from '../../Components/Error'
 import DialogForm from '../../Components/DialogForm'
 
 import FormMemberCreate from './FormMemberCreate'
@@ -251,8 +251,6 @@ export default defineComponent({
         ListHeader,
         ListFooter,
         TableSortLabel,
-        Alert,
-        Error,
         DialogForm,
         FormSection,
         PencilAltIcon,

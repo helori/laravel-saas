@@ -87,8 +87,8 @@
 
         <template #actions>
 
-            <error :errors="readTeamError" class="inline-block" />
-            <error :errors="updateError" class="inline-block" />
+            <request-error :error="readTeamError" class="inline-block" />
+            <request-error :error="updateError" class="inline-block" />
 
             <div class="alert alert-green" 
                 v-if="updateStatus === 'success'">
@@ -114,13 +114,11 @@
 import { defineComponent, ref, computed, onMounted } from 'vue'
 import { useForm } from '../../Functions/useForm'
 import FormSection from '../../Components/FormSection'
-import Error from '../../Components/Error'
 import { countries } from 'countries-list'
 
 export default defineComponent({
     components: {
         FormSection,
-        Error,
     },
 
     props: {

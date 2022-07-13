@@ -1,11 +1,11 @@
 <template>
-    <div class="py-2 px-3 rounded-md font-semibold border"
+    <div class="py-3 px-4 rounded-md font-medium border"
         :class="{
-            'bg-blue-100 border-primary-300 text-blue-600': (type === 'primary'),
-            'bg-green-100 border-green-300 text-green-600': (type === 'success'),
-            'bg-yellow-100 border-yellow-300 text-yellow-600': (type === 'warning'),
-            'bg-red-100 border-red-300 text-red-700': (type === 'danger'),
-            'bg-blue-100 border-blue-300 text-blue-600': (type === 'info'),
+            'bg-primary-100 border-primary-500 text-primary-700': (type === 'primary'),
+            'bg-green-100 border-green-500 text-green-800': (type === 'success'),
+            'bg-yellow-100 border-yellow-500 text-yellow-700': (type === 'warning'),
+            'bg-red-100 border-red-600 text-red-800': (type === 'danger'),
+            'bg-blue-100 border-primary-500 text-blue-700': (type === 'info'),
         }">
         <slot></slot>
     </div>

@@ -1,7 +1,6 @@
 <template>
 
-    <div class="absolute inset-x-0 bottom-0 overflow-y-scroll flex items-center justify-center"
-        style="top: 88px">
+    <div class="offset-nav-top absolute inset-x-0 bottom-0 overflow-y-scroll flex items-center justify-center">
 
         <div v-if="!user.is_root"
             class="p-10">
@@ -16,7 +15,7 @@
             <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
             <list-header
                 class="mb-2"
-                title="Administrateur"
+                title="Clients"
                 v-model:search="readCommonParams.search">
             </list-header>
 
@@ -155,7 +154,7 @@ export default defineComponent({
             locked,
         } = useList(read);
 
-        storageKey.value = 'teams';
+        storageKey.value = 'admin-teams';
         locked.value = true;
         readCommonParams.limit = 10;
         locked.value = false;
