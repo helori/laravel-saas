@@ -24,23 +24,32 @@ abstract class SubscriptionBase extends ActionRequest
 
         if(!is_null($subscription))
         {
-            $priceId = $subscription['stripe_price'];
+            if($subscription->hasMultiplePrices())
+            {
+                $priceIds = $subscription->items->pluck('stripe_price')->all();
+            }
+            else
+            {
+                $priceIds = [$subscription['stripe_price']];
+            }
 
             $products = config('saas.products');
-            $product = Arr::first($products, function($product) use($priceId) {
-                $price = Arr::first($product['prices'], function($price) use($priceId) {
-                    return ($price['price_id'] === $priceId);
+            
+            $product = Arr::first($products, function($product) use($priceIds) {
+                $price = Arr::first($product['prices'], function($price) use($priceIds) {
+                    return in_array($price['price_id'], $priceIds);
                 });
                 return !is_null($price);
             });
 
-            $price = Arr::first($product['prices'], function($price) use($priceId) {
-                return ($price['price_id'] === $priceId);
-            });
+            $prices = array_values(Arr::where($product['prices'], function($price) use($priceIds) {
+                return in_array($price['price_id'], $priceIds);
+            }));
 
             // Return usefull information about the subscription and product to the user :
             $subscription->product = Arr::except($product, ['prices']);
-            $subscription->price = $price;
+            $subscription->price = (count($prices) > 0) ? $prices[0] : null;
+            $subscription->prices = $prices;
             $subscription->is_active = $subscription->active();
             $subscription->is_recurring = $subscription->recurring();
             $subscription->is_cancelled = $subscription->cancelled();

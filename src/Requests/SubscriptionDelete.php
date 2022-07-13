@@ -31,11 +31,19 @@ class SubscriptionDelete extends SubscriptionBase
         $billable = $this->user()->billable();
         $subscription = $billable->subscription($this->name);
 
-        if($cancelNow){
-            $subscription->cancelNow();
-        }else{
-            $subscription->cancel();
+        if($subscription)
+        {
+            if($cancelNow){
+                $subscription->cancelNow();
+            }else{
+                $subscription->cancel();
+            }
         }
+        else
+        {
+            abort(422, "Aucune souscription trouvée avec l'identifiant : ".$this->name);
+        }
+
         return $this->subscriptionWithInfos($this->name);
     }
 }

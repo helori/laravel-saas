@@ -45,7 +45,7 @@ class SubscriptionCreate extends SubscriptionBase
                 'email' => $this->user()->email,
             ]);
         }
-
+        
         $paymentMethod = $billable->defaultPaymentMethod();
 
         if(!$paymentMethod){
