@@ -25,7 +25,7 @@ class BrowserSessionDelete extends ActionRequest
             ]);
         }*/
 
-        $guard = Auth::guard();
+        $guard = Auth::guard('user');
         $guard->logoutOtherDevices($this->password);
 
         if (config('session.driver') === 'database')
