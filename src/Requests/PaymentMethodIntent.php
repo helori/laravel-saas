@@ -3,7 +3,7 @@
 namespace Helori\LaravelSaas\Requests;
 
 
-class CardIntent extends ActionRequest
+class PaymentMethodIntent extends ActionRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,6 +26,10 @@ class CardIntent extends ActionRequest
         if(!$billable->hasStripeId()){
             $billable->createAsStripeCustomer();
         }
-        return $billable->createSetupIntent();
+
+        // https://stripe.com/docs/api/setup_intents/create#create_setup_intent-payment_method_types
+        return $billable->createSetupIntent([
+            'payment_method_types' => ['card', 'sepa_debit'],
+        ]);
     }
 }

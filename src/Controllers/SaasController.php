@@ -21,10 +21,10 @@ use Helori\LaravelSaas\Requests\MemberDelete;
 use Helori\LaravelSaas\Requests\MemberInvite;
 use Helori\LaravelSaas\Requests\MemberLogin;
 
-use Helori\LaravelSaas\Requests\CardIntent;
-use Helori\LaravelSaas\Requests\CardRead;
-use Helori\LaravelSaas\Requests\CardUpdate;
-use Helori\LaravelSaas\Requests\CardDelete;
+use Helori\LaravelSaas\Requests\PaymentMethodIntent;
+use Helori\LaravelSaas\Requests\PaymentMethodRead;
+use Helori\LaravelSaas\Requests\PaymentMethodUpdate;
+use Helori\LaravelSaas\Requests\PaymentMethodDelete;
 
 use Helori\LaravelSaas\Requests\ProductList;
 
@@ -56,10 +56,10 @@ class SaasController extends BaseController
     public function memberInvite(MemberInvite $request, $teamId, $userId) { return $request->action(); }
     public function memberLogin(MemberLogin $request, $teamId, $userId) { return $request->action(); }
 
-    public function cardIntent(CardIntent $request) { return $request->action(); }
-    public function readCard(CardRead $request) { return $request->action(); }
-    public function updateCard(CardUpdate $request) { return $request->action(); }
-    public function deleteCard(CardDelete $request) { return $request->action(); }
+    public function paymentMethodIntent(PaymentMethodIntent $request) { return $request->action(); }
+    public function paymentMethodRead(PaymentMethodRead $request) { return $request->action(); }
+    public function paymentMethodUpdate(PaymentMethodUpdate $request) { return $request->action(); }
+    public function paymentMethodDelete(PaymentMethodDelete $request) { return $request->action(); }
 
     public function products(ProductList $request) { return $request->action(); }
 

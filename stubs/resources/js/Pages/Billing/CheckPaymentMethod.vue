@@ -1,25 +1,26 @@
 <template>
     <span>
-        <span @click="read">
+        <span @click="readPayment">
             <slot />
         </span>
 
         <dialog-modal 
             :show="updatingPaymentMethod" 
             @close="closeModal"
-            max-width-class="max-w-screen-sm">
+            max-width-class="max-w-screen-md">
+
             <template #title>
                 Moyen de paiement
             </template>
 
             <template #content>
 
-                <div class="max-w-xl text-sm text-gray-600 dark:text-gray-200 mb-2">
-                    Veuillez saisir le numéro de carte bancaire qui sera votre moyen de paiement par défaut :
+                <div class="text-gray-600 dark:text-gray-200 mb-2">
+                    Veuillez saisir votre moyen de paiement qui sera utilisé par défaut :
                 </div>
 
                 <!-- Stripe Elements Placeholder -->
-                <div id="card-element-check"></div>
+                <div id="payment-element-check"></div>
 
             </template>
 
@@ -30,21 +31,22 @@
 
                 <button 
                     type="button"
-                    class="btn btn-white"
+                    class="btn btn-gray"
+                    v-show="updateStatus !== 'pending'"
                     @click="closeModal">
                     Annuler
                 </button>
 
                 <button 
-                    id="card-button" 
-                    class="btn btn-primary ml-3"
-                    :disabled="updateStatus === 'pending'"
-                    @click="update">
-                    Enregistrer la carte
+                    class="btn btn-primary ml-2"
+                    :disabled="updateStatus === 'pending' || !valid"
+                    @click="updatePayment">
+                    Enregistrer
                 </button>
 
             </template>
         </dialog-modal>
+        
     </span>
 </template>
 
@@ -56,70 +58,26 @@
         
         emits: ['checked'],
 
-        setup(){
+        setup(props, { emit }){
 
             const stripe = window.stripeKey ? Stripe(window.stripeKey) : null;
-            const cardElement = ref(null);
-            const intent = ref(null);
+            let elements = null;
 
-            const showForm = async () => {
-
-                await nextTick();
-
-                const elements = stripe.elements();
-                cardElement.value = elements.create('card', {
-                    hidePostalCode: true,
-                    hideIcon: false,
-                    iconStyle: 'solid',
-                    classes: {
-                        base: 'input appearance-none bg-white border-gray-300 dark:border-gray-500 dark:bg-gray-700 dark:text-gray-200 py-2 px-3 text-base border',
-                    },
-                    style: {
-                        base: {
-                            fontFamily: 'Nunito',
-                            '::placeholder': {
-                                color: '#94A3B8',
-                            },
-                        }
-                    }
-                });
-                cardElement.value.mount('#card-element-check');
-
-                cardElement.value.on('change', function(event) {
-                    if (event.error) {
-                        updateError.value = event.error;
-                    } else {
-                        updateError.value = null;
-                    }
-                });
-            }
-
+            const paymentElement = ref(null);
+            const paymentMethod = ref(null);
             const updatingPaymentMethod = ref(false);
+            const valid = ref(false);
+
+            const { 
+                status: intentStatus,
+                error: intentError,
+                send: intentSend,
+            } = useForm();
 
             const { 
                 status: readStatus,
                 error: readError,
                 send: readSend,
-            } = useForm();
-
-            function read(){
-                readSend('get', '/card').then(r => {
-                    if(r.data){
-                        this.$emit('checked')
-                    }else{
-                        updatingPaymentMethod.value = true;
-
-                        // https://stripe.com/docs/js/elements_object/create_element?type=card#elements_create-options
-
-                        showForm();
-                    }
-                });
-            }
-            
-            const { 
-                status: intentStatus,
-                error: intentError,
-                send: intentSend,
             } = useForm();
 
             const { 
@@ -129,31 +87,85 @@
                 send: updateSend,
             } = useForm();
 
+            const showForm = async () => {
 
-            async function update()
+                await nextTick();
+
+                intentSend('get', '/payment-method-intent').then(r => {
+
+                    elements = stripe.elements({
+                        clientSecret: r.data.client_secret,
+                        locale: 'fr',
+                        loader: 'auto',
+                        appearance: {
+                            theme: 'night',
+                            labels: 'floating',
+                            variables: {
+                                colorPrimary: '#43A6DA',
+                                fontFamily: 'Quicksand',
+                                /*colorBackground: '#ffffff',
+                                colorText: '#30313d',
+                                colorDanger: '#df1b41',
+                                spacingUnit: '2px',
+                                borderRadius: '4px',*/
+                            }
+                        },
+                        fonts: [
+                            {
+                                cssSrc: 'https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500',
+                            }
+                        ],
+                        
+                    });
+
+                    // https://stripe.com/docs/js/elements_object/create_payment_element
+                    paymentElement.value = elements.create('payment');
+                    paymentElement.value.mount('#payment-element-check');
+
+                    paymentElement.value.on('change', function(event) 
+                    {
+                        valid.value = event.complete;
+
+                        if (event.error) {
+                            updateError.value = event.error;
+                        } else {
+                            updateError.value = null;
+                        }
+                    });
+                });
+            }
+
+            function readPayment()
+            {
+                readSend('get', '/payment-method').then(r => {
+                    if(r.data){
+                        emit('checked');
+                        paymentMethod.value = r.data;
+                    }else{
+                        updatingPaymentMethod.value = true;
+                        showForm();
+                    }
+                });
+            }
+
+            async function updatePayment()
             {
                 updateStatus.value = 'pending';
 
-                await intentSend('get', '/card-intent').then(r => {
-                    intent.value = r.data.client_secret;
-                });
-
-                const { setupIntent, error } = await stripe.confirmCardSetup(
-                    intent.value, {
-                        payment_method: {
-                            card: cardElement.value,
-                            /*billing_details: {
-                                name: cardHolderName.value
-                            }*/
-                        }
+                // https://stripe.com/docs/js/setup_intents/confirm_setup
+                const { setupIntent, error } = await stripe.confirmSetup({
+                    elements, 
+                    redirect: 'if_required',
+                    confirmParams: {
+                        return_url: window.location.protocol + "//" + window.location.host,
                     }
-                );
+                });
 
                 if(setupIntent)
                 {
                     updateData.value.payment_method = setupIntent.payment_method;
-                    updateSend('put', '/card').then(r => {
-                        this.$emit('checked');
+                    updateSend('put', '/payment-method').then(r => {
+                        emit('checked');
                         closeModal();
                     });
                 }
@@ -169,28 +181,25 @@
             }
 
             return {
-                cardElement,
-                intent,
-                showForm,
-
+                paymentElement,
+                paymentMethod,
                 updatingPaymentMethod,
+                valid,
 
+                showForm,
+                closeModal,
+
+                readPayment,
                 readStatus,
                 readError,
-                readSend,
-                read,
-
+                
                 intentStatus,
                 intentError,
-                intentSend,
 
+                updatePayment,
                 updateData,
                 updateStatus,
                 updateError,
-                updateSend,
-                update,
-
-                closeModal,
             };
         },
     })

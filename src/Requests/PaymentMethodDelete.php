@@ -3,7 +3,7 @@
 namespace Helori\LaravelSaas\Requests;
 
 
-class CardDelete extends ActionRequest
+class PaymentMethodDelete extends ActionRequest
 {
     /**
      * Determine if the user is authorized to make this request.

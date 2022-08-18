@@ -3,7 +3,7 @@
 namespace Helori\LaravelSaas\Requests;
 
 
-class CardUpdate extends ActionRequest
+class PaymentMethodUpdate extends ActionRequest
 {
     /**
      * Determine if the user is authorized to make this request.

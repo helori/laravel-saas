@@ -85,6 +85,26 @@
                         </span>
                     </div>
 
+                    <div class="">
+                        <span>
+                            Démarré le :
+                        </span>
+                        <span class="font-bold">
+                            {{ $filters.date(subscription.start_date, 'DD/MM/YYYY') }}
+                            à {{ $filters.date(subscription.start_date, 'HH:mm') }}
+                        </span>
+                    </div>
+
+                    <div class="">
+                        <span>
+                            Période actuelle :
+                        </span>
+                        <span class="font-bold">
+                            du {{ $filters.date(subscription.current_period_start, 'DD/MM/YYYY') }}
+                            au {{ $filters.date(subscription.current_period_end, 'DD/MM/YYYY') }}
+                        </span>
+                    </div>
+
                     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
                     <!-- Features -->
                     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
@@ -195,16 +215,17 @@
                 La résiliation de votre abonnement prendra effet à la date de prochaine facturation.
                 Votre équipe peut continuer à utiliser le service jusqu'à la fin de cette période.
             </div>
-            <div class="h-px my-4 bg-gray-200"></div>
+            <div class="h-px my-4 bg-gray-500"></div>
+            <div>
+                Si vous souhaitez résilier et être facturé immédiatement, vous pouvez cocher la case ci-dessous.
+                Votre équipe ne pourra plus utiliser le service jusqu'au bout de la période en cours.
+            </div>
+            <div class="h-px my-4 bg-gray-500"></div>
             <div>
                 La résiliation de votre abonnement ne supprime pa votre compte : 
                 si vous choisissez de reprendre un abonnement plus tard, vous retrouverez les membres de votre équipe et les données associées à votre compte.
             </div>
-            <div class="h-px my-4 bg-gray-200"></div>
-            <div>
-                Si vous souhaitez résilier et être facturé immédiatement, vous pouvez cocher la case  ci-dessous.
-                Votre équipe ne pourra plus utiliser le service jusqu'au bout de la période en cours.
-            </div>
+
             <label class="mt-4 flex items-center gap-2"
                 for="cancel-now">
                 <input 

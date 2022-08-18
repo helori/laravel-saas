@@ -25,10 +25,10 @@ Route::group(['middleware' => ['web']], function ()
         Route::delete('/team/{teamId}/member/{memberId}', [SaasController::class, 'memberDelete']);
         Route::get('/team/{teamId}/member/{memberId}/login', [SaasController::class, 'memberLogin']);
 
-        Route::get('/card-intent', [SaasController::class, 'cardIntent']);
-        Route::get('/card', [SaasController::class, 'readCard']);
-        Route::put('/card', [SaasController::class, 'updateCard']);
-        Route::delete('/card', [SaasController::class, 'deleteCard']);
+        Route::get('/payment-method-intent', [SaasController::class, 'paymentMethodIntent']);
+        Route::get('/payment-method', [SaasController::class, 'paymentMethodRead']);
+        Route::put('/payment-method', [SaasController::class, 'paymentMethodUpdate']);
+        Route::delete('/payment-method', [SaasController::class, 'paymentMethodDelete']);
         
         Route::get('/products', [SaasController::class, 'products']);
 

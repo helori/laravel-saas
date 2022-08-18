@@ -11,20 +11,39 @@
         <template #form>
             <div class="col-span-6">
 
-                <div v-if="card && !showForm" class="mb-2">
-                    Votre moyen de paiement est une carte {{ card.card.brand }}
-                    terminant par {{ card.card.last4 }}
-                    et qui expire fin {{ $filters.date(card.card.exp_year + '-' + card.card.exp_month + '-01', 'MMMM', 'YYYY-M-DD') }} {{ card.card.exp_year }}
-                </div>
+                <alert 
+                    type="success"
+                    v-if="paymentMethod && !showForm">
+
+                    <div v-if="paymentMethod.type == 'card'">
+                        Votre moyen de paiement est une carte {{ paymentMethod.card.brand }}
+                        terminant par {{ paymentMethod.card.last4 }}
+                        qui expire fin 
+                        {{ $filters.date(paymentMethod.card.exp_year + '-' + paymentMethod.card.exp_month + '-01', 'MMMM', 'YYYY-M-DD') }} 
+                        {{ paymentMethod.card.exp_year }}
+                    </div>
+
+                    <div v-else-if="paymentMethod.type == 'sepa_debit'">
+                        Votre moyen de paiement est une autorisation de prélèvement SEPA enregistrée le 
+                        {{ $filters.date(paymentMethod.created, 'DD/MM/YYYY', 'X') }}
+                        pour le compte bancaire dont les 4 derniers chiffres sont
+                        {{ paymentMethod.sepa_debit.last4 }}.
+                    </div>
+
+                    <div v-else>
+                        {{ paymentMethod }}
+                    </div>
+
+                </alert>
 
                 <div v-show="showForm">
 
-                    <div class="max-w-xl text-sm text-gray-600 dark:text-gray-200 mb-2">
-                        Veuillez saisir le numéro de carte bancaire qui sera votre moyen de paiement par défaut :
+                    <div class="text-gray-600 dark:text-gray-200 mb-2">
+                        Veuillez renseigner votre moyen de paiement par défaut :
                     </div>
 
                     <!-- Stripe Elements Placeholder -->
-                    <div id="card-element"></div>
+                    <div id="payment-element"></div>
 
                 </div>
 
@@ -38,33 +57,75 @@
             <request-error :error="deleteError" class="inline-block" />
 
             <button 
-                v-show="card && !showForm"
-                id="card-button" 
+                v-show="paymentMethod && !showForm"
                 class="btn btn-primary"
                 @click="toggleForm(true)">
                 Modifier
             </button>
 
             <button 
-                v-show="card && !showForm"
-                id="card-button" 
+                v-show="paymentMethod && !showForm"
                 class="btn btn-red"
                 :disabled="deleteStatus === 'pending'"
-                @click="deleteCard">
-                Supprimer la carte
+                @click="openDialogConfirm">
+                Supprimer le moyen de paiement
             </button>
 
             <button 
                 v-show="showForm"
-                id="card-button" 
-                class="btn btn-primary"
+                class="btn btn-gray"
                 :disabled="updateStatus === 'pending'"
-                @click="updateCard">
-                Enregistrer la carte
+                @click="toggleForm(false)">
+                Annuler
+            </button>
+            
+            <button 
+                v-show="showForm"
+                class="btn btn-primary"
+                :disabled="updateStatus === 'pending' || !valid"
+                @click="updatePayment">
+                Enregistrer
             </button>
 
         </template>
     </form-section>
+
+    <dialog-modal
+        ref="dialogConfirm"
+        max-width-class="max-w-screen-sm"
+        header-class="bg-gray-100 dark:bg-gray-900 dark:text-red-400">
+        
+        <template #title>
+            Attention
+        </template>
+
+        <template #content>
+            <div class="text-red-500">
+                Vos souscriptions en cours seront suspendues si vous n'enregistrez pas de nouveau moyen de paiement d'ici votre prochaine échéance.
+                Voulez-vous vraiment supprimer votre moyen de paiement actuel ?
+            </div>
+        </template>
+        
+        <template #footer>
+            <div class="flex items-center justify-end gap-2">
+                <button 
+                    type="button"
+                    class="btn btn-gray"
+                    @click="closeDialogConfirm">
+                    Annuler
+                </button>
+
+                <button 
+                    type="button"
+                    class="btn btn-red"
+                    @click="confirmDialogConfirm">
+                    Supprimer
+                </button>
+            </div>
+        </template>
+
+    </dialog-modal>
+    
 </template>
 
 <script>
@@ -86,27 +147,28 @@
         setup(props) {
 
             const stripe = window.stripeKey ? Stripe(window.stripeKey) : null;
-            const cardElement = ref(null);
-            const card = ref(null);
-            const intent = ref(null);
-            const showForm = ref(false);
+            let elements = null;
 
+            const paymentElement = ref(null);
+            const paymentMethod = ref(null);
+            const valid = ref(null);
+            const showForm = ref(false);
+            
             const { 
                 status: readStatus,
                 error: readError,
                 send: readSend,
             } = useForm();
 
-            function readCard()
+            function readPayment()
             {
-                readSend('get', '/card').then(r => {
-                    card.value = r.data;
+                readSend('get', '/payment-method').then(r => {
+                    paymentMethod.value = r.data;
                     showForm.value = r.data ? false : true;
                 });
             }
 
-            onMounted(() => readCard());
-
+            onMounted(() => readPayment());
 
             const { 
                 status: intentStatus,
@@ -121,32 +183,25 @@
                 send: updateSend,
             } = useForm();
 
-
-            async function updateCard()
+            async function updatePayment()
             {
                 updateStatus.value = 'pending';
 
-                await intentSend('get', '/card-intent').then(r => {
-                    intent.value = r.data.client_secret;
-                });
-
-                const { setupIntent, error } = await stripe.confirmCardSetup(
-                    intent.value, {
-                        payment_method: {
-                            card: cardElement.value,
-                            /*billing_details: {
-                                name: cardHolderName.value
-                            }*/
-                        }
+                // https://stripe.com/docs/js/setup_intents/confirm_setup
+                const { setupIntent, error } = await stripe.confirmSetup({
+                    elements, 
+                    redirect: 'if_required',
+                    confirmParams: {
+                        return_url: window.location.protocol + "//" + window.location.host,
                     }
-                );
+                });
 
                 if(setupIntent)
                 {
                     updateData.value.payment_method = setupIntent.payment_method;
-                    updateSend('put', '/card').then(r => {
-                        readCard();
-                        cardElement.value.clear();
+                    updateSend('put', '/payment-method').then(r => {
+                        readPayment();
+                        paymentElement.value.clear();
                     });
                 }
                 else
@@ -167,68 +222,100 @@
                 send: deleteSend,
             } = useForm();
 
-            function deleteCard(){
-                deleteSend('delete', '/card').then(r => {
-                    readCard();
+            function deletePayment(){
+                deleteSend('delete', '/payment-method').then(r => {
+                    readPayment();
                 })
             }
 
             onMounted(() => {
 
-                // https://stripe.com/docs/js/elements_object/create_element?type=card#elements_create-options
+                intentSend('get', '/payment-method-intent').then(r => {
 
-                const elements = stripe.elements();
-                cardElement.value = elements.create('card', {
-                    hidePostalCode: true,
-                    hideIcon: false,
-                    iconStyle: 'solid',
-                    classes: {
-                        base: 'input appearance-none bg-white text-base border-gray-300 dark:border-gray-500 dark:bg-gray-700 dark:text-gray-200 dark:placeholder:text-gray-400 py-2 px-3 border',
-                    },
-                    style: {
-                        base: {
-                            fontFamily: 'Nunito',
-                            '::placeholder': {
-                                color: '#94A3B8',
-                            },
+                    elements = stripe.elements({
+                        clientSecret: r.data.client_secret,
+                        locale: 'fr',
+                        loader: 'auto',
+                        appearance: {
+                            theme: 'night',
+                            labels: 'floating',
+                            variables: {
+                                colorPrimary: '#43A6DA',
+                                fontFamily: 'Quicksand',
+                                /*colorBackground: '#ffffff',
+                                colorText: '#30313d',
+                                colorDanger: '#df1b41',
+                                spacingUnit: '2px',
+                                borderRadius: '4px',*/
+                            }
+                        },
+                        fonts: [
+                            {
+                                cssSrc: 'https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500',
+                            }
+                        ],
+                        
+                    });
+
+                    // https://stripe.com/docs/js/elements_object/create_payment_element
+                    paymentElement.value = elements.create('payment');
+                    paymentElement.value.mount('#payment-element');
+
+                    paymentElement.value.on('change', function(event) 
+                    {
+                        valid.value = event.complete;
+
+                        if (event.error) {
+                            updateError.value = event.error;
+                        } else {
+                            updateError.value = null;
                         }
-                    }
-                });
-                cardElement.value.mount('#card-element');
-
-                cardElement.value.on('change', function(event) {
-                    if (event.error) {
-                        updateError.value = event.error;
-                    } else {
-                        updateError.value = null;
-                    }
+                    });
                 });
             })
+
+            const dialogConfirm = ref(null);
+
+            function openDialogConfirm()
+            {
+                dialogConfirm.value.open();
+            }
+
+            function closeDialogConfirm()
+            {
+                dialogConfirm.value.close();
+            }
+
+            function confirmDialogConfirm()
+            {
+                dialogConfirm.value.close();
+                deletePayment();
+            }
 
             return {
                 showForm,
                 toggleForm,
 
-                card,
+                paymentMethod,
+                paymentElement,
+                valid,
+                
+                readPayment,
                 readStatus,
                 readError,
-                readSend,
-                readCard,
-
-                intent,
-                cardElement,
-                //cardHolderName,
                 
-                updateData,
+                updatePayment,
                 updateStatus,
                 updateError,
-                updateSend,
-                updateCard,
 
+                deletePayment,
                 deleteStatus,
                 deleteError,
-                deleteSend,
-                deleteCard,
+
+                dialogConfirm,
+                openDialogConfirm,
+                closeDialogConfirm,
+                confirmDialogConfirm,
             }
         }
     })
