@@ -74,12 +74,18 @@ class SubscriptionCreate extends SubscriptionBase
             {
                 $subscription->trialDays(intVal($product['trial_days']));
             }
-
+            
+            // ---------------------------------------------------------------
+            //  Quantity
+            // ---------------------------------------------------------------
             if($this->has('quantity'))
             {
                 $subscription->quantity($this->quantity);
             }
 
+            // ---------------------------------------------------------------
+            //  Promotion
+            // ---------------------------------------------------------------
             if($this->has('promotion_code'))
             {
                 $promotion = $billable->findPromotionCode($this->promotion_code);
