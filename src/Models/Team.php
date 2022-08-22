@@ -31,6 +31,15 @@ class Team extends Model
     ];
 
     /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'trial_ends_at' => 'datetime',
+    ];
+
+    /**
      * The event map for the model.
      *
      * @var array
@@ -39,11 +48,23 @@ class Team extends Model
 
     ];
 
-    /**
-     * Stripe customer details (country used to calculate tax rate)
-     */
     protected static function booted()
     {
+        /**
+         * This defines the "generic" trial period for a team,
+         * regardless of the subscription / product
+         */
+        static::creating(function($team)
+        {
+            $trialDays = config('saas.trial_days');
+            if($trialDays){
+                $team->trial_ends_at = now()->addDays($trialDays);
+            }
+        });
+
+        /**
+         * Stripe customer details (country used to calculate tax rate)
+         */
         static::updated(function ($billable)
         {
             if ($billable->hasStripeId())

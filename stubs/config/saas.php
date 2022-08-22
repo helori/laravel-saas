@@ -5,6 +5,8 @@ return [
     'user_model' => App\Models\User::class,
     'team_model' => App\Models\Team::class,
 
+    'trial_days' => 0,
+
     // Les différents produits vendus dans l'application,
     // chacun ayant ses propres plans (Standard, Premium...), 
     // qui peuvent eux-mêmes avoir leurs propres prix (mensuel, annuel, ...)
