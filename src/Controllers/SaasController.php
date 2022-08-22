@@ -34,6 +34,8 @@ use Helori\LaravelSaas\Requests\SubscriptionDelete;
 
 use Helori\LaravelSaas\Requests\InvoiceList;
 
+use Helori\LaravelSaas\Requests\PromotionRead;
+
 
 class SaasController extends BaseController
 {
@@ -68,4 +70,6 @@ class SaasController extends BaseController
     public function deleteSubscription(SubscriptionDelete $request) { return $request->action(); }
 
     public function invoiceList(InvoiceList $request) { return $request->action(); }
+
+    public function readPromotion(PromotionRead $request) { return $request->action(); }
 }

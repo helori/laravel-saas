@@ -37,6 +37,8 @@ Route::group(['middleware' => ['web']], function ()
         Route::delete('/subscription', [SaasController::class, 'deleteSubscription']);
 
         Route::get('/invoice', [SaasController::class, 'invoiceList']);
+
+        Route::get('/promotion', [SaasController::class, 'readPromotion']);
     });
 });
 

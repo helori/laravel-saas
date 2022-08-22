@@ -60,10 +60,24 @@
                         <input
                             id="promo_code"
                             type="text"
-                            v-model="createSubscriptionData.promo_code"
-                            class="input col-span-7 w-full"
-                            placeholder="Entrez votre code...">
+                            v-model="code"
+                            class="input col-span-4 w-full"
+                            placeholder="Entrez votre code..."
+                            @update:modelValue="resetCode">
+                        <button
+                            type="button"
+                            class="btn btn-primary col-span-3"
+                            @click="verifyCode">
+                            Appliquer
+                        </button>
                     </div>
+
+                    <div v-if="promotion"
+                        class="mt-2 grid grid-cols-10 offset-3 items-center gap-2">
+                        <div class="col-start-4 col-span-7">
+                            <promotion :promotion="promotion" />
+                        </div>
+                    </div>                    
                     
                 </div>
 
@@ -105,6 +119,10 @@
                         </span>
                     </div>
 
+                    <promotion 
+                        v-if="subscription.active_discount"
+                        :promotion="subscription.active_discount" />
+
                     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
                     <!-- Features -->
                     <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
@@ -127,6 +145,12 @@
                     :error="createSubscriptionError" 
                     :status="createSubscriptionStatus" 
                     message="Création de votre abonnement..."
+                    class="mt-2" />
+
+                <request-state 
+                    :error="readCodeError" 
+                    :status="readCodeStatus" 
+                    message="Chargement de votre remise..."
                     class="mt-2" />
 
                 <!--request-state 
@@ -249,6 +273,7 @@
     import CheckPaymentMethod from './CheckPaymentMethod'
     import SubscriptionState from './SubscriptionState'
     import Features from './Features'
+    import Promotion from './Promotion'
     import FormSection from '../../Components/FormSection'
     import DialogForm from '../../Components/DialogForm'
     import find from 'lodash/find'
@@ -258,6 +283,7 @@
             CheckPaymentMethod,
             SubscriptionState,
             Features,
+            Promotion,
             FormSection,
             DialogForm,
         },
@@ -313,16 +339,22 @@
                 data: createSubscriptionData,
             } = useForm();
 
-            createSubscriptionData.value.promo_code = null;
-
             function createSubscription()
             {
                 createSubscriptionData.value.product_id = props.product.product_id;
                 createSubscriptionData.value.price_id = price.value.price_id;
+
+                if(code.value){
+                    createSubscriptionData.value.promotion_code = code.value;
+                }
                 
                 createSubscriptionSend('post', '/subscription').then(r => {
+                    
                     readSubscription();
+
                     updating.value = false;
+                    code.value = null;
+                    resetCode();
                 });
             }
 
@@ -330,13 +362,6 @@
             //  Delete subscription
             // ---------------------------------------------------
             const deleteSubscriptionDialog = ref(null);
-
-            /*const { 
-                status: deleteSubscriptionStatus,
-                error: deleteSubscriptionError,
-                send: deleteSubscriptionSend,
-                data: deleteSubscriptionData,
-            } = useForm();*/
 
             function openDeleteSubscription()
             {
@@ -367,6 +392,39 @@
                 updating.value = show;
             }
 
+            // ---------------------------------------------------
+            //  Verify promo code
+            // ---------------------------------------------------
+            const code = ref(null);
+            const promotion = ref(null);
+
+            const { 
+                status: readCodeStatus,
+                error: readCodeError,
+                send: readCodeSend,
+                params: readCodeParams,
+            } = useForm();
+
+            function verifyCode()
+            {
+                promotion.value = null;
+
+                readCodeParams.value = {
+                    code: code.value,
+                };
+
+                readCodeSend('get', '/promotion').then(r => {
+                    promotion.value = r.data;
+                });
+            };
+
+            function resetCode()
+            {
+                promotion.value = null;
+                readCodeStatus.value = null;
+                readCodeError.value = null;
+            }
+
             return {
                 price,
                 subscription,
@@ -387,12 +445,16 @@
                 createSubscription,
 
                 deleteSubscriptionDialog,
-                /*deleteSubscriptionStatus,
-                deleteSubscriptionError,
-                deleteSubscriptionSend,
-                deleteSubscriptionData,*/
                 openDeleteSubscription,
                 deleteSubscription,
+
+                code,
+                promotion,
+                verifyCode,
+                resetCode,
+                readCodeStatus,
+                readCodeError,
+                readCodeParams,
             };
         }
     })

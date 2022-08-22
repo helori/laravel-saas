@@ -19,8 +19,7 @@ class SubscriptionCreate extends SubscriptionBase
             'product' => 'required|string',
             'price' => 'required|string',
             'quantity' => 'sometimes|integer|min:1',
-            'coupon' => 'sometimes|string|nullable',
-            'promo_code' => 'sometimes|string',
+            'promotion_code' => 'sometimes|string',
             //'payment_method' => 'required|string',
         ];
     }
@@ -60,7 +59,7 @@ class SubscriptionCreate extends SubscriptionBase
         $product = Arr::first($products, function($product) use($productId) {
             return ($product['product_id'] === $productId);
         }, null);
-
+        
         $price = Arr::first($product['prices'], function($price) use($priceId) {
             return ($price['price_id'] === $priceId);
         }, null);
@@ -81,14 +80,13 @@ class SubscriptionCreate extends SubscriptionBase
                 $subscription->quantity($this->quantity);
             }
 
-            if($this->has('coupon') && $this->coupon)
+            if($this->has('promotion_code'))
             {
-                $subscription->withCoupon($this->coupon);
-            }
-
-            if($this->has('promo_code'))
-            {
-                $subscription->withPromotionCode($this->promo_code);
+                $promotion = $billable->findPromotionCode($this->promotion_code);
+                if(!$promotion){
+                    abort(422, "Code promotionnel introuvable");
+                }
+                $subscription->withPromotionCode($promotion->id);
             }
             
             $subscription->add(); // If the user already has a default payment method

@@ -56,6 +56,11 @@ abstract class SubscriptionBase extends ActionRequest
             $subscription->is_ended = $subscription->ended();
             $subscription->is_on_grace_period = $subscription->onGracePeriod();
             $subscription->is_on_trial = $subscription->onTrial();
+
+            $subscription->active_discount = $subscription->discount();
+            if($subscription->active_discount){
+                $subscription->active_coupon = $subscription->active_discount->coupon();
+            }
         }
 
         return $subscription;
