@@ -153,5 +153,9 @@ class SaasServiceProvider extends ServiceProvider
                 'request' => $request,
             ]);
         });
+
+        Fortify::verifyEmailView(function () {
+            return view('saas::auth.verify-email');
+        });
     }
 }

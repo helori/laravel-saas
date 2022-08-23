@@ -5,7 +5,7 @@ use Helori\LaravelSaas\Controllers\SaasController;
 
 Route::group(['middleware' => ['web']], function ()
 {
-    Route::group(['middleware' => 'auth:sanctum'], function ()
+    Route::group(['middleware' => ['auth:sanctum', 'verified']], function ()
     {
         Route::get('/browser-session', [SaasController::class, 'readBrowserSession']);
         Route::delete('/browser-session', [SaasController::class, 'deleteBrowserSession']);//->middleware('password.confirm');
