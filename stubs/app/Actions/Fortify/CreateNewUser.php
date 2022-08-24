@@ -6,7 +6,9 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
+use Helori\LaravelSaas\Notifications\Admin\UserCreated;
 use App\Models\User;
+
 
 class CreateNewUser implements CreatesNewUsers
 {
@@ -39,13 +41,15 @@ class CreateNewUser implements CreatesNewUsers
             'lastname' => $input['lastname'],
             'email' => $input['email'],
             'password' => Hash::make($input['password']),
+            'activated' => true,
         ]);
-
-        // Initialize team...
-        /*$user = User::where('email', $input['email'])->firstOrFail();
-        $team = $user->currentTeam();
-        $team->save();*/
-
+        
+        // Notify roots
+        $root = User::where('is_root', true)->first();
+        $root->notify(new UserCreated($createdUser));
+        
+        // Team initialization is done in model class (booted method handling events)
+        
         return $createdUser;
     }
 }

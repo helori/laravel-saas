@@ -1,6 +1,6 @@
 <?php
 
-namespace Helori\LaravelSaas\Notifications;
+namespace Helori\LaravelSaas\Notifications\Auth;
 
 use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\MailMessage;

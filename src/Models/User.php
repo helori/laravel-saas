@@ -10,8 +10,8 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Sanctum\HasApiTokens;
 use Laravel\Cashier\Billable;
 use function Illuminate\Events\queueable;
-use App\Notifications\ResetPassword as ResetPasswordNotification;
-use App\Notifications\VerifyEmail as VerifyEmailNotification;
+use App\Notifications\Auth\ResetPassword as ResetPasswordNotification;
+use App\Notifications\Auth\VerifyEmail as VerifyEmailNotification;
 use Helori\LaravelSaas\Saas;
 
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Helori\LaravelSaas\Notifications;
+namespace Helori\LaravelSaas\Notifications\Auth;
 
 use Illuminate\Auth\Notifications\VerifyEmail as VerifyEmailBase;
 use Illuminate\Notifications\Messages\MailMessage;
