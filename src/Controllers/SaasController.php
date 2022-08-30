@@ -35,6 +35,7 @@ use Helori\LaravelSaas\Requests\SubscriptionDelete;
 use Helori\LaravelSaas\Requests\InvoiceList;
 
 use Helori\LaravelSaas\Requests\PromotionRead;
+use Helori\LaravelSaas\Requests\PromotionApply;
 
 
 class SaasController extends BaseController
@@ -72,4 +73,5 @@ class SaasController extends BaseController
     public function invoiceList(InvoiceList $request) { return $request->action(); }
 
     public function readPromotion(PromotionRead $request) { return $request->action(); }
+    public function applyPromotion(PromotionApply $request) { return $request->action(); }
 }

@@ -5,7 +5,7 @@
         </svg>
         <div>Remise de</div> 
         <div v-if="promotion.coupon.amount_off">
-            {{ $filters.number(promotion.coupon.amount_off, 0) }} €
+            {{ $filters.number(promotion.coupon.amount_off / 100, 2) }} €
         </div>
         <div v-if="promotion.coupon.percent_off">
             {{ $filters.number(promotion.coupon.percent_off, 0) }} %

@@ -39,6 +39,7 @@ Route::group(['middleware' => ['web']], function ()
         Route::get('/invoice', [SaasController::class, 'invoiceList']);
 
         Route::get('/promotion', [SaasController::class, 'readPromotion']);
+        Route::post('/promotion', [SaasController::class, 'applyPromotion']);
     });
 });
 

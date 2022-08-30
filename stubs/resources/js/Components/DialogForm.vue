@@ -27,7 +27,7 @@
                     'btn-primary': (type === 'primary'),
                     'btn-red': (type === 'danger'),
                 }"
-                :disabled="status === 'pending'"
+                :disabled="status === 'pending' || !enabled"
                 @click="request">
                 {{ button }}
             </button>
@@ -70,6 +70,10 @@
             callback: {
                 required: true,
             },
+            enabled: {
+                type: Boolean,
+                default: true,
+            }
         },
 
         setup(props, { emit })

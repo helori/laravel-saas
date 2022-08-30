@@ -63,7 +63,7 @@
                             v-model="code"
                             class="input col-span-4 w-full"
                             placeholder="Entrez votre code..."
-                            @update:modelValue="resetCode">
+                            @update:modelValue="resetPromotion">
                         <button
                             type="button"
                             class="btn btn-primary col-span-3"
@@ -77,7 +77,7 @@
                         <div class="col-start-4 col-span-7">
                             <promotion :promotion="promotion" />
                         </div>
-                    </div>                    
+                    </div>
                     
                 </div>
 
@@ -185,6 +185,13 @@
                 <button 
                     type="button"
                     class="btn btn-primary"
+                    @click="openPromotion">
+                    Appliquer une réduction
+                </button>
+
+                <button 
+                    type="button"
+                    class="btn btn-primary"
                     @click="setUpdating(true)">
                     {{ subscription.is_cancelled ? "Reprendre un abonnement" : "Changer d'abonnement" }}
                 </button>
@@ -262,6 +269,57 @@
                     Résilier et facturer immédiatement
                 </div>
             </label>
+        </template>
+    </dialog-form>
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- Promotion Dialog -->
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <dialog-form 
+        ref="promotionDialog"
+        type="primary"
+        title="Appliquer un code de réduction"
+        button="Appliquer"
+        cancel-text="Annuler"
+        max-width-class="max-w-screen-md"
+        :enabled="promotion !== null"
+        :callback="applyPromotion">
+        <template #content>
+            
+            <div class="grid grid-cols-10 items-center gap-2">
+                <label 
+                    for="promo_code_for_exiting_subscription"
+                    class="col-span-3 text-right">
+                    Code de réduction :
+                </label>
+                <input
+                    id="promo_code_for_exiting_subscription"
+                    type="text"
+                    v-model="code"
+                    class="input col-span-4 w-full"
+                    placeholder="Entrez votre code..."
+                    @update:modelValue="resetPromotion">
+                <button
+                    type="button"
+                    class="btn btn-primary col-span-3"
+                    @click="verifyCode">
+                    Vérifier le code
+                </button>
+            </div>
+
+            <div v-if="promotion"
+                class="mt-2 grid grid-cols-10 offset-3 items-center gap-2">
+                <div class="col-start-4 col-span-7">
+                    <promotion :promotion="promotion" />
+                </div>
+            </div>
+
+            <request-state 
+                :error="readCodeError" 
+                :status="readCodeStatus" 
+                message="Chargement de votre remise..."
+                class="mt-2" />
+
         </template>
     </dialog-form>
 
@@ -354,7 +412,7 @@
 
                     updating.value = false;
                     code.value = null;
-                    resetCode();
+                    resetPromotion();
                 });
             }
 
@@ -393,7 +451,9 @@
             }
 
             // ---------------------------------------------------
-            //  Verify promo code
+            //  Verify promo code :
+            //  - For a new subscription : in the subscription process
+            //  - For an existing subscription : in the dialog
             // ---------------------------------------------------
             const code = ref(null);
             const promotion = ref(null);
@@ -418,12 +478,40 @@
                 });
             };
 
-            function resetCode()
+            function resetPromotion()
             {
                 promotion.value = null;
                 readCodeStatus.value = null;
                 readCodeError.value = null;
             }
+
+            // ---------------------------------------------------
+            //  Apply promo code on existing subscription
+            // ---------------------------------------------------
+            const promotionDialog = ref(null);
+
+            function openPromotion()
+            {
+                resetPromotion();
+                promotionDialog.value.open();
+            }
+
+            function applyPromotion()
+            {
+                promotionDialog.value.data = {
+                    name: props.product.product_id,
+                    promotion_code: code.value,
+                };
+
+                promotionDialog.value.send('post', '/promotion').then(r => {
+                    promotionDialog.value.close();
+                    code.value = null;
+                    resetPromotion();
+                    readSubscription();
+                });
+            };
+            
+            // ---------------------------------------------------
 
             return {
                 price,
@@ -451,10 +539,14 @@
                 code,
                 promotion,
                 verifyCode,
-                resetCode,
                 readCodeStatus,
                 readCodeError,
                 readCodeParams,
+                resetPromotion,
+
+                promotionDialog,
+                openPromotion,
+                applyPromotion,
             };
         }
     })
