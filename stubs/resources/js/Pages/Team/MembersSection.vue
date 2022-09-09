@@ -16,7 +16,7 @@
         <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
         <!-- Body -->
         <!-- - - - - - - - - - - - - - - - - - -     - - - - - - - - - - - - -->
-        <div class="table-wrapper overflow-y-scroll"
+        <div class="table-wrapper overflow-y-scroll dark:text-white"
             v-if="pagination !== null">
             <table>
                 <thead>
@@ -92,12 +92,12 @@
                             </div>
                         </td>
                         <td>
-                            <span v-if="item.activated" class="text-green-600">
+                            <span v-if="item.activated" class="text-green-500">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
                             </span>
-                            <span v-if="!item.activated" class="text-red-600">
+                            <span v-if="!item.activated" class="text-red-500">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
@@ -216,6 +216,11 @@
         max-width-class="max-w-screen-md"
         :callback="destroy">
         <template #content>
+            <!--div>
+                Votre abonnement dépend du nombre de membres de votre équipe.
+                La suppression d'un membre sera prise en compte à votre prochaine échéance de facturation.
+            </div>
+            <div class="h-px my-4 bg-gray-200"></div-->
             <div class="font-semibold text-red-600">
                 Vous êtes sur le point de supprimer définitivement l'utilisateur : 
                 <strong>{{ destroyDialog.data.firstname }} {{ destroyDialog.data.lastname }}</strong>.
@@ -239,7 +244,6 @@ import ListFooter from '../../Components/ListFooter'
 import TableSortLabel from '../../Components/TableSortLabel'
 
 import FormSection from '../../Components/FormSection'
-import DialogForm from '../../Components/DialogForm'
 
 import FormMemberCreate from './FormMemberCreate'
 import FormMemberUpdate from './FormMemberUpdate'
@@ -251,7 +255,6 @@ export default defineComponent({
         ListHeader,
         ListFooter,
         TableSortLabel,
-        DialogForm,
         FormSection,
         PencilAltIcon,
         TrashIcon,
@@ -329,6 +332,7 @@ export default defineComponent({
                 email: null,
                 phone: null,
                 role: 'member',
+                has_password: false,
                 password: null,
                 password_confirmation: null,
                 activated: true,
@@ -338,11 +342,11 @@ export default defineComponent({
 
         function create(){
 
-            if(!createDialog.value.data.password){
+            /*if(!createDialog.value.data.password){
                 var dummyPasswordNobodyKnows = Math.random().toString(36).substr(2, 8);
                 createDialog.value.data.password = dummyPasswordNobodyKnows;
                 createDialog.value.data.password_confirmation = dummyPasswordNobodyKnows;
-            }
+            }*/
 
             return createDialog.value.send('post', '/team/' + props.user.current_team.id + '/member').then(r => {
                 createDialog.value.close();

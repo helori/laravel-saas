@@ -24,6 +24,7 @@ Route::group(['middleware' => ['web']], function ()
         Route::put('/team/{teamId}/member/{memberId}', [SaasController::class, 'memberUpdate']);
         Route::delete('/team/{teamId}/member/{memberId}', [SaasController::class, 'memberDelete']);
         Route::get('/team/{teamId}/member/{memberId}/login', [SaasController::class, 'memberLogin']);
+        Route::post('/team/{teamId}/member/{memberId}/invite', [SaasController::class, 'memberInvite']);
 
         Route::get('/payment-method-intent', [SaasController::class, 'paymentMethodIntent']);
         Route::get('/payment-method', [SaasController::class, 'paymentMethodRead']);

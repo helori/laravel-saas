@@ -1,5 +1,12 @@
 <template>
-    <div>
+    <form autocomplete="off">
+
+        <!--div class="font-semibold">
+            Votre abonnement dépend du nombre de membres de votre équipe.
+            L'ajout d'un membre sera pris en compte à votre prochaine échéance de facturation.
+        </div>
+
+        <div class="h-px my-4 bg-gray-200"></div-->
 
         <div class="grid md:grid-cols-2 gap-2 md:gap-6">
             <div>
@@ -8,8 +15,8 @@
                 </div>
                 <input 
                     required
+                    autocomplete="off"
                     type="text"
-                    name="firstname"
                     placeholder="Prénom..."
                     class="input w-full mb-2"
                     data-validation="required text"
@@ -21,8 +28,8 @@
                 </div>
                 <input 
                     required
+                    autocomplete="off"
                     type="text"
-                    name="lastname"
                     placeholder="Nom de naissance..."
                     class="input w-full mb-2"
                     data-validation="required text"
@@ -36,12 +43,12 @@
                     Email :
                 </div>
                 <input 
+                    ref="inputEmail"
+                    autocomplete="off"
                     type="email" 
-                    id="email"
                     placeholder="Email..." 
                     required="" 
                     class="input w-full mb-2" 
-                    name="email"
                     v-model="item.email">
             </div>
             <div>
@@ -64,7 +71,6 @@
                     id="activated"
                     type="checkbox" 
                     class="form-checkbox" 
-                    name="activated"
                     v-model="item.activated">
                 <div>
                     Activer le compte
@@ -81,15 +87,14 @@
                     id="invite-member"
                     type="checkbox" 
                     class="form-checkbox" 
-                    name="team"
-                    v-model="createPassword">
+                    v-model="item.has_password">
                 <div>
                     Définir un mot de passe
                 </div>
             </label>
         </div>
 
-        <div v-show="createPassword"
+        <div v-show="item.has_password"
             class="mt-2">
             <div class="grid md:grid-cols-2 gap-2 md:gap-6">
                 <div>
@@ -97,12 +102,11 @@
                         Mot de passe :
                     </div>
                     <input 
+                        autocomplete="off"
                         type="password" 
-                        id="password"
                         placeholder="Mot de passe..." 
                         required="" 
                         class="input w-full mb-2" 
-                        name="password"
                         v-model="item.password">
                 </div>
                 <div>
@@ -110,12 +114,11 @@
                         Confirmation du mot de passe :
                     </div>
                     <input 
+                        autocomplete="off"
                         type="password" 
-                        id="password-confirm"
                         placeholder="Confirmation..." 
                         required="" 
                         class="input w-full mb-2" 
-                        name="password_confirmation"
                         v-model="item.password_confirmation">
                 </div>
             </div>
@@ -127,7 +130,7 @@
             lors de sa première connexion (recommandé).
         </div>
 
-    </div>
+    </form>
 </template>
 
 <script>
@@ -154,9 +157,17 @@ export default defineComponent({
             emit('update:member', newValue);
         })
 
+        const inputEmail = ref(null);
+
+        onMounted(function(){
+            inputEmail.value.value = '';
+        })
+
         return {
             item,
             createPassword,
+
+            inputEmail,
         }
     }
 })
