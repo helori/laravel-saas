@@ -108,7 +108,7 @@ class SubscriptionCreate extends SubscriptionBase
             if(!$subscription->hasPrice($price['price_id'])){
                 $subscription->swap($price['price_id']);
             }else{
-                if($subscription->cancelled()){
+                if($subscription->canceled()){
                     $subscription->resume();
                 }else{
                     abort(422, "Already subscribed !");

@@ -193,11 +193,11 @@
                     type="button"
                     class="btn btn-primary"
                     @click="setUpdating(true)">
-                    {{ subscription.is_cancelled ? "Reprendre un abonnement" : "Changer d'abonnement" }}
+                    {{ subscription.is_canceled ? "Reprendre un abonnement" : "Changer d'abonnement" }}
                 </button>
 
                 <button 
-                    v-if="!subscription.is_cancelled"
+                    v-if="!subscription.is_canceled"
                     type="button"
                     class="btn btn-red"
                     @click="openDeleteSubscription">

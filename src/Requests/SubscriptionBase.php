@@ -52,7 +52,7 @@ abstract class SubscriptionBase extends ActionRequest
             $subscription->prices = $prices;
             $subscription->is_active = $subscription->active();
             $subscription->is_recurring = $subscription->recurring();
-            $subscription->is_cancelled = $subscription->cancelled();
+            $subscription->is_canceled = $subscription->canceled();
             $subscription->is_ended = $subscription->ended();
             $subscription->is_on_grace_period = $subscription->onGracePeriod();
             $subscription->is_on_trial = $subscription->onTrial();

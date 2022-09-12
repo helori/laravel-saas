@@ -22,11 +22,12 @@
         }
     },
     "require": {
-        "php": "^7.3|^8.0",
+        "dompdf/dompdf": "^2.0",
+        "php": "^8.0.2",
         "jenssegers/agent": "^2.6",
-        "laravel/cashier": "^13.5",
+        "laravel/cashier": "^14",
         "laravel/fortify": "^1.7",
-        "laravel/framework": "^8.40",
+        "laravel/framework": "^9.0",
         "laravel/sanctum": "^2.11"
     },
     "require-dev": {
