@@ -1,6 +1,7 @@
 <template>
 
-    <div class="offset-nav-top absolute inset-x-0 bottom-0 overflow-y-scroll flex items-center justify-center">
+    <div class="absolute inset-x-0 bottom-0 overflow-y-scroll flex items-center justify-center"
+        :class="user.is_on_trial ? 'offset-nav-top-trial' : 'offset-nav-top'">
 
         <div v-if="!user.is_root"
             class="p-10">
@@ -22,7 +23,7 @@
             <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
             <!-- Body -->
             <!-- - - - - - - - - - - - - - - - - - -     - - - - - - - - - - - - -->
-            <div class="table-wrapper overflow-y-scroll"
+            <div class="table-wrapper overflow-y-scroll text-white"
                 v-if="pagination !== null">
                 <table>
                     <thead>
@@ -33,27 +34,35 @@
                                         label="Entreprise"
                                         order-key="teams.name"
                                         v-model:params="readCommonParams">
-                                    </table-sort-label> /
-                                    <table-sort-label
-                                        label="Propriétaire"
-                                        order-key="lastname"
-                                        v-model:params="readCommonParams">
                                     </table-sort-label>
                                 </div>
                             </th>
                             <th>
                                 <table-sort-label
                                     label="Création"
-                                    order-key="created_at"
+                                    order-key="users.created_at"
                                     v-model:params="readCommonParams">
                                 </table-sort-label>
                             </th>
                             <th>
                                 <table-sort-label
-                                    label="Abonnement"
-                                    order-key="subscription_plan"
+                                    label="Vérification"
+                                    order-key="users.email_verified_at"
                                     v-model:params="readCommonParams">
                                 </table-sort-label>
+                            </th>
+                            <th>
+                                <table-sort-label
+                                    label="Mode de paiement"
+                                    order-key="teams.pm_type"
+                                    v-model:params="readCommonParams">
+                                </table-sort-label>
+                            </th>
+                            <th>
+                                Souscriptions
+                            </th>
+                            <th>
+                                Membres
                             </th>
                             <th></th>
                         </tr>
@@ -61,20 +70,40 @@
                     <tbody>
                         <tr v-for="(item, idx) in pagination.data" >
                             <td>
-                                <div>{{ item.name }}</div>
-                                <div class="text-gray-500">{{ item.firstname }} {{ item.lastname }}</div>
+                                <div>{{ item.firstname }} {{ item.lastname }}</div>
+                                <div class="text-gray-400">{{ item.email }}</div>
+                                <div class="text-gray-400">{{ item.name }}</div>
                             </td>
                             <td>
-                                {{ $filters.date(item.created_at, 'DD/MM/YYYY HH:mm') }}
+                                {{ $filters.date(item.owner_created_at, 'DD/MM/YYYY') }}
                             </td>
                             <td>
-                                {{ item.subscription_plan }}
+                                {{ $filters.date(item.owner_email_verified_at, 'DD/MM/YYYY') }}
                             </td>
-                            <td class="flex justify-end gap-2">
-                                <a class="btn btn-gray"
-                                    :href="'/api/admin/login/' + item.user_id">
-                                    Connexion
-                                </a>
+                            <td>
+                                {{ item.pm_type }}
+                            </td>
+                            <td>
+                                <div v-if="item.subscriptions.length > 0">
+                                    <div>{{ item.subscriptions.length }} souscriptions</div>
+                                    <div :class="{
+                                        'text-green-400 dark:text-green-600': activeSubscriptions(item.subscriptions).length > 0,
+                                        'text-red-400 dark:text-red-600': activeSubscriptions(item.subscriptions).length == 0,
+                                    }">
+                                        {{ activeSubscriptions(item.subscriptions).length }} actives
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                {{ item.users_count }}
+                            </td>
+                            <td>
+                                <div class="flex justify-end gap-2">
+                                    <a class="btn btn-gray"
+                                        :href="'/api/admin/login/' + item.owner_id">
+                                        Connexion
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                     </tbody>
@@ -154,12 +183,18 @@ export default defineComponent({
             locked,
         } = useList(read);
 
-        storageKey.value = 'admin-teams';
+        storageKey.value = 'admin-teams1';
         locked.value = true;
         readCommonParams.limit = 10;
         locked.value = false;
 
         onMounted(read);
+
+        function activeSubscriptions(subscriptions){
+            return subscriptions.filter(subscription => {
+                return (subscription.status == 'active');
+            })
+        }
 
         // ----------------------------------------------------
         //  Return
@@ -173,6 +208,8 @@ export default defineComponent({
             readSend,
             readParams,
             read,
+
+            activeSubscriptions,
         };
     }
 })

@@ -19,6 +19,8 @@ Route::group(['middleware' => ['web']], function ()
         Route::get('/teams', [SaasController::class, 'listTeam']);
         Route::post('/team/switch/{teamId}', [SaasController::class, 'switchTeam']);
 
+        Route::delete('/user', [SaasController::class, 'userDelete']);
+
         Route::get('/team/{teamId}/member', [SaasController::class, 'memberList']);
         Route::post('/team/{teamId}/member', [SaasController::class, 'memberCreate']);
         Route::put('/team/{teamId}/member/{memberId}', [SaasController::class, 'memberUpdate']);

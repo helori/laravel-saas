@@ -20,6 +20,10 @@
 
             <manage-api-token-form :user="user" v-if="user.has_api" />
 
+            <separator v-if="user.has_api" />
+
+            <delete-user-account :user="user" />
+
         </div>
     </div>
 </template>
@@ -33,6 +37,7 @@ import UpdatePasswordForm from './UpdatePasswordForm.vue'
 import TwoFactorAuthenticationForm from './TwoFactorAuthenticationForm.vue'
 import LogoutOtherBrowserSessionForm from './LogoutOtherBrowserSessionForm.vue'
 import ManageApiTokenForm from './ManageApiTokenForm.vue'
+import DeleteUserAccount from './DeleteUserAccount.vue'
 
 export default defineComponent({
 
@@ -42,6 +47,7 @@ export default defineComponent({
         TwoFactorAuthenticationForm,
         LogoutOtherBrowserSessionForm,
         ManageApiTokenForm,
+        DeleteUserAccount,
         Separator,
     },
 

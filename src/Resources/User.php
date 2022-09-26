@@ -22,7 +22,7 @@ class User extends JsonResource
             'updated_at' => $this->updated_at,
             'email_verified_at' => $this->email_verified_at,
             'invited_at' => $this->invited_at,
-
+            
             'firstname' => $this->firstname,
             'lastname' => $this->lastname,
             'email' => $this->email,
