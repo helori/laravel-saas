@@ -20,6 +20,19 @@ class PromotionRead extends SubscriptionBase
     }
 
     /**
+     * Get the validation messages
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'code.required' => "Vous devez saisir un code de remise pour l'appliquer",
+            'code.max' => "Le code de remise est incorrect",
+        ];
+    }
+
+    /**
      * Run the action the request is supposed to execute
      *
      * @return void

@@ -21,6 +21,20 @@ class PromotionApply extends SubscriptionBase
     }
 
     /**
+     * Get the validation messages
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'name.required' => "Nous n'avons pas trouvé de souscription à laquelle appliquer le code",
+            'promotion_code.required' => "Le code de remise est incorrect",
+            'promotion_code.max' => "Le code de remise est incorrect",
+        ];
+    }
+
+    /**
      * Run the action the request is supposed to execute
      *
      * @return void
