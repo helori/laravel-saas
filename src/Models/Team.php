@@ -63,22 +63,44 @@ class Team extends Model
         });
 
         /**
+         * This creates the team as a Stripe customer
+         */
+        static::created(function($team)
+        {
+            if(!$team->hasStripeId()){
+                $team->createAsStripeCustomer([
+                    'email' => $team->owner->email,
+                ]);
+            }
+        });
+
+        /**
          * Stripe customer details (country used to calculate tax rate)
          */
         static::updated(function ($billable)
         {
-            if ($billable->hasStripeId())
+            if($billable->hasStripeId())
             {
                 //$billable->syncStripeCustomerDetails();
-                $billable->updateStripeCustomer([
-                    'name' => $billable->stripeName(),
-                    'email' => $billable->stripeEmail(),
-                    'phone' => $billable->stripePhone(),
-                    'address' => $billable->stripeAddress(),
-                    'preferred_locales' => ['fr', 'en'],
-                ]);
+                $billable->syncStripeCustomer();
             }
         });
+    }
+
+    /**
+     * Sync billing details with Stripe
+     *
+     * @return null
+     */
+    public function syncStripeCustomer()
+    {
+        $this->updateStripeCustomer([
+            'name' => $this->stripeName(),
+            'email' => $this->stripeEmail(),
+            'phone' => $this->stripePhone(),
+            'address' => $this->stripeAddress(),
+            'preferred_locales' => ['fr', 'en'],
+        ]);
     }
 
     /**

@@ -63,25 +63,49 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         static::created(function($user)
         {
-            $teamModel = Saas::$teamModel;
+            // On ne créé pas systématiquement une équipe pour chaque utilisateur
+            // afin de ne pas avoir des équipes "vides" pour les simples membres
+            // qui fausseraient les statistiques (faisant plein d'inscrits non-clients)
+            // $user->createOwnTeam();
+
+            // A la place, on créé l'équipe de chaque user qui se "register"
+            // Et on créé aussi une équipe aux users "seeders"
+        });
+    }
+
+    /**
+     * Create the user's own team
+     * The user can be owner of multiple teams (with the role pivot attribute)
+     * But he can have only one "own team" attached to his user_id
+     *
+     * @return \Helori\LaravelSaas\Models\Team
+     */
+    public function createOwnTeam()
+    {
+        $teamModel = Saas::$teamModel;
+
+        $team = $teamModel::where('user_id', $this->id)->first();
+        if(is_null($team))
+        {
             $team = new $teamModel();
 
-            $team->user_id = $user->id;
-            $team->name = 'Équipe de '.$user->firstname.' '.$user->lastname;
+            $team->user_id = $this->id;
+            $team->name = 'Équipe de '.$this->firstname.' '.$this->lastname;
             
             $team->billing_name = $team->name;
-            $team->billing_email = $user->email;
-            $team->billing_phone = $user->phone;
+            $team->billing_email = $this->email;
+            $team->billing_phone = $this->phone;
             $team->billing_line1 = null;
             $team->billing_line2 = null;
             $team->billing_postal_code = null;
             $team->billing_city = null;
             $team->billing_country = 'FR';
 
-            $user->teams()->save($team, [
+            $this->teams()->save($team, [
                 'role' => 'owner'
             ]);
-        });
+        }
+        return $team;
     }
 
     /**
