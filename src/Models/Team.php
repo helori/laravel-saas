@@ -37,6 +37,7 @@ class Team extends Model
      */
     protected $casts = [
         'trial_ends_at' => 'datetime',
+        'is_pilote' => 'boolean',
     ];
 
     /**
