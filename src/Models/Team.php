@@ -64,7 +64,7 @@ class Team extends Model
         });
 
         /**
-         * This creates the team as a Stripe customer
+         * Create the team as a Stripe customer
          */
         static::created(function($team)
         {
@@ -102,6 +102,21 @@ class Team extends Model
             'address' => $this->stripeAddress(),
             'preferred_locales' => ['fr', 'en'],
         ]);
+    }
+
+    /**
+     * Delete the Stripe customer 
+     *
+     * @return null
+     */
+    public function deleteStripeCustomer()
+    {
+        if($this->hasStripeId())
+        {
+            $this->stripe()->customers->delete($this->stripe_id);
+            $this->stripe_id = null;
+            $this->save();
+        }
     }
 
     /**
