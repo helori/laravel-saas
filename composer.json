@@ -27,8 +27,8 @@
         "jenssegers/agent": "^2.6",
         "laravel/cashier": "^14",
         "laravel/fortify": "^1.7",
-        "laravel/framework": "^9.0",
-        "laravel/sanctum": "^2.11"
+        "laravel/framework": "^10.0",
+        "laravel/sanctum": "^3.2"
     },
     "require-dev": {
         
