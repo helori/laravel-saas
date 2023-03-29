@@ -40,6 +40,9 @@ class MemberDelete extends ActionRequest
             abort(403, "Vous ne pouvez pas supprimer les membres de l'équipe");
         }
 
-        $team->users()->findOrFail($memberId)->delete();
+        $member = $team->users()->findOrFail($memberId);
+        $member->delete();
+        
+        return $member;
     }
 }
