@@ -76,6 +76,14 @@
             </button>
 
             <button 
+                v-if="!user.has_own_team"
+                type="button"
+                class="btn btn-white"
+                @click="createOwnTeamOpen">
+                Créer mon équipe
+            </button>
+
+            <button 
                 type="button"
                 class="btn btn-white"
                 @click="switchOpen">
@@ -141,6 +149,48 @@
 
         </template>
     </dialog-modal>
+
+    <dialog-modal 
+        :show="creatingOwnTeam" 
+        @close="createOwnTeamClose" 
+        max-width-class="max-w-screen-sm">
+        <template #title>
+            Créer mon équipe
+        </template>
+
+        <template #content>
+
+            <div class="text-gray-500 dark:text-gray-400 font-sm mb-4">
+                <p class="mb-2">Créer votre équipe vous permet de gérer vos abonnements, votre moyen de paiement et les membres avec lesquels vous souhaitez partager votre compte.</p>
+                <p class="mb-2">C'est aussi la solution pour gérer votre compte personnel, en souscrivant un abonnement individuel.</p>
+                Vous serez toujours membre de vos autres équipes, et vous pourrez basculer d'une équipe à l'autre directement depuis votre compte.
+            </div>
+
+            <request-error :error="createOwnTeamError" />
+
+        </template>
+
+        <template #footer>
+
+            <button 
+                type="button"
+                class="btn btn-white"
+                @click="createOwnTeamClose">
+                Annuler
+            </button>
+
+            <button 
+                type="button"
+                class="btn btn-primary ml-2"
+                :class="{ 'opacity-25': (createOwnTeamStatus === 'pending') }"
+                :disabled="createOwnTeamStatus === 'pending'"
+                @click="createOwnTeam">
+                Créer mon équipe
+            </button>
+
+        </template>
+    </dialog-modal>
+
 </template>
 
 <script>
@@ -259,6 +309,32 @@
             }
 
             // ---------------------------------------------------
+            //  Own Team
+            // ---------------------------------------------------
+            const creatingOwnTeam = ref(false);
+
+            const { 
+                status: createOwnTeamStatus,
+                error: createOwnTeamError,
+                send: createOwnTeamSend,
+            } = useForm();
+
+            function createOwnTeam()
+            {
+                createOwnTeamSend('post', '/team').then(r => {
+                    window.location.reload();
+                });
+            }
+
+            function createOwnTeamOpen(){
+                creatingOwnTeam.value = true;
+            }
+
+            function createOwnTeamClose(){
+                creatingOwnTeam.value = false;
+            }
+
+            // ---------------------------------------------------
             //  Return
             // ---------------------------------------------------
             return {
@@ -273,6 +349,13 @@
                 readTeamsError,
                 readTeamsSend,
                 readTeams,
+
+                creatingOwnTeam,
+                createOwnTeamStatus,
+                createOwnTeamError,
+                createOwnTeam,
+                createOwnTeamOpen,
+                createOwnTeamClose,
 
                 switching,
                 teamSelectedId,

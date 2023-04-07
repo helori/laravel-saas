@@ -9,6 +9,7 @@ use Helori\LaravelSaas\Requests\ApiTokenDelete;
 use Helori\LaravelSaas\Requests\BrowserSessionRead;
 use Helori\LaravelSaas\Requests\BrowserSessionDelete;
 
+use Helori\LaravelSaas\Requests\TeamCreate;
 use Helori\LaravelSaas\Requests\TeamRead;
 use Helori\LaravelSaas\Requests\TeamList;
 use Helori\LaravelSaas\Requests\TeamUpdate;
@@ -49,6 +50,7 @@ class SaasController extends BaseController
     public function readBrowserSession(BrowserSessionRead $request) { return $request->action(); }
     public function deleteBrowserSession(BrowserSessionDelete $request) { return $request->action(); }
 
+    public function createTeam(TeamCreate $request) { return $request->action(); }
     public function readTeam(TeamRead $request) { return $request->action(); }
     public function listTeam(TeamList $request) { return $request->action(); }
     public function updateTeam(TeamUpdate $request) { return $request->action(); }

@@ -14,6 +14,7 @@ Route::group(['middleware' => ['web']], function ()
         Route::post('/api-token', [SaasController::class, 'createApiToken']);
         Route::delete('/api-token', [SaasController::class, 'deleteApiToken']);
 
+        Route::post('/team', [SaasController::class, 'createTeam']); // Create own team
         Route::get('/team', [SaasController::class, 'readTeam']);
         Route::put('/team', [SaasController::class, 'updateTeam']);
         Route::get('/teams', [SaasController::class, 'listTeam']);

@@ -19,6 +19,7 @@ class AppController extends Controller
         $user = Auth::guard('user')->user();
 
         $user->current_team = $user->currentTeam();
+        $user->has_own_team = ($user->ownedTeams()->count() > 0);
         $user->two_factor_enabled = !is_null($user->two_factor_secret);
         //$user->can_do_something = Gate::allows('use-something');
 
