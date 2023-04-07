@@ -37,6 +37,10 @@ class TeamCreate extends ActionRequest
         }
         
         $ownTeam = $user->createOwnTeam();
+
+        // Pas de période d'essai sur les nouvelles équipes !
+        $ownTeam->trial_ends_at = now();
+        $ownTeam->save();
         
         $user->switchTeam($ownTeam);
 
