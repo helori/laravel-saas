@@ -18,6 +18,7 @@ class CreateTeamsTable extends Migration
             $table->timestamps();
             $table->foreignId('user_id')->nullable()->default(null)->index();
             $table->string('name')->nullable()->default(null);
+            $table->string('logo')->nullable()->default(null);
         });
     }
 

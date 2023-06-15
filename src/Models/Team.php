@@ -19,6 +19,7 @@ class Team extends Model
      */
     protected $fillable = [
         'name',
+        'logo',
         'billing_name',
         'billing_email',
         'billing_phone',
