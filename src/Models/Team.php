@@ -229,13 +229,14 @@ class Team extends Model
         // ----------------------------------------------------------------
         $subscriptionName = $productId;
         $subscription = $this->subscription($subscriptionName);
+        $quantity = $this->users()->count();
         
         // Pas de souscription (ou terminée) => création d'une nouvelle souscription
         if(!$subscription || $subscription->ended())
         {
-            $subscription = $this->newSubscription($productId, [$priceId/*, $priceMembersId*/]);
+            $subscription = $this->newSubscription($productId, [ $priceId ]);
             
-            $subscription->quantity(1, $priceId);
+            $subscription->quantity($quantity, $priceId);
             
             $promotion = $this->getPromotionFromCode($promotionCode);
             if($promotion){
@@ -268,6 +269,8 @@ class Team extends Model
                 {
                     $subscription->resume();
 
+                    $subscription->updateQuantity($quantity);
+
                     $promotion = $this->getPromotionFromCode($promotionCode);
                     if($promotion){
                         $subscription->applyPromotionCode($promotion->id);
@@ -282,6 +285,8 @@ class Team extends Model
                 $subscription->swap([
                     $priceId,
                 ]);
+                
+                $subscription->updateQuantity($quantity);
                 
                 $promotion = $this->getPromotionFromCode($promotionCode);
                 if($promotion){
