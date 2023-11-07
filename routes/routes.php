@@ -35,6 +35,7 @@ Route::group(['middleware' => ['web']], function ()
         Route::delete('/payment-method', [SaasController::class, 'paymentMethodDelete']);
         
         Route::get('/products', [SaasController::class, 'products']);
+        Route::get('/prices', [SaasController::class, 'prices']);
 
         Route::get('/subscription', [SaasController::class, 'readSubscription']);
         Route::post('/subscription', [SaasController::class, 'createSubscription']);

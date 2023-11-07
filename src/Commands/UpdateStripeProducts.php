@@ -5,6 +5,8 @@ namespace Helori\LaravelSaas\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
 use Stripe\StripeClient;
+use Helori\LaravelSaas\Models\Stripe\Price;
+use Carbon\Carbon;
 use Exception;
 
 
@@ -72,7 +74,7 @@ class UpdateStripeProducts extends Command
                 }
                 catch(Exception $e)
                 {
-                    
+                    $this->error("-> Echec de la suppression du produit : ".$e->getMessage());
                 }
             }
         }
@@ -107,32 +109,40 @@ class UpdateStripeProducts extends Command
                     $this->info("-> Création du tarif : ".$price['price_id']);
 
                     $priceData = Arr::only($price, [
-                        'amount',
+                        'unit_amount',
+                        'currency',
+                        'tax_behavior',
+                        
                         'billing_scheme',
-                        'usage_type',
-                        'aggregate_usage',
+                        'recurring',
+
                         'tiers',
                         'tiers_mode',
-                        'currency',
-                        'interval',
-                        'interval_count',
                     ]);
-                    
-                    $priceData['id'] = $price['price_id'];
+
                     $priceData['product'] = $product['product_id'];
-                    $priceData['amount'] *= 100;
+                    $priceData['unit_amount'] *= 100;
                     $priceData['nickname'] = $price['name'];
 
-                    $p = $stripe->plans->create($priceData);
+                    $p = $stripe->prices->create($priceData);
 
-                    if(isset($price['tax_behavior'])){
-                        $stripe->prices->update(
-                            $price['price_id'],
-                            [
-                                'tax_behavior' => $price['tax_behavior'],
-                            ]
-                        );
-                    }
+                    $item = new Price();
+                    $item->fill([
+                        'price_id' => $p->id,
+                        'created' => Carbon::createFromTimestamp($p->created)->format('Y-m-d H:i:s'),
+                        'product' => $p->product,
+                        'nickname' => $p->nickname,
+
+                        'currency' => $p->currency,
+                        'unit_amount' => $p->unit_amount,
+                        'tax_behavior' => $p->tax_behavior,
+
+                        'billing_scheme' => $p->billing_scheme,
+                        'interval' => $p->recurring->interval,
+                        'interval_count' => $p->recurring->interval_count,
+                        'usage_type' => $p->recurring->usage_type,
+                    ]);
+                    $item->save();
                 }
             }
             else

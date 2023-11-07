@@ -30,6 +30,7 @@ use Helori\LaravelSaas\Requests\PaymentMethodUpdate;
 use Helori\LaravelSaas\Requests\PaymentMethodDelete;
 
 use Helori\LaravelSaas\Requests\ProductList;
+use Helori\LaravelSaas\Requests\PriceList;
 
 use Helori\LaravelSaas\Requests\SubscriptionRead;
 use Helori\LaravelSaas\Requests\SubscriptionCreate;
@@ -71,6 +72,7 @@ class SaasController extends BaseController
     public function paymentMethodDelete(PaymentMethodDelete $request) { return $request->action(); }
 
     public function products(ProductList $request) { return $request->action(); }
+    public function prices(PriceList $request) { return $request->action(); }
 
     public function readSubscription(SubscriptionRead $request) { return $request->action(); }
     public function createSubscription(SubscriptionCreate $request) { return $request->action(); }

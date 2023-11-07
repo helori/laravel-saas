@@ -200,8 +200,109 @@ class Team extends Model
         return $this->users->merge([$this->owner]);
     }
 
-    
-    
+    /**
+     * Subscribe (or re-subscribe, or swap subscriptions)
+     *
+     * @return void
+     */
+    public function subscribe(string $productId, string $priceId, ?string $promotionCode = null)
+    {
+        // --------------------------------------------------------
+        //  Create stripe customer if necessary
+        // --------------------------------------------------------
+        if(!$this->hasStripeId()){
+            $this->createAsStripeCustomer([
+                'email' => $this->owner()->email,
+            ]);
+        }
+
+        // --------------------------------------------------------
+        //  Get payment method
+        // --------------------------------------------------------
+        $paymentMethod = $this->defaultPaymentMethod();
+        if(!$paymentMethod){
+            abort(422, "Vous n'avez pas de moyen de paiement par défaut enregistré");
+        }
+
+        // ----------------------------------------------------------------
+        //  Souscription : porte le nom du produit
+        // ----------------------------------------------------------------
+        $subscriptionName = $productId;
+        $subscription = $this->subscription($subscriptionName);
+        
+        // Pas de souscription (ou terminée) => création d'une nouvelle souscription
+        if(!$subscription || $subscription->ended())
+        {
+            $subscription = $this->newSubscription($productId, [$priceId/*, $priceMembersId*/]);
+            
+            $subscription->quantity(1, $priceId);
+            
+            $promotion = $this->getPromotionFromCode($promotionCode);
+            if($promotion){
+                $subscription->withPromotionCode($promotion->id);
+            }
+
+            $subscription->add();
+            
+            // TODO : comment gérer les cartes refusées ?
+            // Voir la doc Cashier sur le sujet
+            /*try 
+            {
+                // Indispensable d'avoir une paymentMethod déjà enregistrée
+                $subscription->add();
+            }
+            catch (IncompletePayment $exception)
+            {
+                abort(400, route('cashier.payment', [
+                    $exception->payment->id, 
+                    //'redirect' => route('home')
+                ]));
+            }*/
+        }
+        else // Il y a une souscription en cours
+        {
+            // Déjà souscrit au tarif demandé
+            if($subscription->hasPrice($priceId))
+            {
+                if($subscription->canceled())
+                {
+                    $subscription->resume();
+
+                    $promotion = $this->getPromotionFromCode($promotionCode);
+                    if($promotion){
+                        $subscription->applyPromotionCode($promotion->id);
+                    }
+                }
+                else{
+                    abort(422, "Vous êtes déjà abonné à ce tarif !");
+                }
+            }
+            else
+            {
+                $subscription->swap([
+                    $priceId,
+                ]);
+                
+                $promotion = $this->getPromotionFromCode($promotionCode);
+                if($promotion){
+                    $subscription->applyPromotionCode($promotion->id);
+                }
+            }
+        }
+    }
+
+    public function getPromotionFromCode($promotionCode)
+    {
+        $promotion = null;
+        if($promotionCode)
+        {
+            $promotion = $this->findPromotionCode($promotionCode);
+            if(!$promotion){
+                abort(422, "Code promotionnel introuvable");
+            }
+        }
+        return $promotion;
+    }
 
 
 
