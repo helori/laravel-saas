@@ -47,37 +47,32 @@ class UpdateStripeProducts extends Command
 
         $stripe = new StripeClient(env('STRIPE_SECRET'));
         $products = config('saas.products');
-        
-        if($clear)
-        {
-            $this->line("=> Suppression des produits :");
 
+        // A price cannot be deleted from the API
+        // + A product cannot be deleted if it has a price
+        // => Delete all test data from developer page :
+        // https://dashboard.stripe.com/test/developers
+        /*if($clear)
+        {
             foreach($products as $product)
             {
-                $this->line("========== ".$product['product_id'].' ==========');
+                $stripeProduct = $stripe->products->retrieve($product['product_id'], []);
 
-                foreach($product['prices'] as $price)
+                if($stripeProduct)
                 {
-                    $this->info("-> Suppression du tarif : ".$price['price_id']);
-                    //$p = $stripe->plans->delete($price['price_id'], []);
-                    try{
-                        $p = $stripe->plans->delete($price['price_id'], []);
-                    }
-                    catch(Exception $e)
+                    $this->line("========== Suppression de ".$product['product_id'].' ==========');
+
+                    $stripePrices = $stripe->prices->all(['product' => $product['product_id']]);
+                    foreach($stripePrices as $stripePrice)
                     {
-                        
+                        $this->info("-> Suppression du tarif : ".$stripePrice->id);
+                        $p = $stripe->prices->delete($stripePrice->id, []);
                     }
-                }
-                try{
                     $this->info("-> Suppression du produit : ".$product['product_id']);
                     $stripe->products->delete($product['product_id'], []);
                 }
-                catch(Exception $e)
-                {
-                    $this->error("-> Echec de la suppression du produit : ".$e->getMessage());
-                }
             }
-        }
+        }*/
 
         $stripeProducts = $stripe->products->all([]);
         $stripeProductsIds = [];
@@ -106,13 +101,13 @@ class UpdateStripeProducts extends Command
 
                 foreach($product['prices'] as $price)
                 {
-                    $this->info("-> Création du tarif : ".$price['price_id']);
+                    $this->info("-> Création du tarif");
 
                     $priceData = Arr::only($price, [
                         'unit_amount',
                         'currency',
                         'tax_behavior',
-                        
+
                         'billing_scheme',
                         'recurring',
 
