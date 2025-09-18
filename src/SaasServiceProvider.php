@@ -34,21 +34,21 @@ class SaasServiceProvider extends ServiceProvider
     {
         Cashier::calculateTaxes();
     }
-    
+
     public function boot()
 	{
         $this->bootPublishedFiles();
         $this->bootFortify();
         $this->bootCashier();
 
-        $this->commands([
+        /*$this->commands([
             UpdateStripeProducts::class,
-        ]);
+        ]);*/
     }
 
     protected function bootPublishedFiles()
     {
-        $this->loadMigrationsFrom(__DIR__.'/../stubs/database/migrations');
+        //$this->loadMigrationsFrom(__DIR__.'/../stubs/database/migrations');
         $this->loadViewsFrom(__DIR__.'/../stubs/resources/views', 'saas');
         $this->loadRoutesFrom(__DIR__.'/../routes/routes.php');
 
