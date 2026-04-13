@@ -29,10 +29,9 @@ class User extends JsonResource
             'phone' => $this->phone,
             
             'is_root' => $this->is_root,
-            'current_team_id' => $this->current_team_id,
+            'team_id' => $this->team_id,
+            'role' => $this->role,
             'activated' => $this->activated,
-            
-            'role' => $this->pivot->role,
         ];
     }
 }

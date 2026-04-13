@@ -5,71 +5,32 @@ namespace Helori\LaravelSaas\Requests;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Fortify\Rules\Password;
 use App\Models\User;
+use Helori\LaravelSaas\Saas;
 
 
 class MemberCreate extends ActionRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
     public function authorize()
     {
-        $user = $this->user();
-        $team = $user->teams()->findOrFail($this->route('teamId'));
-        return $user->ownTeam($team);
+        return $this->user()->ownTeam(Saas::$teamModel::findOrFail($this->route('teamId')));
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
-     */
     public function rules()
     {
         return [
-            'firstname' => [
-                'required', 
-                'string'
-            ],
-            'lastname' => [
-                'required', 
-                'string'
-            ],
-            'email' => [
-                'required', 
-                'email',
-                'unique:users',
-            ],
-            'has_password' => [
-                'required',
-                'boolean',
-            ],
+            'firstname' => ['required', 'string'],
+            'lastname' => ['required', 'string'],
+            'email' => ['required', 'email', 'unique:users'],
+            'has_password' => ['required', 'boolean'],
             'password' => [
                 'exclude_if:has_password,false',
-                'required', 
-                'string', 
-                new Password, 
-                'confirmed'
+                'required', 'string', new Password, 'confirmed',
             ],
-            'role' => [
-                'required', 
-                'string',
-                'in:member,owner'
-            ],
-            'invite' => [
-                'sometimes', 
-                'boolean',
-            ],
+            'role' => ['required', 'string', 'in:member,owner'],
+            'invite' => ['sometimes', 'boolean'],
         ];
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
-     */
     public function messages()
     {
         return [
@@ -84,54 +45,29 @@ class MemberCreate extends ActionRequest
             'role.required' => "Le rôle doit être membre ou propriétaire",
         ];
     }
-    
-    /**
-     * Run the action the request is supposed to execute
-     *
-     * @return void
-     */
+
     public function action()
     {
-        $user = $this->user();
         $teamId = $this->route('teamId');
-        $team = $user->teams()->findOrFail($teamId);
+        $team = Saas::$teamModel::findOrFail($teamId);
 
         $member = new User();
-        $member->fill($this->only([
-            'firstname',
-            'lastname',
-            'password',
-            'email',
-            'phone',
-            'activated',
-        ]));
-
-        // Make sure the user will be connected to this team after it's first connexion !
-        // (By default, a user is connected to its personnal team)
-        $member->current_team_id = $team->id;
-
-        // The IP is the team's owner IP (should be overwritten at the user's first login ?)
+        $member->fill($this->only(['firstname', 'lastname', 'email', 'phone', 'activated']));
+        $member->team_id = $team->id;
+        $member->role = $this->role;
         $member->ip = $this->ip();
-
-        // Since the member is created by a verified user, there is no need for email verification
         $member->email_verified_at = now();
-        
-        if($member->has_password){
+
+        if($this->has_password){
             $member->password = Hash::make($this->password);
-        }else{
-            // Create a dummy password (the user can be invited to reset his password)
-            $password = bin2hex(openssl_random_pseudo_bytes(4)); // 8 chars password
+        } else {
+            $password = bin2hex(openssl_random_pseudo_bytes(4));
             $member->password = Hash::make($password);
         }
 
         $member->save();
 
-        $team->users()->attach($member, [
-            'role' => $this->role,
-        ]);
-
-        if($this->has('invite') && $this->invite)
-        {
+        if($this->has('invite') && $this->invite) {
             $member->invite();
         }
 

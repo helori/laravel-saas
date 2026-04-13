@@ -8,6 +8,7 @@ use Illuminate\Validation\Rule;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 use Helori\LaravelSaas\Notifications\Admin\UserCreated;
 use App\Models\User;
+use App\Models\Team;
 
 
 class CreateNewUser implements CreatesNewUsers
@@ -44,12 +45,19 @@ class CreateNewUser implements CreatesNewUsers
             'activated' => true,
         ]);
         
-        // Notify roots
-        $root = User::where('is_root', true)->first();
-        $root->notify(new UserCreated($createdUser));
-        
-        // Team initialization is done in model class (booted method handling events)
-        
+        $team = Team::create([
+            'user_id' => $createdUser->id,
+            'name' => 'Équipe de '.$createdUser->firstname.' '.$createdUser->lastname,
+            'billing_name' => 'Équipe de '.$createdUser->firstname.' '.$createdUser->lastname,
+            'billing_email' => $createdUser->email,
+            'billing_country' => 'FR',
+        ]);
+
+        $createdUser->forceFill([
+            'team_id' => $team->id,
+            'role' => 'owner',
+        ])->save();
+
         return $createdUser;
     }
 }

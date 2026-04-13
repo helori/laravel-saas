@@ -12,7 +12,7 @@
 
             <div class="col-span-6 sm:col-span-4" v-if="team">
 
-                <div v-if="team.pivot.role === 'owner'">
+                <div v-if="user.role === 'owner'">
                     
                     <label for="billing_name">
                         Nom ou entreprise
@@ -96,7 +96,7 @@
             </div>
 
             <button 
-                v-if="team && team.pivot.role === 'owner'"
+                v-if="team && user.role === 'owner'"
                 type="button"
                 class="btn btn-primary"
                 :class="{ 'opacity-25': (updateStatus === 'pending') }"

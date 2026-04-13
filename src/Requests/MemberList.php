@@ -3,20 +3,14 @@
 namespace Helori\LaravelSaas\Requests;
 
 use Helori\LaravelSaas\Resources\User as UserResource;
+use Helori\LaravelSaas\Saas;
 
 
 class MemberList extends ActionRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
     public function authorize()
     {
-        $user = $this->user();
-        $team = $user->teams()->findOrFail($this->route('teamId'));
-        return $user->ownTeam($team);
+        return $this->user()->ownTeam(Saas::$teamModel::findOrFail($this->route('teamId')));
     }
 
     public function rules()
@@ -29,22 +23,9 @@ class MemberList extends ActionRequest
         ];
     }
 
-    /**
-     * Run the action the request is supposed to execute
-     *
-     * @return void
-     */
     public function action()
     {
-        $user = $this->user();
-        $teamId = $this->route('teamId');
-
-        $team = $user->teams()->with('users')->findOrFail($teamId);
-
-        if(!$user->ownTeam($team))
-        {
-            abort(403, "Vous ne pouvez pas voir les membres de l'équipe");
-        }
+        $team = Saas::$teamModel::findOrFail($this->route('teamId'));
 
         $query = $team->users();
 

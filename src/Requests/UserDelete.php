@@ -3,7 +3,6 @@
 namespace Helori\LaravelSaas\Requests;
 
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Arr;
 
 
 class UserDelete extends ActionRequest
@@ -26,13 +25,13 @@ class UserDelete extends ActionRequest
     public function action()
     {
         $user = $this->user();
+        $team = $user->team;
 
-        // --------------------------------------------------------
-        //  Vérification qu'aucun abonnement en cours
-        // --------------------------------------------------------
-        $ownTeams = $user->ownedTeams()->get();
-        foreach($ownTeams as $team)
+        if($user->role === 'owner' && $team)
         {
+            // --------------------------------------------------------
+            //  Vérification qu'aucun abonnement en cours
+            // --------------------------------------------------------
             if($team->subscriptions()->recurring()->count() > 0)
             {
                 abort(422, "Vous avez une souscription en cours. Vous devez la résilier pour supprimer votre compte.");
@@ -41,28 +40,19 @@ class UserDelete extends ActionRequest
             {
                 abort(422, "Vous avez une souscription résiliée qui n'est pas encore arrivée à échéance");
             }
-        }
 
-        // --------------------------------------------------------
-        //  Détachements des membres des équipes détenues pas l'utilisateur
-        //  Suppression des équipes détenues par l'utilisateur
-        // --------------------------------------------------------
-        foreach($ownTeams as $team)
-        {
-            $userIds = $team->users()->pluck('users.id')->all();
-            $team->users()->detach(Arr::except($userIds, [ $user->id ]));
+            // --------------------------------------------------------
+            //  Détachement des membres, suppression de l'équipe
+            // --------------------------------------------------------
+            $team->users()->where('id', '!=', $user->id)->update(['team_id' => null, 'role' => null]);
             $team->delete();
         }
-
-        // --------------------------------------------------------
-        //  Détachements de l'utilisateur de toutes ses autres équipes
-        // --------------------------------------------------------
-        $teams = $user->teams()->get();
-        foreach($teams as $team)
+        else if($team)
         {
-            $team->users()->detach($user->id);
+            // Member leaving their team
+            $user->forceFill(['team_id' => null, 'role' => null])->save();
         }
-        
+
         // --------------------------------------------------------
         //  Suppression de l'utilisateur
         // --------------------------------------------------------

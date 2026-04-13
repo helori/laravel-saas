@@ -136,7 +136,7 @@
                             </button>
                             <a class="btn btn-gray" 
                                 :title="'Se connecter en tant que ' + item.firstname + ' ' + item.lastname"
-                                :href="'/team/' + user.current_team.id + '/member/' + item.id + '/login'">
+                                :href="'/team/' + user.team_id + '/member/' + item.id + '/login'">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
                                 </svg>
@@ -292,7 +292,7 @@ export default defineComponent({
                 limit: readCommonParams.limit,
             };
 
-            readSend('get', '/team/' + props.user.current_team.id + '/member').then(r => {
+            readSend('get', '/team/' + props.user.team_id + '/member').then(r => {
                 pagination.value = r.data;
             })
         }
@@ -348,7 +348,7 @@ export default defineComponent({
                 createDialog.value.data.password_confirmation = dummyPasswordNobodyKnows;
             }*/
 
-            return createDialog.value.send('post', '/team/' + props.user.current_team.id + '/member').then(r => {
+            return createDialog.value.send('post', '/team/' + props.user.team_id + '/member').then(r => {
                 createDialog.value.close();
                 openInvite(r.data); // important to get the user id
                 read();
@@ -374,7 +374,7 @@ export default defineComponent({
         }
 
         function update(){
-            return updateDialog.value.send('put', '/team/' + props.user.current_team.id + '/member/' + updateDialog.value.data.id).then(r => {
+            return updateDialog.value.send('put', '/team/' + props.user.team_id + '/member/' + updateDialog.value.data.id).then(r => {
                 updateDialog.value.close();
                 openDialogMessage({
                     type: 'success',
@@ -400,7 +400,7 @@ export default defineComponent({
         }
 
         function destroy(){
-            return destroyDialog.value.send('delete', '/team/' + props.user.current_team.id + '/member/' + destroyDialog.value.data.id).then(r => {
+            return destroyDialog.value.send('delete', '/team/' + props.user.team_id + '/member/' + destroyDialog.value.data.id).then(r => {
                 destroyDialog.value.close();
                 read();
             })
@@ -422,7 +422,7 @@ export default defineComponent({
         }
 
         function invite(){
-            return inviteDialog.value.send('post', '/team/' + props.user.current_team.id + '/member/' + inviteDialog.value.data.id + '/invite').then(r => {
+            return inviteDialog.value.send('post', '/team/' + props.user.team_id + '/member/' + inviteDialog.value.data.id + '/invite').then(r => {
                 inviteDialog.value.close();
                 openDialogMessage({
                     type: 'success',

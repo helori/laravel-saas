@@ -1,37 +1,35 @@
 <template>
     <form-section>
         <template #title>
-            Équipe courante
+            Mon équipe
         </template>
 
         <template #description>
-            Équipe à laquelle vous êtes actuellement connecté
+            Informations et paramètres de votre équipe
         </template>
 
         <template #form>
 
             <div class="col-span-6 sm:col-span-4" v-if="team">
 
-                <div v-if="team.pivot.role !== 'owner'"
+                <div v-if="user.role !== 'owner'"
                     class="text-lg font-semibold mb-3">
                     {{ team.name }}
                 </div>
 
-                <div v-if="team.pivot.role === 'owner'"
+                <div v-if="user.role === 'owner'"
                     class="mb-3">
-                    
+
                     <label for="name" class="label">
-                        Nom de mon équipe
+                        Nom de mon équipe :
                     </label>
 
-                    <input 
+                    <input
                         id="name"
                         type="text"
                         name="name"
                         class="input mb-2 mt-1 block w-full"
-                        :class="{
-                            'invalid': updateError
-                        }"
+                        :class="{ 'invalid': updateError }"
                         placeholder="Nom de mon équipe..."
                         autocomplete="team_name"
                         v-model="updateData.name">
@@ -40,9 +38,9 @@
 
                 <div class="text-sm">
                     <span class="text-gray-500 dark:text-gray-400">Votre rôle : </span>
-                    <span class="font-semibold" 
-                        :class="(team.pivot.role === 'owner' ? 'text-green-500' : '')">
-                        {{ nameForRole(team.pivot.role) }}
+                    <span class="font-semibold"
+                        :class="(user.role === 'owner' ? 'text-green-500' : '')">
+                        {{ nameForRole(user.role) }}
                     </span>
                 </div>
 
@@ -51,6 +49,33 @@
                     <span class="font-semibold">{{ team.users.length }}</span>
                 </div>
 
+                <div v-if="user.role === 'owner'">
+                    <div class="my-4 h-px bg-gray-200 dark:bg-gray-600"></div>
+
+                    <label for="name" class="label mb-2">
+                        Logo de mon équipe :
+                    </label>
+
+                    <input-file
+                        v-if="!team.logo"
+                        @files-selected="setLogo"
+                        :multiple="false">
+                        <template #content>
+                            <div v-if="updateData.logo">
+                                Fichier choisi : <strong>{{ updateData.logo.name }}</strong>
+                            </div>
+                            <div v-else>
+                                Choisir un fichier de logo...
+                            </div>
+                        </template>
+                    </input-file>
+
+                    <template v-if="team.logo">
+                        <img :src="'storage/' + team.logo"
+                            :alt="Logo"
+                            class="h-20 mt-2" />
+                    </template>
+                </div>
            </div>
         </template>
 
@@ -58,15 +83,24 @@
 
             <request-error :error="readTeamError" class="inline-block" />
             <request-error :error="updateError" class="inline-block" />
-            <request-error :error="readTeamsError" class="inline-block" />
+            <request-error :error="deleteLogoError" class="inline-block" />
 
-            <div class="alert alert-green" 
+            <div class="alert alert-green"
                 v-if="updateStatus === 'success'">
                 Enregistré !
             </div>
 
-            <button 
-                v-if="team && team.pivot.role === 'owner'"
+            <request-button
+                v-if="team && team.logo && user.role === 'owner'"
+                class="btn btn-red"
+                :status="deleteLogoStatus"
+                :error="deleteLogoError"
+                @click="deleteLogo">
+                Supprimer le logo
+            </request-button>
+
+            <button
+                v-if="team && user.role === 'owner'"
                 type="button"
                 class="btn btn-primary"
                 :class="{ 'opacity-25': (updateStatus === 'pending') }"
@@ -75,129 +109,15 @@
                 Enregistrer
             </button>
 
-            <button 
-                v-if="!user.has_own_team"
-                type="button"
-                class="btn btn-white"
-                @click="createOwnTeamOpen">
-                Créer mon équipe
-            </button>
-
-            <button 
-                type="button"
-                class="btn btn-white"
-                @click="switchOpen">
-                Changer d'équipe
-            </button>
-
         </template>
     </form-section>
-
-    <dialog-modal 
-        :show="switching" 
-        @close="switchClose" 
-        max-width-class="max-w-screen-sm">
-        <template #title>
-            Changer d'équipe
-        </template>
-
-        <template #content>
-
-            <div class="text-gray-500 dark:text-gray-400 font-sm mb-3">
-                Choisissez une équipe à laquelle vous appartenez :
-            </div>
-
-            <div v-for="t in teams" :key="t.id">
-                <label class="inline-flex items-center">
-                    <input 
-                        type="radio" 
-                        class="form-radio" 
-                        name="team" 
-                        v-model="teamSelectedId"
-                        :value="t.id">
-                    <div>
-                        <span class="ml-2">{{ t.name }}</span>
-                        <span class="ml-2" 
-                            :class="(t.pivot.role === 'owner' ? 'text-green-500' : 'text-gray-500')">
-                            ({{ nameForRole(t.pivot.role) }})
-                        </span>
-                    </div>
-                </label>
-            </div>
-
-        </template>
-
-        <template #footer>
-
-            <request-error :error="switchError" class="inline-block mr-3" />
-
-            <button 
-                type="button"
-                class="btn btn-white"
-                @click="switchClose">
-                Annuler
-            </button>
-
-            <button 
-                type="button"
-                class="btn btn-primary ml-2"
-                :class="{ 'opacity-25': (switchStatus === 'pending') }"
-                :disabled="switchStatus === 'pending'"
-                @click="switchTeam">
-                Changer d'équipe
-            </button>
-
-        </template>
-    </dialog-modal>
-
-    <dialog-modal 
-        :show="creatingOwnTeam" 
-        @close="createOwnTeamClose" 
-        max-width-class="max-w-screen-sm">
-        <template #title>
-            Créer mon équipe
-        </template>
-
-        <template #content>
-
-            <div class="text-gray-500 dark:text-gray-400 font-sm mb-4">
-                <p class="mb-2">Créer votre équipe vous permet de gérer vos abonnements, votre moyen de paiement et les membres avec lesquels vous souhaitez partager votre compte.</p>
-                <p class="mb-2">C'est aussi la solution pour gérer votre compte personnel, en souscrivant un abonnement individuel.</p>
-                Vous serez toujours membre de vos autres équipes, et vous pourrez basculer d'une équipe à l'autre directement depuis votre compte.
-            </div>
-
-            <request-error :error="createOwnTeamError" />
-
-        </template>
-
-        <template #footer>
-
-            <button 
-                type="button"
-                class="btn btn-white"
-                @click="createOwnTeamClose">
-                Annuler
-            </button>
-
-            <button 
-                type="button"
-                class="btn btn-primary ml-2"
-                :class="{ 'opacity-25': (createOwnTeamStatus === 'pending') }"
-                :disabled="createOwnTeamStatus === 'pending'"
-                @click="createOwnTeam">
-                Créer mon équipe
-            </button>
-
-        </template>
-    </dialog-modal>
-
 </template>
 
 <script>
     import { defineComponent, ref, onMounted } from 'vue'
-    import { useForm } from '../../Functions/useForm'
+    import { functions } from 'helorui'
     import FormSection from '../../Components/FormSection'
-    
+
     export default defineComponent({
         components: {
             FormSection,
@@ -216,11 +136,11 @@
             // ---------------------------------------------------
             const team = ref(null);
 
-            const { 
+            const {
                 status: readTeamStatus,
                 error: readTeamError,
                 send: readTeamSend,
-            } = useForm();
+            } = functions.useRequest();
 
             function readTeam()
             {
@@ -233,73 +153,64 @@
             onMounted(readTeam)
 
             // ---------------------------------------------------
-            //  Teams the user belongs to
-            // ---------------------------------------------------
-            const teams = ref(null);
-
-            const { 
-                status: readTeamsStatus,
-                error: readTeamsError,
-                send: readTeamsSend,
-            } = useForm();
-
-            function readTeams()
-            {
-                readTeamsSend('get', '/teams').then(r => {
-                    teams.value = r.data;
-                });
-            }
-
-            onMounted(readTeams)
-
-            // ---------------------------------------------------
             //  Update team
             // ---------------------------------------------------
-            const { 
+            const {
                 data: updateData,
                 status: updateStatus,
                 error: updateError,
                 send: updateSend,
-            } = useForm();
+            } = functions.useRequest();
+
+            function setLogo(e)
+            {
+                updateData.value.logo = e.files[0];
+            }
 
             function updateTeam()
             {
-                updateSend('put', '/team').then(r => {
-                    readTeam();
+                let data = updateData.value;
+
+                let formData = new FormData();
+                formData.append('name', updateData.value.name)
+
+                if(updateData.value.logo)
+                {
+                    formData.append('logo', updateData.value.logo, updateData.value.logo.name);
+                }
+                else if(updateData.value.logo === null)
+                {
+                    formData.append('logo', null);
+                }
+
+                updateData.value = formData;
+
+                updateSend('post', '/api/team-update').then(r => {
+                    updateData.value = data;
+                    if(updateData.value.logo){
+                        window.location.reload();
+                    }else{
+                        readTeam();
+                    }
+                }).catch(r => {
+                    updateData.value = data;
                 });
             }
 
-            // ---------------------------------------------------
-            //  Switch team
-            // ---------------------------------------------------
-            const switching = ref(false);
-            const teamSelectedId = ref(null);
+            const {
+                status: deleteLogoStatus,
+                error: deleteLogoError,
+                data: deleteLogoData,
+                send: deleteLogoSend,
+            } = functions.useRequest();
 
-            const { 
-                status: switchStatus,
-                error: switchError,
-                send: switchSend,
-            } = useForm();
-
-            function switchTeam()
+            function deleteLogo()
             {
-                switchSend('post', '/team/switch/' + teamSelectedId.value).then(r => {
-                    
-                    //switchClose();
-                    //team.value = r.data;
-                    //this.emitter.emit("team-updated", r.data);
+                deleteLogoData.value.logo = null;
+
+                deleteLogoSend('post', '/api/team-update').then(r => {
                     window.location.reload();
-                    // refresh page ?
                 });
-            }
-
-            function switchOpen(){
-                teamSelectedId.value = team.value.id;
-                switching.value = true;
-            }
-
-            function switchClose(){
-                switching.value = false;
             }
 
             function nameForRole(role){
@@ -309,68 +220,24 @@
             }
 
             // ---------------------------------------------------
-            //  Own Team
-            // ---------------------------------------------------
-            const creatingOwnTeam = ref(false);
-
-            const { 
-                status: createOwnTeamStatus,
-                error: createOwnTeamError,
-                send: createOwnTeamSend,
-            } = useForm();
-
-            function createOwnTeam()
-            {
-                createOwnTeamSend('post', '/team').then(r => {
-                    window.location.reload();
-                });
-            }
-
-            function createOwnTeamOpen(){
-                creatingOwnTeam.value = true;
-            }
-
-            function createOwnTeamClose(){
-                creatingOwnTeam.value = false;
-            }
-
-            // ---------------------------------------------------
             //  Return
             // ---------------------------------------------------
             return {
                 team,
                 readTeamStatus,
                 readTeamError,
-                readTeamSend,
                 readTeam,
-
-                teams,
-                readTeamsStatus,
-                readTeamsError,
-                readTeamsSend,
-                readTeams,
-
-                creatingOwnTeam,
-                createOwnTeamStatus,
-                createOwnTeamError,
-                createOwnTeam,
-                createOwnTeamOpen,
-                createOwnTeamClose,
-
-                switching,
-                teamSelectedId,
-                switchStatus,
-                switchError,
-                switchSend,
-                switchTeam,
-                switchOpen,
-                switchClose,
 
                 updateData,
                 updateStatus,
                 updateError,
                 updateSend,
                 updateTeam,
+
+                setLogo,
+                deleteLogo,
+                deleteLogoStatus,
+                deleteLogoError,
 
                 nameForRole,
             }

@@ -10,23 +10,12 @@ use App\Models\User;
 
 class UserSeeder extends Seeder
 {
-    /**
-     * Run the Stripe seeds.
-     *
-     * @return void
-     */
     public function run()
     {
-        $teams = Team::all();
-        foreach($teams as $team){
-            $team->delete();
-        }
-        
-        $users = User::all();
-        foreach($users as $user){
-            $user->delete();
-        }
+        Team::query()->delete();
+        User::query()->delete();
 
+        // Create root user with their own team
         $root = new User();
         $root->firstname = 'Helori';
         $root->lastname = 'LANOS';
@@ -37,45 +26,30 @@ class UserSeeder extends Seeder
         $root->is_root = true;
         $root->save();
 
-        // Create team members
-        $members = $this->createTeamMembers($root->ownedTeams()->first(), 5);
-
-        // Each member has his own team, adding the root user to their team allows testing team switching
-        foreach($members as $member)
-        {
-            $member->ownedTeams()->first()->users()->attach($root, [
-                'role' => 'member'
-            ]);
-        }
-
-        // Create an active subscription for the root user
-        $this->subscribeUser($root);
-    }
-
-    public function createTeamMembers($team, $count)
-    {
-        $users = User::factory()
-            ->count($count)
-            ->create();
-
-        // Tous les users sont dans l'équipe du root
-        $team->users()->attach($users, [
-            'role' => 'member'
+        $rootTeam = Team::create([
+            'user_id' => $root->id,
+            'name' => 'Équipe de '.$root->firstname.' '.$root->lastname,
+            'billing_name' => 'Équipe de '.$root->firstname.' '.$root->lastname,
+            'billing_email' => $root->email,
+            'billing_country' => 'FR',
         ]);
 
-        return $users;
+        $root->forceFill(['team_id' => $rootTeam->id, 'role' => 'owner'])->save();
+
+        // Create additional team members
+        $members = User::factory()->count(5)->create();
+        foreach($members as $member) {
+            $member->forceFill(['team_id' => $rootTeam->id, 'role' => 'member'])->save();
+        }
+
+        // Create an active subscription for the root user's team
+        $this->subscribeTeam($rootTeam, $root);
     }
 
-    public function subscribeUser($user, $coupon = null, $promoCode = null)
+    public function subscribeTeam(Team $team, User $owner, $coupon = null, $promoCode = null)
     {
-        $team = $user->billable();
-
-        $quantity = 1;
-
         if(!$team->hasStripeId()){
-            $team->createAsStripeCustomer([
-                'email' => $user->email,
-            ]);
+            $team->createAsStripeCustomer(['email' => $owner->email]);
         }
 
         // https://stripe.com/docs/testing#regulatory-cards
@@ -87,25 +61,21 @@ class UserSeeder extends Seeder
         {
             $plan = $product['plans'][0];
             $price = $plan['prices'][0];
+            $quantity = $team->users()->count();
 
             $subscription = $team->newSubscription($product['slug'], $price['price_id']);
             $subscription->quantity($quantity);
 
-            if(intVal($product['trial_days']) > 0)
-            {
+            if(intVal($product['trial_days'] ?? 0) > 0) {
                 $subscription->trialDays(intVal($product['trial_days']));
             }
-
-            if(!is_null($coupon))
-            {
+            if(!is_null($coupon)) {
                 $subscription->withCoupon($coupon);
             }
-
-            if(!is_null($promoCode))
-            {
+            if(!is_null($promoCode)) {
                 $subscription->withPromotionCode($promoCode);
             }
-            
+
             $subscription->add();
         }
     }

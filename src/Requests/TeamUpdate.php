@@ -5,26 +5,15 @@ namespace Helori\LaravelSaas\Requests;
 
 class TeamUpdate extends ActionRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
     public function authorize()
     {
         return $this->user()->ownCurrentTeam();
     }
 
-    /**
-     * Run the action the request is supposed to execute
-     *
-     * @return void
-     */
     public function action()
     {
-        $user = $this->user();
-        $team = $user->currentTeam();
-        
+        $team = $this->user()->team;
+
         $team->update($this->only([
             'name',
             'billing_name',

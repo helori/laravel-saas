@@ -3,38 +3,22 @@
 namespace Helori\LaravelSaas\Requests;
 
 use Illuminate\Support\Facades\Auth;
+use Helori\LaravelSaas\Saas;
 
 
 class MemberLogin extends ActionRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
     public function authorize()
     {
-        $user = $this->user();
-        $team = $user->teams()->findOrFail($this->route('teamId'));
-        return $user->ownTeam($team);
+        return $this->user()->ownTeam(Saas::$teamModel::findOrFail($this->route('teamId')));
     }
 
-    /**
-     * Run the action the request is supposed to execute
-     *
-     * @return void
-     */
     public function action()
     {
-        $user = $this->user();
-        $teamId = $this->route('teamId');
-        $team = $user->teams()->with('users')->findOrFail($teamId);
+        $team = Saas::$teamModel::findOrFail($this->route('teamId'));
+        $member = $team->users()->findOrFail($this->route('memberId'));
 
-        $auth = Auth::guard('user');
-        $memberId = $this->route('memberId');
-
-        $auth->loginUsingId($memberId);
-        $auth->user()->switchTeam($team);
+        Auth::guard('user')->login($member);
 
         return redirect()->route('app');
     }

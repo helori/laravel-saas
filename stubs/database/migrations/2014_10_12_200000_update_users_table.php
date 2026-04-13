@@ -18,7 +18,8 @@ class UpdateUsersTable extends Migration
             $table->string('lastname')->nullable()->default(null);
             $table->string('phone')->nullable()->default(null);
             $table->boolean('is_root')->nullable()->default(false);
-            $table->foreignId('current_team_id')->nullable()->index();
+            $table->foreignId('team_id')->nullable()->index();
+            $table->string('role')->nullable()->default(null);
             $table->dropColumn([
                 'name',
             ]);
@@ -43,7 +44,8 @@ class UpdateUsersTable extends Migration
                 'lastname',
                 'phone',
                 'is_root',
-                'current_team_id',
+                'team_id',
+                'role',
             ]);
         });
     }
