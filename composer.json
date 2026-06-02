@@ -22,7 +22,7 @@
         }
     },
     "require": {
-        "dompdf/dompdf": "^2.0",
+        "dompdf/dompdf": "^3.0",
         "php": "^8.0.2",
         "jenssegers/agent": "^2.6",
         "laravel/cashier": "^15.0",
