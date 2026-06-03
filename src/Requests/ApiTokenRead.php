@@ -8,11 +8,12 @@ class ApiTokenRead extends ActionRequest
     /**
      * Run the action the request is supposed to execute
      *
-     * @return void
+     * @return \Laravel\Sanctum\PersonalAccessToken
      */
     public function action()
     {
-        $user = $this->user();
-        return $user->tokens()->get();
+        $tokenId = $this->route('tokenId');
+        $token = $this->user()->tokens()->findOrFail($tokenId);
+        return $token;
     }
 }

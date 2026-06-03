@@ -10,7 +10,8 @@ Route::group(['middleware' => ['web']], function ()
         Route::get('/browser-session', [SaasController::class, 'readBrowserSession']);
         Route::delete('/browser-session', [SaasController::class, 'deleteBrowserSession']);//->middleware('password.confirm');
 
-        Route::get('/api-token', [SaasController::class, 'readApiToken']);
+        Route::get('/api-token', [SaasController::class, 'listApiToken']);
+        Route::get('/api-token/{tokenId}', [SaasController::class, 'readApiToken']);
         Route::post('/api-token', [SaasController::class, 'createApiToken']);
         Route::delete('/api-token/{tokenId}', [SaasController::class, 'deleteApiToken']);
 
@@ -30,7 +31,7 @@ Route::group(['middleware' => ['web']], function ()
         Route::get('/payment-method', [SaasController::class, 'paymentMethodRead']);
         Route::put('/payment-method', [SaasController::class, 'paymentMethodUpdate']);
         Route::delete('/payment-method', [SaasController::class, 'paymentMethodDelete']);
-        
+
         Route::get('/products', [SaasController::class, 'products']);
         Route::get('/prices', [SaasController::class, 'prices']);
 

@@ -4,6 +4,7 @@ namespace Helori\LaravelSaas\Controllers;
 
 use Helori\LaravelSaas\Requests\ApiTokenCreate;
 use Helori\LaravelSaas\Requests\ApiTokenRead;
+use Helori\LaravelSaas\Requests\ApiTokenList;
 use Helori\LaravelSaas\Requests\ApiTokenDelete;
 
 use Helori\LaravelSaas\Requests\BrowserSessionRead;
@@ -43,7 +44,8 @@ use Helori\LaravelSaas\Requests\PromotionApply;
 class SaasController extends BaseController
 {
     public function createApiToken(ApiTokenCreate $request) { return $request->action(); }
-    public function readApiToken(ApiTokenRead $request) { return $request->action(); }
+    public function listApiToken(ApiTokenList $request) { return $request->action(); }
+    public function readApiToken(ApiTokenRead $request, $tokenId) { return $request->action(); }
     public function deleteApiToken(ApiTokenDelete $request, $tokenId) { return $request->action(); }
 
     public function readBrowserSession(BrowserSessionRead $request) { return $request->action(); }
