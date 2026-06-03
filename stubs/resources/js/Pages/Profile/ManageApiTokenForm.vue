@@ -10,70 +10,122 @@
 
         <template #form>
 
-            <div class="col-span-6 sm:col-span-4">
-
-                <div v-if="apiKeyInfo">
-                    <h3 class="text-lg font-medium text-green-500 mb-2">
-                        Votre clé API est active.
-                    </h3>
-                    <div class="text-gray-500 dark:text-gray-400 text-sm">
-                        <div>Créée le : {{ $filters.date(apiKeyInfo.created_at, 'DD/MM/YYYY à HH:mm') }}</div>
-                        <div v-if="apiKeyInfo.last_used_at">Dernière utilisation : {{ apiKeyInfo.last_used_at }}</div>
-                        <div v-else>Jamais utilisée</div>
-                    </div>
-                </div>
-
-                <div v-else>
-                    <h3 class="text-lg font-medium text-red-500">
-                        Vous n'avez pas de clé API active.
-                    </h3>
-                </div>
-
-                <div v-if="apiKey"
-                    class="font-bold mt-3">
-                    Votre clé ne sera affichée qu'une seule fois, notez-la bien :
-                </div>
-
-                <div v-if="apiKey"
-                    class="mt-3 px-4 py-4 font-mono text-sm bg-gray-100 dark:bg-gray-800 rounded-lg">
-                    {{ apiKey }}
-                </div>
-
-           </div>
+            <div class="col-span-6 table-wrapper text-center overflow-hidden w-full">
+                <table class="w-full">
+                    <thead>
+                        <tr>
+                            <th>Nom de la clé</th>
+                            <th>Date de création</th>
+                            <th>Date d'expiration</th>
+                            <th>Dernière utilisation</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="token in tokens" :key="token.id">
+                            <td>{{ token.name }}</td>
+                            <td>{{ $filters.date(token.created_at, 'dd/MM/yyyy à HH:mm') }}</td>
+                            <td>{{ token.expires_at ? $filters.date(token.expires_at, 'dd/MM/yyyy à HH:mm') : 'Jamais' }}</td>
+                            <td>{{ token.last_used_at ? $filters.date(token.last_used_at, 'dd/MM/yyyy à HH:mm') : 'Jamais' }}</td>
+                            <td>
+                                <button
+                                    type="button"
+                                    class="btn btn-red btn-sm"
+                                    :disabled="deleteStatus === 'pending'"
+                                    @click="deleteOpen(token)">
+                                    Supprimer
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </template>
 
         <template #actions>
 
-            <request-error :error="createError" class="inline-block" />
-            <request-error :error="deleteError" class="inline-block" />
-
-            <button 
-                v-if="!apiKeyInfo"
+            <button
                 type="button"
                 class="btn btn-primary"
-                :disabled="createStatus === 'pending'"
-                @click="createApiToken">
-                Générer une clé API
-            </button>
-
-            <button 
-                v-if="apiKeyInfo"
-                type="button"
-                class="btn btn-red"
-                :disabled="deleteStatus === 'pending'"
-                @click="deleteApiToken">
-                Supprimer la clé
+                @click="createOpen">
+                Créer une clé API
             </button>
 
         </template>
+
     </form-section>
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- Create -->
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <dialog-form
+        ref="createDialog"
+        title="Ajouter une clé API"
+        button="Enregistrer"
+        max-width-class="max-w-screen-sm"
+        :callback="createToken">
+        <template #content>
+            <label for="name" class="block text-sm font-medium text-gray-700">Nom de la clé</label>
+            <input
+                id="name"
+                type="text"
+                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-opacity-50"
+                v-model="createDialog.data.name">
+        </template>
+    </dialog-form>
+
+    <dialog-modal
+        ref="createdDialog"
+        max-width-class="max-w-screen-sm">
+        <template #title>
+            Votre nouvelle clé API
+        </template>
+        <template #content>
+
+            <div v-if="newToken"
+                class="font-bold mt-3">
+                Votre clé ne sera affichée qu'une seule fois, notez-la bien :
+            </div>
+
+            <div v-if="newToken"
+                class="mt-3 px-4 py-4 font-mono text-sm bg-gray-100 dark:bg-gray-800 rounded-lg">
+                {{ newToken }}
+            </div>
+        </template>
+        <template #footer>
+            <button
+                type="button"
+                class="btn btn-gray"
+                @click="closeCreated">
+                Fermer
+            </button>
+        </template>
+    </dialog-modal>
+
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <!-- Delete -->
+    <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+    <dialog-form
+        ref="destroyDialog"
+        type="danger"
+        title="Supprimer la clé API"
+        button="Supprimer"
+        max-width-class="max-w-screen-sm"
+        :callback="deleteToken">
+        <template #content>
+            <div class="font-medium text-red-600">
+                Voulez-vous vraiment supprimer cette clé API ?
+            </div>
+        </template>
+    </dialog-form>
+
 </template>
 
 <script>
     import { defineComponent, ref, onMounted } from 'vue'
-    import { useForm } from '../../Functions/useForm'
+    import { functions } from 'helorui'
     import FormSection from '../../Components/FormSection'
-    
+
     export default defineComponent({
         components: {
             FormSection,
@@ -87,70 +139,88 @@
 
         setup(props) {
 
-            const apiKeyInfo = ref(null);
+            const tokens = ref([]);
 
-            const { 
+            const {
                 status: readStatus,
                 error: readError,
                 send: readSend,
-            } = useForm();
+            } = functions.useRequest();
 
-            function readApiTokens()
+            function readTokens()
             {
                 readSend('get', '/api-token').then(r => {
-                    apiKeyInfo.value = r.data;
+                    tokens.value = r.data;
                 });
             }
 
-            onMounted(readApiTokens)
+            onMounted(readTokens)
 
-            const apiKey = ref(null);
+            const newToken = ref(null);
+            const createDialog = ref(null);
+            const createdDialog = ref(null);
 
-            const { 
-                status: createStatus,
-                error: createError,
-                send: createSend,
-            } = useForm();
-
-            function createApiToken()
+            function createOpen()
             {
-                createSend('post', '/api-token').then(r => {
-                    apiKey.value = r.data;
-                    readApiTokens()
+                createDialog.value.data = {
+                    name: '',
+                };
+                createDialog.value.open();
+            }
+
+            function closeCreated()
+            {
+                newToken.value = null;
+                createdDialog.value.close();
+            }
+
+            function createToken()
+            {
+                createDialog.value.send('post', '/api-token').then(r => {
+                    newToken.value = r.data;
+                    createDialog.value.data.name = '';
+                    createDialog.value.close();
+                    createdDialog.value.open();
+                    readTokens();
+                    openNewToken();
                 });
             }
 
-            const { 
-                status: deleteStatus,
-                error: deleteError,
-                send: deleteSend,
-            } = useForm();
+            const destroyDialog = ref(null);
 
-            function deleteApiToken()
+            function deleteOpen(token)
             {
-                deleteSend('delete', '/api-token').then(r => {
-                    apiKey.value = null;
-                    readApiTokens()
+                destroyDialog.value.data = token;
+                destroyDialog.value.open();
+                console.log(destroyDialog.value.data);
+            }
+
+            function deleteToken()
+            {
+                destroyDialog.value.send('delete', '/api-token/' + destroyDialog.value.data.id).then(r => {
+                    destroyDialog.value.close();
+                    readTokens();
                 });
             }
 
             return {
-                apiKeyInfo,
+                tokens,
+
                 readStatus,
                 readError,
                 readSend,
-                readApiTokens,
+                readTokens,
 
-                apiKey,
-                createStatus,
-                createError,
-                createSend,
-                createApiToken,
+                newToken,
+                createDialog,
+                createdDialog,
+                createOpen,
+                createToken,
+                closeCreated,
 
-                deleteStatus,
-                deleteError,
-                deleteSend,
-                deleteApiToken,
+                destroyDialog,
+                deleteOpen,
+                deleteToken,
             }
         }
     })

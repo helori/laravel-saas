@@ -44,8 +44,8 @@ class SaasController extends BaseController
 {
     public function createApiToken(ApiTokenCreate $request) { return $request->action(); }
     public function readApiToken(ApiTokenRead $request) { return $request->action(); }
-    public function deleteApiToken(ApiTokenDelete $request) { return $request->action(); }
-    
+    public function deleteApiToken(ApiTokenDelete $request, $tokenId) { return $request->action(); }
+
     public function readBrowserSession(BrowserSessionRead $request) { return $request->action(); }
     public function deleteBrowserSession(BrowserSessionDelete $request) { return $request->action(); }
 

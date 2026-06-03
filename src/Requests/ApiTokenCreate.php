@@ -5,6 +5,13 @@ namespace Helori\LaravelSaas\Requests;
 
 class ApiTokenCreate extends ActionRequest
 {
+    public function rules()
+    {
+        return [
+            'name' => 'required|string|max:255',
+        ];
+    }
+
     /**
      * Run the action the request is supposed to execute
      *
@@ -15,10 +22,10 @@ class ApiTokenCreate extends ActionRequest
         $user = $this->user();
 
         // Revoke all tokens
-        $user->tokens()->delete();
+        //$user->tokens()->delete();
 
         // create new token
-        $token = $user->createToken('api-key');
+        $token = $user->createToken($this->input('name'));
 
         // Return the plain text version (visible only once !)
         return response($token->plainTextToken, 201);

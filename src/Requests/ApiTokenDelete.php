@@ -12,6 +12,7 @@ class ApiTokenDelete extends ActionRequest
      */
     public function action()
     {
-        return $this->user()->tokens()->delete();
+        $tokenId = $this->route('tokenId');
+        return $this->user()->tokens()->findOrFail($tokenId)->delete();
     }
 }

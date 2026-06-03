@@ -12,7 +12,7 @@ Route::group(['middleware' => ['web']], function ()
 
         Route::get('/api-token', [SaasController::class, 'readApiToken']);
         Route::post('/api-token', [SaasController::class, 'createApiToken']);
-        Route::delete('/api-token', [SaasController::class, 'deleteApiToken']);
+        Route::delete('/api-token/{tokenId}', [SaasController::class, 'deleteApiToken']);
 
         Route::get('/team', [SaasController::class, 'readTeam']);
         Route::put('/team', [SaasController::class, 'updateTeam']);
