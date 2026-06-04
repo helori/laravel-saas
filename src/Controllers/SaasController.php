@@ -14,6 +14,7 @@ use Helori\LaravelSaas\Requests\TeamRead;
 use Helori\LaravelSaas\Requests\TeamList;
 use Helori\LaravelSaas\Requests\TeamUpdate;
 
+use Helori\LaravelSaas\Requests\UserRead;
 use Helori\LaravelSaas\Requests\UserDelete;
 
 use Helori\LaravelSaas\Requests\MemberList;
@@ -55,6 +56,7 @@ class SaasController extends BaseController
     public function listTeam(TeamList $request) { return $request->action(); }
     public function updateTeam(TeamUpdate $request) { return $request->action(); }
 
+    public function userRead(UserRead $request) { return $request->action(); }
     public function userDelete(UserDelete $request) { return $request->action(); }
 
     public function memberList(MemberList $request, $teamId) { return $request->action(); }
