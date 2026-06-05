@@ -39,12 +39,13 @@ class SubscriptionCreate extends SubscriptionBase
     public function action()
     {
         $billable = $this->user()->billable();
+
         if(!$billable->hasStripeId()){
             $billable->createAsStripeCustomer([
                 'email' => $this->user()->email,
             ]);
         }
-        
+
         $paymentMethod = $billable->defaultPaymentMethod();
 
         if(!$paymentMethod){
@@ -59,13 +60,13 @@ class SubscriptionCreate extends SubscriptionBase
         $product = Arr::first($products, function($product) use($productId) {
             return ($product['product_id'] === $productId);
         }, null);
-        
+
         $price = Arr::first($product['prices'], function($price) use($priceId) {
             return ($price['price_id'] === $priceId);
         }, null);
-        
+
         $subscription = $billable->subscription($this->name);
-        
+
         if(!$subscription || $subscription->ended())
         {
             $subscription = $billable->newSubscription($this->name, $price['price_id']);
@@ -74,7 +75,7 @@ class SubscriptionCreate extends SubscriptionBase
             {
                 $subscription->trialDays(intVal($product['trial_days']));
             }
-            
+
             // ---------------------------------------------------------------
             //  Quantity
             // ---------------------------------------------------------------
@@ -94,9 +95,9 @@ class SubscriptionCreate extends SubscriptionBase
                 }
                 $subscription->withPromotionCode($promotion->id);
             }
-            
+
             $subscription->add(); // If the user already has a default payment method
-            
+
             /*$subscription->create($this->paymentMethodId, [
                 // Customer options : https://stripe.com/docs/api/customers/create
             ], [

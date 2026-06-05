@@ -51,21 +51,18 @@ class MemberCreate extends ActionRequest
         $teamId = $this->route('teamId');
         $team = Saas::$teamModel::findOrFail($teamId);
 
-        $member = new User();
-        $member->fill($this->only(['firstname', 'lastname', 'email', 'phone', 'activated']));
-        $member->team_id = $team->id;
-        $member->role = $this->role;
-        $member->ip = $this->ip();
-        $member->email_verified_at = now();
-
-        if($this->has_password){
-            $member->password = Hash::make($this->password);
-        } else {
-            $password = bin2hex(openssl_random_pseudo_bytes(4));
-            $member->password = Hash::make($password);
-        }
-
-        $member->save();
+        $member = User::create([
+            'firstname' => $this->firstname,
+            'lastname' => $this->lastname,
+            'email' => $this->email,
+            'phone' => $this->phone,
+            'activated' => $this->activated,
+            'team_id' => $team->id,
+            'role' => $this->role,
+            'ip' => $this->ip(),
+            'email_verified_at' => now(),
+            'password' => Hash::make($this->has_password ? $this->password : bin2hex(openssl_random_pseudo_bytes(4))),
+        ]);
 
         if($this->has('invite') && $this->invite) {
             $member->invite();

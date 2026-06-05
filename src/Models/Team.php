@@ -13,24 +13,11 @@ class Team extends Model
     use HasFactory, Billable;
 
     /**
-     * The attributes that are mass assignable.
+     * The attributes that are not mass assignable.
      *
      * @var string[]
      */
-    protected $fillable = [
-        'user_id',
-        'name',
-        'logo',
-        'billing_name',
-        'billing_email',
-        'billing_phone',
-        'billing_line1',
-        'billing_line2',
-        'billing_postal_code',
-        'billing_city',
-        'billing_state',
-        'billing_country',
-    ];
+    protected $guarded = [];
 
     /**
      * The attributes that should be cast to native types.
@@ -39,10 +26,7 @@ class Team extends Model
      */
     protected $casts = [
         'trial_ends_at' => 'datetime',
-        'is_pilote' => 'boolean',
     ];
-
-    protected $dispatchesEvents = [];
 
     protected static function booted()
     {
@@ -54,20 +38,11 @@ class Team extends Model
             }
         });
 
-        static::created(function($team)
+        static::updated(function ($team)
         {
-            if(!$team->hasStripeId()){
-                $team->createAsStripeCustomer([
-                    'email' => $team->owner->email,
-                ]);
-            }
-        });
-
-        static::updated(function ($billable)
-        {
-            if($billable->hasStripeId())
+            if($team->hasStripeId())
             {
-                $billable->syncStripeCustomer();
+                $team->syncStripeCustomer();
             }
         });
     }
@@ -93,16 +68,10 @@ class Team extends Model
      */
     public function removeUser($user)
     {
-        $user->forceFill(['team_id' => null, 'role' => null])->save();
-    }
-
-    /**
-     * Purge the team and all its members.
-     */
-    public function purge()
-    {
-        $this->users()->update(['team_id' => null, 'role' => null]);
-        $this->delete();
+        $user->forceFill([
+            'team_id' => null,
+            'role' => null
+        ])->save();
     }
 
     /**
@@ -133,6 +102,7 @@ class Team extends Model
         }
 
         $paymentMethod = $this->defaultPaymentMethod();
+
         if(!$paymentMethod){
             abort(422, "Vous n'avez pas de moyen de paiement par défaut enregistré");
         }
@@ -200,11 +170,12 @@ class Team extends Model
     // ------------------------------------
     // Stripe sync
     // ------------------------------------
-
     public function syncStripeCustomer()
     {
         $this->updateStripeCustomer([
             'name' => $this->stripeName(),
+            'business_name' => $this->stripeBusinessName(),
+            'individual_name' => $this->stripeIndividualName(),
             'email' => $this->stripeEmail(),
             'phone' => $this->stripePhone(),
             'address' => $this->stripeAddress(),
@@ -223,6 +194,8 @@ class Team extends Model
     }
 
     public function stripeName() { return $this->billing_name; }
+    public function stripeBusinessName() { return $this->billing_name; }
+    public function stripeIndividualName() { return $this->owner->firstname.' '.$this->owner->lastname; }
     public function stripeEmail() { return $this->billing_email; }
     public function stripePhone() { return $this->billing_phone; }
 

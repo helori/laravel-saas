@@ -23,11 +23,11 @@ class PaymentMethodRead extends ActionRequest
     public function action()
     {
         $billable = $this->user()->billable();
-        if(!$billable->hasStripeId()){
-            $billable->createAsStripeCustomer();
-        }
 
-        $paymentMethod = $billable->defaultPaymentMethod();
-        return $paymentMethod ? $paymentMethod->toArray() : null;
+        if($billable->hasStripeId()){
+            $paymentMethod = $billable->defaultPaymentMethod();
+            return $paymentMethod ? $paymentMethod->toArray() : null;
+        }
+        return null;
     }
 }
