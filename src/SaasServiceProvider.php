@@ -25,8 +25,6 @@ use App\Actions\Fortify\UpdateUserProfileInformation;
 use Helori\LaravelSaas\Models\User;
 use Helori\LaravelSaas\Models\Team;
 
-use Helori\LaravelSaas\Commands\UpdateStripeProducts;
-
 
 class SaasServiceProvider extends ServiceProvider
 {
@@ -40,10 +38,6 @@ class SaasServiceProvider extends ServiceProvider
         $this->bootPublishedFiles();
         $this->bootFortify();
         $this->bootCashier();
-
-        /*$this->commands([
-            UpdateStripeProducts::class,
-        ]);*/
     }
 
     protected function bootPublishedFiles()
