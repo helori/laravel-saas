@@ -49,8 +49,8 @@ class UserDelete extends ActionRequest
         }
         else if($team)
         {
-            // Member leaving their team
-            $user->forceFill(['team_id' => null, 'role' => null])->save();
+            // Un membre ne part pas seul : son retrait par le propriétaire (MemberDelete) ajuste la quantité facturée
+            abort(403, "Seul le propriétaire de l'équipe peut supprimer des comptes. Demandez-lui de vous retirer de l'équipe.");
         }
 
         // --------------------------------------------------------
