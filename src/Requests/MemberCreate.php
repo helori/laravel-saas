@@ -56,7 +56,6 @@ class MemberCreate extends ActionRequest
             'lastname' => $this->lastname,
             'email' => $this->email,
             'phone' => $this->phone,
-            'activated' => $this->activated,
             'team_id' => $team->id,
             'role' => $this->role,
             'ip' => $this->ip(),

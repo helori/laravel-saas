@@ -65,19 +65,6 @@
                     <option value="owner">Propriétaire</option>
                 </select>
 
-                <label class="inline-flex items-center gap-2"
-                    for="activated">
-                    <input 
-                        id="activated"
-                        type="checkbox" 
-                        class="form-checkbox" 
-                        name="activated"
-                        v-model="item.activated">
-                    <div>
-                        Compte activé
-                    </div>
-                </label>
-
             </div>
         </div>
 

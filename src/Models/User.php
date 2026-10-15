@@ -30,7 +30,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'email',
         'phone',
         'password',
-        'activated',
         'invited_at',
         'team_id',
         'role',
@@ -55,7 +54,6 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     protected $casts = [
         'is_root' => 'boolean',
-        'activated' => 'boolean',
         'email_verified_at' => 'datetime',
         'invited_at' => 'datetime',
     ];

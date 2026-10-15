@@ -64,20 +64,6 @@
             </div>
         </div>
 
-        <div>
-            <label class="inline-flex items-center gap-2"
-                for="activated">
-                <input 
-                    id="activated"
-                    type="checkbox" 
-                    class="form-checkbox" 
-                    v-model="item.activated">
-                <div>
-                    Activer le compte
-                </div>
-            </label>
-        </div>
-
         <div class="h-px my-4 bg-gray-200"></div>
 
         <div>

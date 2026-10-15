@@ -31,7 +31,6 @@ class User extends JsonResource
             'is_root' => $this->is_root,
             'team_id' => $this->team_id,
             'role' => $this->role,
-            'activated' => $this->activated,
         ];
     }
 }

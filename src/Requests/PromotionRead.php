@@ -45,7 +45,7 @@ class PromotionRead extends SubscriptionBase
         if(!$promotion){
             abort(422, "Ce code de remise n'est pas valide");
         }
-        
+
         return $promotion;
     }
 }

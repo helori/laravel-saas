@@ -20,7 +20,7 @@ class MemberUpdate extends ActionRequest
 
         $member = $team->users()->findOrFail($memberId);
 
-        $member->fill($this->only(['firstname', 'lastname', 'email', 'phone', 'activated']));
+        $member->fill($this->only(['firstname', 'lastname', 'email', 'phone']));
 
         if($this->has('role'))
         {
