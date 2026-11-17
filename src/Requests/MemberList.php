@@ -32,9 +32,10 @@ class MemberList extends ActionRequest
         if($this->search)
         {
             $query->where(function($q){
-                $q->where('firstname', 'ILIKE', '%'.$this->search.'%')
-                    ->orWhere('lastname', 'ILIKE', '%'.$this->search.'%')
-                    ->orWhere('email', 'ILIKE', '%'.$this->search.'%');
+                // whereLike compiles to ILIKE on PostgreSQL and LIKE on MySQL (case insensitive)
+                $q->whereLike('firstname', '%'.$this->search.'%')
+                    ->orWhereLike('lastname', '%'.$this->search.'%')
+                    ->orWhereLike('email', '%'.$this->search.'%');
             });
         }
 
